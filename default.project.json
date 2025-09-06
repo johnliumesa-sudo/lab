@@ -24,7 +24,16 @@
     },
 
     "Workspace": {
-      "$properties": {
+      "npcs": {
+        "$path": "src/workspace/npcs"
+      },
+      "collectables": {
+        "$path": "src/workspace/collectables"
+      },
+      "obstacles": {
+        "$path": "src/workspace/obstables"
+      },
+     "$properties": {
         "FilteringEnabled": true
       },
       "Baseplate": {
