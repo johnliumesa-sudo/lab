@@ -24,17 +24,17 @@
     },
 
     "Workspace": {
-      "npcs": {
+      "NPCs": {
         "$path": "src/workspace/npcs"
-      },
-      "collectables": {
-        "$path": "src/workspace/collectables"
-      },
-      "obstacles": {
-        "$path": "src/workspace/obstables"
       },
      "$properties": {
         "FilteringEnabled": true
+      },
+      "Obstacles": {
+        "$path": "src/workspace/obstacles"
+      },
+      "Collectables": {
+        "$path": "src/workspace/collectables"
       },
       "Baseplate": {
         "$className": "Part",
