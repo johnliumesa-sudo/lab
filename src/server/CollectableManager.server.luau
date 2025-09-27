@@ -1,6 +1,6 @@
 --variables
-local collectable = game.Workspace:FindFirstChild("Collectables"):FindFirstChild("MeshPartCollectable")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local collectable = ReplicatedStorage:FindFirstChild("Shared"):FindFirstChild("currencies"):FindFirstChild("MeshPart")
 local Workspace = game:GetService("Workspace")
 local collectablesFolder = Instance.new("Folder")
 collectablesFolder.Parent = game.Workspace
@@ -17,7 +17,7 @@ local function  randomSpawn()
     local collectablesClone = collectable:Clone()
     collectablesClone.Parent = collectablesFolder
     collectablesClone.Name = ("CollectableClone")
-    collectablesClone.Position = CFrame.new(xpos,ypos,zpos)
+    collectablesClone.Position = Vector3.new(xpos,ypos,zpos)
 end
 
 --executions
