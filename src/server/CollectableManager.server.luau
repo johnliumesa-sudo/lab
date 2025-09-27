@@ -8,7 +8,6 @@ collectablesFolder.Name = ("Collectables")
 local spawnRange = 48
 local coinCount = 21
 
-
 --functions
 local function  randomSpawn()
     local xpos = math.random (1, spawnRange)
@@ -18,6 +17,14 @@ local function  randomSpawn()
     collectablesClone.Parent = collectablesFolder
     collectablesClone.Name = ("CollectableClone")
     collectablesClone.Position = Vector3.new(xpos,ypos,zpos)
+    return
+end
+
+local function movements(collectablesClone)
+    local spinRate = math.rad
+    while true do
+
+    end    
 end
 
 --executions
