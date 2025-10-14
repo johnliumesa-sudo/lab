@@ -1,6 +1,8 @@
 --variables
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local collectable = ReplicatedStorage:FindFirstChild("Shared"):FindFirstChild("currencies"):FindFirstChild("MeshPart")
+local coinScript = script.Parent:FindFirstChild("CoinScript")
+coinScript.Parent = collectable
 local Workspace = game:GetService("Workspace")
 local collectablesFolder = Instance.new("Folder")
 collectablesFolder.Parent = game.Workspace
