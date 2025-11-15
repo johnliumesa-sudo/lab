@@ -4,9 +4,7 @@ local collectable = ReplicatedStorage:FindFirstChild("Shared"):FindFirstChild("c
 local coinScript = script.Parent:FindFirstChild("CoinScript")
 coinScript.Parent = collectable
 local Workspace = game:GetService("Workspace")
-local collectablesFolder = Instance.new("Folder")
-collectablesFolder.Parent = game.Workspace
-collectablesFolder.Name = ("Collectables")
+local collectablesFolder = workspace:FindFirstChild("Collectables") 
 local spawnRange = 48
 local coinCount = 21
 
@@ -14,12 +12,14 @@ local coinCount = 21
 local function  randomSpawn()
     local xpos = math.random (1, spawnRange)
     local zpos = math.random (1, spawnRange)
-    local ypos = 5
+    local ypos = 3
     local collectablesClone = collectable:Clone()
     collectablesClone.Parent = collectablesFolder
-    collectablesClone.Name = ("CollectableClone")
+    -- collectablesClone.Name = ("CollectableClone")
     collectablesClone.Position = Vector3.new(xpos,ypos,zpos)
-    return
+    local coinScriptClone = collectablesClone:WaitForChild("CoinScript")
+    coinScriptClone.Parent = collectablesClone
+    return  
 end
 
 local function movements(collectablesClone)
