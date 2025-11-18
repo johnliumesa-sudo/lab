@@ -7,14 +7,13 @@ coin.Parent = coinBase
 coin.MeshId = "rbxassetid://71877336332186"
 coin.TextureId = "rbxassetid://9460443119"
 local rotationRate = 3
-local bobRange = 5
 local Players = game:GetService("Players")
 local collectablesFolder = game:GetService("Workspace"):FindFirstChild("Collectables")
       
       
 -- functions
 local function rotate()
-    coinBase.CFrame *= CFrame.Angles(0, rotationRate, 0) 
+    script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
 end
       
 local function onTouched(otherPart)
@@ -24,17 +23,12 @@ local function onTouched(otherPart)
         local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
         local leaderstats = player:WaitForChild("leaderstats")
         local coinCount = leaderstats:WaitForChild("CoinCount")
+        script.Parent:Destroy()
         leaderstats.CoinCount.Value += 10 
-        coinBase:Destroy()
     end
 end
-     
 -- executions
 game:GetService("RunService").Heartbeat:Connect(rotate)
-print(script.Parent.Parent)
-while true do
-    if script.Parent.Parent == collectablesFolder then
-        script.Parent.Touched:Connect(onTouched)    
-    end
-    task.wait(0.5)
+if script.Parent.Parent == collectablesFolder then
+    script.Parent.Touched:Connect(onTouched)    
 end

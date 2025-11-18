@@ -12,7 +12,7 @@ local coinCount = 21
 local function  randomSpawn()
     local xpos = math.random (1, spawnRange)
     local zpos = math.random (1, spawnRange)
-    local ypos = 3
+    local ypos = math.random (5, 30)
     local collectablesClone = collectable:Clone()
     collectablesClone.Parent = collectablesFolder
     -- collectablesClone.Name = ("CollectableClone")
