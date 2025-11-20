@@ -21,7 +21,7 @@ local function onTouched(otherPart)
     local humanoid = character:FindFirstChildWhichIsA("Humanoid")
     if humanoid then
         local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
-        local leaderstats = player:WaitForChild("leaderstats")
+        local leaderstats = player:FindFirstChild("leaderstats")
         local coinCount = leaderstats:WaitForChild("CoinCount")
         script.Parent:Destroy()
         leaderstats.CoinCount.Value += 10 
