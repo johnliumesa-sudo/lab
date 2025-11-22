@@ -5,8 +5,8 @@ local coinScript = script.Parent:FindFirstChild("CoinScript")
 coinScript.Parent = collectable
 local Workspace = game:GetService("Workspace")
 local collectablesFolder = workspace:FindFirstChild("Collectables") 
-local spawnRange = 24
-local coinCount = 21
+local spawnRange = 96
+local coinCount = 84
 
 --functions
 local function  randomSpawn()

@@ -1,6 +1,6 @@
 #+TITLE: Roblox Game Design Document
 #+AUTHOR: Aaron Liu
-#+DESCRIPTION: A master literate programming file for the Coin Collection game.Created using gemini 3 and with 0 help from John Liu
+#+DESCRIPTION: A master literate programming file for the Coin Collection game.
 * server script service
 ** coin logic (coinscript)
 :properties:
