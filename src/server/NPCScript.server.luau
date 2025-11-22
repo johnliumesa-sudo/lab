@@ -1,14 +1,13 @@
 --variables
 local StartingPosition = Vector3.new(0, 5, 0)
 local RoamRange = 50
-local Players = game:GetService("Players")
 local DEFAULT_USER_ID = 12345678 -- Replace with a valid UserId for default appearance
+local Players = game:GetService("Players")
 
 --functions
 local function createNPC()
     local npc = Instance.new("Model")
-    npc.Name = "NPC"
-    npc.Parent = game:GetService("Workspace"):FindFirstChild("NPCs")
+    npc.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("Shared"):FindFirstChild("NPCs")
     
     local hrp = Instance.new("Part")
     hrp.Name = "HumanoidRootPart"
@@ -59,5 +58,26 @@ local function createNPC()
     return npc, hrp, humanoid
 end
 
+local function onTouched(otherPart)
+    local character = otherPart.Parent
+    local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+    if humanoid then
+        local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
+        local leaderstats = player:FindFirstChild("leaderstats")
+        local coinCount = leaderstats:WaitForChild("CoinCount")
+        leaderstats.CoinCount.Value -= 10 
+        if coinCount.Value < 0 then
+            humanoid.Health = 0
+            coinCount.Value = 0
+        end
+        script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
+        script.Parent:FindFirstChild("Torso").color = Color3.new(0.152941, 0.784313, 0.117647) 
+        task.wait(5)
+        script.Parent:FindFirstChild("Torso").color = Color3.new(1, 0, 0)
+        script.Parent:finndFirstChild("HumanoidRootPart").CanTouch = true 
+    end
+end
+
 --executions
 local npc, hrp, humanoid = createNPC()
+hrp.Touched:Connect(onTouched)
