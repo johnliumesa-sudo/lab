@@ -1,6 +1,6 @@
 -- variables
 local coinBase = Instance.new("Part")
-coinBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Shared"):FindFirstChild("currencies")
+coinBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Shared"):FindFirstChild("Currencies")
 coinBase.Anchored = true
 local coin = Instance.new ("SpecialMesh")
 coin.Parent = coinBase
