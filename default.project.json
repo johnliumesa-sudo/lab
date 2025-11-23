@@ -4,15 +4,11 @@
     "$className": "DataModel",
 
     "ReplicatedStorage": {
-      "Shared": {
         "$path": "src/shared"
-      }
     },
 
     "ServerScriptService": {
-      "Server": {
         "$path": "src/server"
-      }
     },
 
     "StarterPlayer": {
@@ -22,19 +18,10 @@
         }
       }
     },
-
     "Workspace": {
-      "NPCs": {
-        "$path": "src/workspace/npcs"
-      },
+      "$path": "src/Workspace",
      "$properties": {
         "FilteringEnabled": true
-      },
-      "Obstacles": {
-        "$path": "src/workspace/obstacles"
-      },
-      "Collectables": {
-        "$path": "src/workspace/collectables"
       },
       "Baseplate": {
         "$className": "Part",
