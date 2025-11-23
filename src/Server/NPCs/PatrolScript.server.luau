@@ -1,14 +1,9 @@
---variables
 local StartingPosition = Vector3.new(0, 5, 0)
-local RoamRange = 50
 local Players = game:GetService("Players")
-local DEFAULT_USER_ID = 12345678 -- Replace with a valid UserId for default appearance
 
---functions
-local function createNPC()
-    local npc = Instance.new("Model")
-    npc.Name = "NPC"
-    npc.Parent = game:GetService("Workspace"):FindFirstChild("NPCs")
+local function createPatrol()
+    local patrol = Instance.new("Model")
+    patrol.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Patrols")
     
     local hrp = Instance.new("Part")
     hrp.Name = "HumanoidRootPart"
@@ -16,28 +11,28 @@ local function createNPC()
     hrp.Transparency = 1
     hrp. CFrame = CFrame.new(StartingPosition)
     hrp.Anchored = false
-    hrp.Parent = npc
+    hrp.Parent = patrol
     hrp.CanCollide = true
     
     local humanoid = Instance.new("Humanoid")
-    humanoid.Parent = npc
+    humanoid.Parent = patrol
     humanoid.WalkSpeed = 16
     humanoid.JumpPower = 50
     humanoid.Health = 100
 
-    npc.PrimaryPart = hrp
+    patrol.PrimaryPart = hrp
 
     local torso = Instance.new("Part")
     torso.Name = "Torso"
     torso.Size = Vector3.new(2, 2, 1)
     torso.Color = Color3.new(1, 0, 0) -- Red color for visibility
-    torso.Parent = npc
+    torso.Parent = patrol
 
     local head = Instance.new("Part")
     head.Name = "Head"
     head.Size = Vector3.new(1, 1, 1)
     head.Color = Color3.new(1, 0.8, 0.6) -- Skin color
-    head.Parent = npc
+    head.Parent = patrol
     
     local headMesh = Instance.new("SpecialMesh")
     headMesh.MeshType = Enum.MeshType.Head
@@ -56,8 +51,28 @@ local function createNPC()
     weld_head_tosro.Part1 = torso
     weld_head_tosro.Parent = torso
 
-    return npc, hrp, humanoid
+    return patrol, hrp, humanoid
 end
 
---executions
-local npc, hrp, humanoid = createNPC()
+local function onTouched(otherPart)
+    local character = otherPart.Parent
+    local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+    if humanoid then
+        local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
+        local leaderstats = player:FindFirstChild("leaderstats")
+        local coinCount = leaderstats:WaitForChild("CoinCount")
+        leaderstats.CoinCount.Value -= 10 
+        if coinCount.Value < 0 then
+            humanoid.Health = 0
+            coinCount.Value = 0
+        end
+        script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
+        script.Parent:FindFirstChild("Torso").color = Color3.new(0.152941, 0.784313, 0.117647) 
+        task.wait(5)
+        script.Parent:FindFirstChild("Torso").color = Color3.new(1, 0, 0)
+        script.Parent:finndFirstChild("HumanoidRootPart").CanTouch = true 
+    end
+end
+
+local patrol, hrp, humanoid = createPatrol()
+-- hrp.Touched:Connect(onTouched)

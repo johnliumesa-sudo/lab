@@ -1,0 +1,279 @@
+#+TITLE: Roblox Game Design Document
+#+AUTHOR: Aaron Liu
+#+DESCRIPTION: A master literate programming file for the Coin Collection game.Created using gemini 3 and with 0 help from John Liu
+* server script service
+** leaderboard
+*** LeaderboardManager
+:properties:
+:header-args:lua: :tangle ./src/server/LeaderboardManager.server.luau
+:END:
+**** notes
+This script runs whenever a player joins the game. It creates the standard Roblox "leaderstats" folder, which allows the default player list UI to show the player's coin count.
+**** code
+***** variables
+#+begin_src lua
+  local players = game:GetService("Players")
+#+end_src
+***** functions
+****** onPlayerSpawn
+#+begin_src lua
+  local function onPlayerSpawn(player)
+    local leaderstats = Instance.new("Folder")
+    leaderstats.Name = "leaderstats"
+    leaderstats.Parent = player
+    local coinCount = Instance.new("IntValue")
+    coinCount.Name = "CoinCount"
+    coinCount.Parent = leaderstats
+    coinCount.Value = 0
+  end
+#+end_src
+***** executions
+#+begin_src lua
+  players.PlayerAdded:Connect(onPlayerSpawn)
+#+end_src
+** collectables
+*** CoinScript
+:properties:
+:header-args:lua: :tangle ./src/server/CoinScript.server.luau
+:END:
+**** notes
+This script handles the individual behavior of a coin. It defines the visual appearance, the rotation animation, and the logic for what happens when a player touches it (giving money and destroying itself).
+**** code
+***** variables
+#+begin_src lua
+  local coinBase = Instance.new("Part")
+  coinBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Shared"):FindFirstChild("Currencies")
+  coinBase.Anchored = true
+  local coin = Instance.new ("SpecialMesh")
+  coin.Parent = coinBase
+  coin.MeshId = "rbxassetid://71877336332186"
+  coin.TextureId = "rbxassetid://9460443119"
+  local rotationRate = 3
+  local Players = game:GetService("Players")
+  local collectablesFolder = game:GetService("Workspace"):FindFirstChild("Collectables")
+#+end_src
+***** functions
+****** rotation
+#+begin_src lua
+  local function rotate()
+      script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
+  end
+#+end_src
+****** onTouched
+#+begin_src lua
+  local function onTouched(otherPart)
+      local character = otherPart.Parent
+      local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+      if humanoid then
+  	local player = Players:GetPlayerFromCharacter(character)
+  	local leaderstats = player:WaitForChild("leaderstats")
+  	local coinCount = leaderstats:WaitForChild("CoinCount")
+  	script.Parent:Destroy()
+  	leaderstats.CoinCount.Value += 10
+      end
+  end
+#+end_src
+***** executions
+#+begin_src lua
+  game:GetService("RunService").Heartbeat:Connect(rotate)
+  
+  if script.Parent.Parent == collectablesFolder then
+    script.Parent.Touched:Connect(onTouched)
+  end
+#+end_src
+*** CollectableManager
+:properties:
+:header-args:lua: :tangle ./src/server/CollectableManager.server.luau
+:END:
+**** notes
+This script manages the game loop for spawning coins. It clones the coin template defined in ReplicatedStorage and scatters them randomly across the map.
+**** code
+***** variables
+****** coin
+#+begin_src lua
+  local ReplicatedStorage = game:GetService("ReplicatedStorage")
+  local collectable = ReplicatedStorage:FindFirstChild("Shared"):FindFirstChild("currencies"):WaitForChild("Part")
+  local coinScript = script.Parent:FindFirstChild("CoinScript")
+  coinScript.Parent = collectable
+  local Workspace = game:GetService("Workspace")
+  local collectablesFolder = workspace:FindFirstChild("Collectables")
+  local spawnRange = 48
+  local coinCount = 21
+#+end_src
+***** functions
+****** coin
+******* randomSpawn
+#+begin_src lua
+  local function randomSpawn()
+    local xpos = math.random (-spawnRange, spawnRange)
+    local zpos = math.random (-spawnRange, spawnRange)
+    local ypos = math.random (5, 30)
+    local collectablesClone = collectable:Clone()
+    collectablesClone.Parent = collectablesFolder
+    collectablesClone.Position = Vector3.new(xpos,ypos,zpos)
+    local coinScriptClone = collectablesClone:WaitForChild("CoinScript")
+    coinScriptClone.Parent = collectablesClone
+    return
+  end
+#+end_src
+******* movements
+#+begin_src lua
+  local function movements(collectablesClone)
+    local spinRate = math.rad
+    while true do
+	-- Movement logic placeholder
+    end
+  end
+#+end_src
+***** executions
+****** coin
+#+begin_src lua
+  for i = 1, coinCount do
+      randomSpawn()
+  end
+#+end_src
+** NPCs
+*** NPCScript
+:properties:
+:header-args:lua: :tangle ./src/server/NPCScript.server.luau
+:END:
+**** notes
+**** code
+***** variables
+#+begin_src lua
+  local StartingPosition = Vector3.new(0, 5, 0)
+  local RoamRange = 50
+  local DEFAULT_USER_ID = 12345678 -- Replace with a valid UserId for default appearance
+  local Players = game:GetService("Players")
+#+end_src
+***** functions
+****** createNPC 
+#+begin_src lua
+  local function createNPC()
+      local npc = Instance.new("Model")
+      npc.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("Shared"):FindFirstChild("NPCs")
+      
+      local hrp = Instance.new("Part")
+      hrp.Name = "HumanoidRootPart"
+      hrp.Size = Vector3.new(2, 2, 1)
+      hrp.Transparency = 1
+      hrp. CFrame = CFrame.new(StartingPosition)
+      hrp.Anchored = false
+      hrp.Parent = npc
+      hrp.CanCollide = true
+      
+      local humanoid = Instance.new("Humanoid")
+      humanoid.Parent = npc
+      humanoid.WalkSpeed = 16
+      humanoid.JumpPower = 50
+      humanoid.Health = 100
+
+      npc.PrimaryPart = hrp
+
+      local torso = Instance.new("Part")
+      torso.Name = "Torso"
+      torso.Size = Vector3.new(2, 2, 1)
+      torso.Color = Color3.new(1, 0, 0) -- Red color for visibility
+      torso.Parent = npc
+
+      local head = Instance.new("Part")
+      head.Name = "Head"
+      head.Size = Vector3.new(1, 1, 1)
+      head.Color = Color3.new(1, 0.8, 0.6) -- Skin color
+      head.Parent = npc
+      
+      local headMesh = Instance.new("SpecialMesh")
+      headMesh.MeshType = Enum.MeshType.Head
+      headMesh.Parent = head
+
+      local weld_hrp_torso = Instance.new("WeldConstraint")
+      weld_hrp_torso.Part0 = hrp
+      weld_hrp_torso.Part1 = torso
+      weld_hrp_torso.Parent = hrp
+
+      torso.CFrame = hrp.CFrame * CFrame.new(0, 1.5, 0)
+      head.CFrame = torso.CFrame * CFrame.new(0, 2, 0)
+
+      local weld_head_tosro = Instance.new("WeldConstraint")
+      weld_head_tosro.Part0 = head
+      weld_head_tosro.Part1 = torso
+      weld_head_tosro.Parent = torso
+
+      return npc, hrp, humanoid
+  end
+#+end_src
+****** onTouched
+#+begin_src lua
+  local function onTouched(otherPart)
+      local character = otherPart.Parent
+      local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+      if humanoid then
+          local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
+          local leaderstats = player:FindFirstChild("leaderstats")
+          local coinCount = leaderstats:WaitForChild("CoinCount")
+          leaderstats.CoinCount.Value -= 10 
+          if coinCount.Value < 0 then
+              humanoid.Health = 0
+              coinCount.Value = 0
+          end
+          script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
+          script.Parent:FindFirstChild("Torso").color = Color3.new(0.152941, 0.784313, 0.117647) 
+          task.wait(5)
+          script.Parent:FindFirstChild("Torso").color = Color3.new(1, 0, 0)
+          script.Parent:finndFirstChild("HumanoidRootPart").CanTouch = true 
+      end
+  end
+#+end_src
+***** executions
+#+begin_src lua
+  local npc, hrp, humanoid = createNPC()
+  hrp.Touched:Connect(onTouched) 
+#+end_src
+*** NPCManager
+:properties:
+:header-args:lua: :tangle ./src/server/NPCManager.server.luau
+:END:
+**** notes
+**** code
+***** variables
+#+begin_src lua
+  local ReplicatedStorage = game:GetService("ReplicatedStorage")
+  local npc = ReplicatedStorage:FindFirstChild("Shared"):FindFirstChild("NPCs"):WaitForChild("Model")
+  local npcScript = script.Parent:FindFirstChild("NPCScript")
+  if npcScript then
+      npcScript.Parent = npc
+  else
+      warn("NPCScript not found in NPCManager")
+  end
+  local npcFolder =  game:GetService("Workspace"):FindFirstChild("NPCs") 
+  local spawnRange = 96
+  local npcCount = 24
+#+end_src
+***** functions
+****** randomSpawn
+#+begin_src lua
+  local function  randomSpawn(index)
+      local xpos = math.random (-spawnRange, spawnRange)
+      local zpos = math.random (-spawnRange, spawnRange)
+      local ypos = 4
+      local npcClone = npc:Clone()
+      npcClone.Parent = npcFolder
+      npcClone.Name = ("NPCClone_" .. tostring(index))
+      npcClone.PrimaryPart = npcClone:FindFirstChild("HumanoidRootPart")
+      npcClone:PivotTo(CFrame.new(xpos,ypos,zpos))
+      return  
+  end
+#+end_src
+***** executions
+#+begin_src lua
+  for i = 1, npcCount do
+      randomSpawn(i)
+  end
+#+end_src
+** obstacles
+*** ObstacleManager
+** tools
+*** RocketScript
+*** ToolManager
+* replicated storage 
+* workspace 
