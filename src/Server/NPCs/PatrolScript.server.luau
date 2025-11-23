@@ -4,8 +4,6 @@ local Players = game:GetService("Players")
 local function createPatrol()
     local patrol = Instance.new("Model")
     patrol.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Patrols")
-    --test
-    --test
     
     local hrp = Instance.new("Part")
     hrp.Name = "HumanoidRootPart"

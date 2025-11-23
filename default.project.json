@@ -4,48 +4,35 @@
     "$className": "DataModel",
 
     "ReplicatedStorage": {
-        "$path": "src/shared"
+        "$path": "src/Shared"
     },
 
     "ServerScriptService": {
-        "$path": "src/server"
+        "$path": "src/Server"
     },
 
     "StarterPlayer": {
       "StarterPlayerScripts": {
         "Client": {
-          "$path": "src/client"
+          "$path": "src/Client"
         }
       }
     },
+    
     "Workspace": {
       "$path": "src/Workspace",
-     "$properties": {
-        "FilteringEnabled": true
-      },
       "Baseplate": {
         "$className": "Part",
         "$properties": {
           "Anchored": true,
-          "Color": [
-            0.38823,
-            0.37254,
-            0.38823
-          ],
+          "Color": [0.38823, 0.37254, 0.38823],
           "Locked": true,
-          "Position": [
-            0,
-            -10,
-            0
-          ],
-          "Size": [
-            512,
-            20,
-            512
-          ]
+          "Position": [0, -10, 0],
+          "Size": [512, 20, 512]
         }
       }
     },
+
     "Lighting": {
       "$properties": {
         "Ambient": [
@@ -59,6 +46,7 @@
         "Technology": "Voxel"
       }
     },
+    
     "SoundService": {
       "$properties": {
         "RespectFilteringEnabled": true
