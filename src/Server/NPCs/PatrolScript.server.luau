@@ -51,7 +51,7 @@ local function createPatrol()
     weld_head_tosro.Part1 = torso
     weld_head_tosro.Parent = torso
 
-    return patrol, hrp, humanoid
+    return patrol, hrp, humanoid,torso
 end
 
 local function onTouched(otherPart)
@@ -61,18 +61,20 @@ local function onTouched(otherPart)
         local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
         local leaderstats = player:FindFirstChild("leaderstats")
         local coinCount = leaderstats:WaitForChild("CoinCount")
-        leaderstats.CoinCount.Value -= 10 
+        leaderstats.CoinCount.Value -= 3
+        script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
+        script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
         if coinCount.Value < 0 then
             humanoid.Health = 0
             coinCount.Value = 0
         end
-        script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
-        script.Parent:FindFirstChild("Torso").color = Color3.new(0.152941, 0.784313, 0.117647) 
         task.wait(5)
-        script.Parent:FindFirstChild("Torso").color = Color3.new(1, 0, 0)
-        script.Parent:finndFirstChild("HumanoidRootPart").CanTouch = true 
+        script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
+        script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
     end
 end
 
-local patrol, hrp, humanoid = createPatrol()
--- hrp.Touched:Connect(onTouched)
+local patrol, hrp, humanoid,torso = createPatrol()
+if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Patrols") then
+    script.Parent:FindFirstChild("HumanoidRootPart").Touched:Connect(onTouched)
+end
