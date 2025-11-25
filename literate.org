@@ -211,21 +211,35 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
       local character = otherPart.Parent
       local humanoid = character:FindFirstChildWhichIsA("Humanoid")
       if humanoid then
-          local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
-          local leaderstats = player:FindFirstChild("leaderstats")
-          local coinCount = leaderstats:WaitForChild("CoinCount")
-          leaderstats.CoinCount.Value -= 3
-          script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
-          script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
-          if coinCount.Value < 0 then
-              humanoid.Health = 0
-              coinCount.Value = 0
-          end
-          task.wait(5)
-          script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
-          script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
+	  local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
+	  local leaderstats = player:FindFirstChild("leaderstats")
+	  local coinCount = leaderstats:WaitForChild("CoinCount")
+	  leaderstats.CoinCount.Value -= 3
+	  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
+	  script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
+	  if coinCount.Value < 0 then
+	      humanoid.BreakJointsOnDeath = false
+	      humanoid.Health = 0
+	      coinCount.Value = 0
+	  end
+	  task.wait(5)
+	  script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
+	  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
       end
   end
+#+end_src
+******* movement
+#+begin_src lua
+  local function movement(hrp)
+     while true do
+	 StartingPosition = hrp.Position
+	 local randomX = math.random(-50, 50)
+	 local randomZ = math.random(-50, 50)
+	 local targetPosition = StartingPosition + Vector3.new(randomX, 0, randomZ)
+	 hrp:PivotTo(CFrame.new(targetPosition))
+	 task.wait(3)
+     end
+  end 
 #+end_src
 ****** executions
 #+begin_src lua
@@ -233,6 +247,7 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
   if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Patrols") then
       script.Parent:FindFirstChild("HumanoidRootPart").Touched:Connect(onTouched)
   end
+  task.spawn(movement, hrp)
 #+end_src
 ** obstacles
 ** tools
