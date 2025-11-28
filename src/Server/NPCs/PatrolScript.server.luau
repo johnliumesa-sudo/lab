@@ -75,7 +75,9 @@ local function onTouched(otherPart)
     end
 end
 
-local function movement(hrp, humanoid)
+local function movement()
+   local humanoid = script.Parent:FindFirstChild("Humanoid")
+   local hrp = script.Parent:FindFirstChild("HumanoidRootPart") 
    StartingPosition = hrp.Position    
    while true do
        local randomX = math.random(-50, 50)
@@ -90,5 +92,5 @@ end
 local patrol, hrp, humanoid,torso = createPatrol()
 if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Patrols") then
     script.Parent:FindFirstChild("HumanoidRootPart").Touched:Connect(onTouched)
-    task.spawn(movement, hrp, humanoid)
+    task.spawn(movement)
 end
