@@ -59,6 +59,7 @@ local function onTouched(otherPart)
     local humanoid = character:FindFirstChildWhichIsA("Humanoid")
     if humanoid then
 	local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
+    if player then
 	local leaderstats = player:WaitForChild("leaderstats")
 	local coinCount = leaderstats:WaitForChild("CoinCount")
 	leaderstats.CoinCount.Value -= 3
@@ -72,6 +73,7 @@ local function onTouched(otherPart)
 	task.wait(5)
 	script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
 	script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
+	end
     end
 end
 
