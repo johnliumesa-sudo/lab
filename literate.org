@@ -92,10 +92,9 @@ Defines individual coin behavior (rotate, touch, reward).
 #+end_src
 ****** executions
 #+begin_src lua
-  game:GetService("RunService").Heartbeat:Connect(rotate)
-
   if script.Parent.Parent == coinFolder then
     script.Parent.Touched:Connect(onTouched)
+    game:GetService("RunService").Heartbeat:Connect(rotate)
   end
 #+end_src
 ** npcs
@@ -212,7 +211,7 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
       local humanoid = character:FindFirstChildWhichIsA("Humanoid")
       if humanoid then
 	  local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
-	  local leaderstats = player:FindFirstChild("leaderstats")
+	  local leaderstats = player:WaitForChild("leaderstats")
 	  local coinCount = leaderstats:WaitForChild("CoinCount")
 	  leaderstats.CoinCount.Value -= 3
 	  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
@@ -230,24 +229,25 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
 #+end_src
 ******* movement
 #+begin_src lua
-  local function movement(hrp)
+  local function movement(hrp, humanoid)
+     StartingPosition = hrp.Position    
      while true do
-	 StartingPosition = hrp.Position
 	 local randomX = math.random(-50, 50)
 	 local randomZ = math.random(-50, 50)
 	 local targetPosition = StartingPosition + Vector3.new(randomX, 0, randomZ)
-	 hrp:PivotTo(CFrame.new(targetPosition))
-	 task.wait(3)
+	 humanoid:MoveTo(targetPosition)
+	 humanoid.MoveToFinished:Wait()
+	 task.wait(0.1)
      end
-  end 
+  end
 #+end_src
 ****** executions
 #+begin_src lua
   local patrol, hrp, humanoid,torso = createPatrol()
   if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Patrols") then
       script.Parent:FindFirstChild("HumanoidRootPart").Touched:Connect(onTouched)
+      task.spawn(movement, hrp, humanoid)
   end
-  task.spawn(movement, hrp)
 #+end_src
 ** obstacles
 ** tools

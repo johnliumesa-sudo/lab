@@ -24,8 +24,7 @@ local function onTouched(otherPart)
     end
 end
 
-game:GetService("RunService").Heartbeat:Connect(rotate)
-
 if script.Parent.Parent == coinFolder then
   script.Parent.Touched:Connect(onTouched)
+  game:GetService("RunService").Heartbeat:Connect(rotate)
 end

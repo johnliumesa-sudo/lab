@@ -59,7 +59,7 @@ local function onTouched(otherPart)
     local humanoid = character:FindFirstChildWhichIsA("Humanoid")
     if humanoid then
 	local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
-	local leaderstats = player:FindFirstChild("leaderstats")
+	local leaderstats = player:WaitForChild("leaderstats")
 	local coinCount = leaderstats:WaitForChild("CoinCount")
 	leaderstats.CoinCount.Value -= 3
 	script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
@@ -75,19 +75,20 @@ local function onTouched(otherPart)
     end
 end
 
-local function movement(hrp)
+local function movement(hrp, humanoid)
+   StartingPosition = hrp.Position    
    while true do
-       StartingPosition = hrp.Position
        local randomX = math.random(-50, 50)
        local randomZ = math.random(-50, 50)
        local targetPosition = StartingPosition + Vector3.new(randomX, 0, randomZ)
-       script.Parent:PivotTo(CFrame.new(targetPosition))
-       task.wait(3)
+       humanoid:MoveTo(targetPosition)
+       humanoid.MoveToFinished:Wait()
+       task.wait(0.1)
    end
 end
 
 local patrol, hrp, humanoid,torso = createPatrol()
 if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Patrols") then
     script.Parent:FindFirstChild("HumanoidRootPart").Touched:Connect(onTouched)
-    task.spawn(movement, hrp)
+    task.spawn(movement, hrp, humanoid)
 end
