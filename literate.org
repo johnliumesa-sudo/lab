@@ -92,10 +92,9 @@ Defines individual coin behavior (rotate, touch, reward).
 #+end_src
 ****** executions
 #+begin_src lua
-  game:GetService("RunService").Heartbeat:Connect(rotate)
-
   if script.Parent.Parent == coinFolder then
     script.Parent.Touched:Connect(onTouched)
+    game:GetService("RunService").Heartbeat:Connect(rotate)
   end
 #+end_src
 ** npcs
@@ -211,20 +210,37 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
       local character = otherPart.Parent
       local humanoid = character:FindFirstChildWhichIsA("Humanoid")
       if humanoid then
-          local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
-          local leaderstats = player:FindFirstChild("leaderstats")
-          local coinCount = leaderstats:WaitForChild("CoinCount")
-          leaderstats.CoinCount.Value -= 3
-          script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
-          script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
-          if coinCount.Value < 0 then
-              humanoid.Health = 0
-              coinCount.Value = 0
-          end
-          task.wait(5)
-          script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
-          script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
+	  local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
+	  local leaderstats = player:WaitForChild("leaderstats")
+	  local coinCount = leaderstats:WaitForChild("CoinCount")
+	  leaderstats.CoinCount.Value -= 3
+	  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
+	  script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
+	  if coinCount.Value < 0 then
+	      humanoid.BreakJointsOnDeath = false
+	      humanoid.Health = 0
+	      coinCount.Value = 0
+	  end
+	  task.wait(5)
+	  script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
+	  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
       end
+  end
+#+end_src
+******* movement
+#+begin_src lua
+  local function movement()
+     local humanoid = script.Parent:FindFirstChild("Humanoid")
+     local hrp = script.Parent:FindFirstChild("HumanoidRootPart") 
+     StartingPosition = hrp.Position    
+     while true do
+	 local randomX = math.random(-50, 50)
+	 local randomZ = math.random(-50, 50)
+	 local targetPosition = StartingPosition + Vector3.new(randomX, 0, randomZ)
+	 humanoid:MoveTo(targetPosition)
+	 humanoid.MoveToFinished:Wait()
+	 task.wait(0.1)
+     end
   end
 #+end_src
 ****** executions
@@ -232,6 +248,7 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
   local patrol, hrp, humanoid,torso = createPatrol()
   if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Patrols") then
       script.Parent:FindFirstChild("HumanoidRootPart").Touched:Connect(onTouched)
+      task.spawn(movement)
   end
 #+end_src
 ** obstacles
@@ -269,3 +286,67 @@ players.PlayerAdded:Connect(onPlayerSpawn)
 #+end_src
 * shared 
 * workspace 
+* rojo
+** default.project
+:properties:
+:header-args:json: :tangle ./default.project.json
+:END:
+*** code
+#+begin_src json
+{
+  "name": "lab",
+  "tree": {
+    "$className": "DataModel",
+
+    "ReplicatedStorage": {
+        "$path": "src/Shared"
+    },
+
+    "ServerScriptService": {
+        "$path": "src/Server"
+    },
+
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Client": {
+          "$path": "src/Client"
+        }
+      }
+    },
+    
+    "Workspace": {
+      "$path": "src/Workspace",
+      "Baseplate": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "Color": [0.38823, 0.37254, 0.38823],
+          "Locked": true,
+          "Position": [0, -10, 0],
+          "Size": [512, 20, 512]
+        }
+      }
+    },
+
+    "Lighting": {
+      "$properties": {
+        "Ambient": [
+          0,
+          0,
+          0
+        ],
+        "Brightness": 2,
+        "GlobalShadows": true,
+        "Outlines": false,
+        "Technology": "Voxel"
+      }
+    },
+    
+    "SoundService": {
+      "$properties": {
+        "RespectFilteringEnabled": true
+      }
+    }
+  }
+} 
+#+end_src

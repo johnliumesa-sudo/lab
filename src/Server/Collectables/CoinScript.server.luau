@@ -17,15 +17,14 @@ local function onTouched(otherPart)
     local character = otherPart.Parent
     local humanoid = character:FindFirstChildWhichIsA("Humanoid")
     if humanoid then
-	local player = Players:GetPlayerFromCharacter(character)
-	local leaderstats = player:WaitForChild("leaderstats")
-	script.Parent:Destroy()
-	leaderstats.CoinCount.Value += 10
+      local player = Players:GetPlayerFromCharacter(character)
+      local leaderstats = player:WaitForChild("leaderstats")
+      script.Parent:Destroy()
+      leaderstats.CoinCount.Value += 10
     end
 end
 
-game:GetService("RunService").Heartbeat:Connect(rotate)
-
 if script.Parent.Parent == coinFolder then
   script.Parent.Touched:Connect(onTouched)
+  game:GetService("RunService").Heartbeat:Connect(rotate)
 end
