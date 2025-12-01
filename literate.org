@@ -255,6 +255,120 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
       task.spawn(movement)
   end
 #+end_src
+*** clerk
+**** ClerkManager
+:properties:
+:header-args:lua: :tangle ./src/server/NPCs/ClerkManager.server.luau
+:END:
+***** notes
+Spawns the Clerk NPCs.
+***** code
+****** variables
+#+begin_src lua
+  local clerk = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Clerks"):WaitForChild("Model")
+  local clerkScript = script.Parent:FindFirstChild("ClerkScript")
+  local dialogManager = script.Parent.Parent:FindFirstChild("UI"):FindFirstChild("DialogManager")
+  clerkScript.Parent = clerk
+  dialogManager.Parent = clerk
+  local clerkFolder =  game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Clerks") 
+  local spawnRange = 96
+  local clerkCount = 30
+#+end_src
+****** functions
+******* randomSpawn
+#+begin_src lua
+  local function  randomSpawn(index)
+      local xpos = math.random (-spawnRange, spawnRange)
+      local zpos = math.random (-spawnRange, spawnRange)
+      local ypos = 4
+      local clerkClone = clerk:Clone()
+      clerkClone.Parent = clerkFolder
+      clerkClone.Name = ("clerkClone_" .. tostring(index))
+      clerkClone.PrimaryPart = clerkClone:FindFirstChild("HumanoidRootPart")
+      clerkClone:PivotTo(CFrame.new(xpos,ypos,zpos))
+      return  
+  end
+#+end_src
+****** executions
+#+begin_src lua
+  for i = 1, clerkCount do
+      randomSpawn(i)
+  end
+#+end_src
+**** ClerkScript
+:PROPERTIES:
+:header-args:lua: :tangle ./src/server/NPCs/ClerkScript.server.luau
+:END:
+***** notes
+Creates the logic for the store clerk which handles conversations.
+***** code
+****** variables
+#+begin_src lua
+  local StartingPosition = Vector3.new(0, 5, 0)
+  local Players = game:GetService("Players")  
+#+end_src
+****** functions
+******* setupPatrolBody
+#+begin_src lua
+  local function createclerk()
+      local clerk = Instance.new("Model")
+      clerk.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Clerks")
+
+      local hrp = Instance.new("Part")
+      hrp.Name = "HumanoidRootPart"
+      hrp.Size = Vector3.new(2, 2, 1)
+      hrp.Transparency = 1
+      hrp. CFrame = CFrame.new(StartingPosition)
+      hrp.Anchored = false
+      hrp.Parent = clerk
+      hrp.CanCollide = true
+
+      local humanoid = Instance.new("Humanoid")
+      humanoid.Parent = clerk
+      humanoid.WalkSpeed = 16
+      humanoid.JumpPower = 50
+      humanoid.Health = 100
+
+      clerk.PrimaryPart = hrp
+
+      local torso = Instance.new("Part")
+      torso.Name = "Torso"
+      torso.Size = Vector3.new(2, 2, 1)
+      torso.Color = Color3.new(0.243137, 0.509803, 0.858823) -- Red color for visibility
+      torso.Parent = clerk
+
+      local head = Instance.new("Part")
+      head.Name = "Head"
+      head.Size = Vector3.new(1, 1, 1)
+      head.Color = Color3.new(1, 0.8, 0.6) -- Skin color
+      head.Parent = clerk
+
+      local headMesh = Instance.new("SpecialMesh")
+      headMesh.MeshType = Enum.MeshType.Head
+      headMesh.Parent = head
+
+      local weld_hrp_torso = Instance.new("WeldConstraint")
+      weld_hrp_torso.Part0 = hrp
+      weld_hrp_torso.Part1 = torso
+      weld_hrp_torso.Parent = hrp
+
+      torso.CFrame = hrp.CFrame * CFrame.new(0, 1.5, 0)
+      head.CFrame = torso.CFrame * CFrame.new(0, 2, 0)
+
+      local weld_head_tosro = Instance.new("WeldConstraint")
+      weld_head_tosro.Part0 = head
+      weld_head_tosro.Part1 = torso
+      weld_head_tosro.Parent = torso
+
+      return clerk, hrp, humanoid,torso
+  end
+#+end_src
+****** executions
+#+begin_src lua
+  local clerk, hrp, humanoid,torso = createclerk()
+  if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Clerks") then
+  end
+#+end_src
 ** obstacles
 ** tools
 *** gravity coil
@@ -348,6 +462,38 @@ Defines individual gravity coil behavior. Handle is a mesh part but it has to ha
   end
 #+end_src
 ** ui
+*** dialog
+**** DialogManager
+:properties:
+:header-args:lua: :tangle ./src/server/UI/DialogManager.server.luau
+:END:
+***** notes
+creates dialog
+***** code
+****** variables
+#+begin_src lua
+  if script.Parent.Parent == game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Clerks") then 
+      local npc = script.Parent 
+      local dialog = Instance.new("Dialog")
+      dialog.BehaviorType = Enum.DialogBehaviorType.MultiplePlayers
+      dialog.InitialPrompt = "Welcome to Aaron's Tool and Gadgets! I am Mac. "
+      dialog.Parent = npc.Head
+
+      local buyChoice = Instance.new("DialogChoice")
+      buyChoice.UserDialog = "I want to buy a tool"
+      buyChoice.ResponseDialog = "Here are the items available:"
+      buyChoice.Name = "Buy"
+      buyChoice.Parent = dialog 
+
+      local sellChoice = Instance.new("DialogChoice")
+      sellChoice.UserDialog = "I want to sell some items."
+      sellChoice.ResponseDialog = "Ok, which items do you want to sell? "
+      sellChoice.Name = "Sell"
+      sellChoice.Parent = dialog
+  end
+#+end_src
+****** functions
+****** executions
 *** leaderboard
 **** LeaderboardManager
 :properties:
@@ -443,7 +589,7 @@ players.PlayerAdded:Connect(onPlayerSpawn)
   }
 } 
 #+end_src
-* referencens
+* references
 ** store manager
 *** variables 
 #+begin_src lua
@@ -489,28 +635,28 @@ players.PlayerAdded:Connect(onPlayerSpawn)
 **** onTrading
 #+begin_src  lua
   local function onTrading(player, itemName, choiceName)
-  	local playerStats = player:WaitForChild("leaderstats")
-  	if playerStats then
-  		local coins = playerStats:FindFirstChild("Coin")
-  		local item = itemsFolder:FindFirstChild(itemName)
-  		if coins and item then
-  			local config = item:FindFirstChild("Configuration")
-  			if config and config:FindFirstChild("BuyPrice") then
-  				local buyPrice = config.BuyPrice.Value
-  				local sellPrice = math.round(buyPrice * depreciationRate)
-  				if choiceName == "Buy" then
-  					if coins.Value >= buyPrice then
-  						coins.Value = coins.Value - buyPrice
-  						local itemClone = item:Clone()
-  						itemClone.Parent = player.Backpack
-  						print(player.name .. " purchased " .. itemName " for " .. buyPrice)
-  					end
-  				end
-  			end
-  		else
-  			warn("coins or items not found!")
-  		end
-  	end
+	local playerStats = player:WaitForChild("leaderstats")
+	if playerStats then
+		local coins = playerStats:FindFirstChild("Coin")
+		local item = itemsFolder:FindFirstChild(itemName)
+		if coins and item then
+			local config = item:FindFirstChild("Configuration")
+			if config and config:FindFirstChild("BuyPrice") then
+				local buyPrice = config.BuyPrice.Value
+				local sellPrice = math.round(buyPrice * depreciationRate)
+				if choiceName == "Buy" then
+					if coins.Value >= buyPrice then
+						coins.Value = coins.Value - buyPrice
+						local itemClone = item:Clone()
+						itemClone.Parent = player.Backpack
+						print(player.name .. " purchased " .. itemName " for " .. buyPrice)
+					end
+				end
+			end
+		else
+			warn("coins or items not found!")
+		end
+	end
   end
 #+end_src
 *** execution
@@ -521,23 +667,25 @@ players.PlayerAdded:Connect(onPlayerSpawn)
 ** dialogue manager
 *** variables 
 #+begin_src lua
-  local npc = workspace.Store:WaitForChild("NPC")
-  local dialog = Instance.new("Dialog")
-  dialog.BehaviorType = Enum.DialogBehaviorType.MultiplePlayers
-  dialog.InitialPrompt = "Welcome to Aaron's Tool and Gadgets! I am Mac. "
-  dialog.Parent = npc.Head
+  if script.Parent.Parent == game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Clerks") then 
+      local npc = script.Parent 
+      local dialog = Instance.new("Dialog")
+      dialog.BehaviorType = Enum.DialogBehaviorType.MultiplePlayers
+      dialog.InitialPrompt = "Welcome to Aaron's Tool and Gadgets! I am Mac. "
+      dialog.Parent = npc.Head
 
-  local buyChoice = Instance.new("DialogChoice")
-  buyChoice.UserDialog = "I want to buy a tool"
-  buyChoice.ResponseDialog = "Here are the items available:"
-  buyChoice.Name = "Buy"
-  buyChoice.Parent = dialog 
+      local buyChoice = Instance.new("DialogChoice")
+      buyChoice.UserDialog = "I want to buy a tool"
+      buyChoice.ResponseDialog = "Here are the items available:"
+      buyChoice.Name = "Buy"
+      buyChoice.Parent = dialog 
 
-  local sellChoice = Instance.new("DialogChoice")
-  sellChoice.UserDialog = "I want to sell some items."
-  sellChoice.ResponseDialog = "Ok, which items do you want to sell? "
-  sellChoice.Name = "Sell"
-  sellChoice.Parent = dialog
+      local sellChoice = Instance.new("DialogChoice")
+      sellChoice.UserDialog = "I want to sell some items."
+      sellChoice.ResponseDialog = "Ok, which items do you want to sell? "
+      sellChoice.Name = "Sell"
+      sellChoice.Parent = dialog
+  end
 #+end_src
 ** remote manager
 *** variables 
