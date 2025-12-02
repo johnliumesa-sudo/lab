@@ -370,6 +370,115 @@ Creates the logic for the store clerk which handles conversations.
   end
 #+end_src
 ** obstacles
+** establishments 
+*** tool shop 
+**** ToolShopManager
+:properties:
+:header-args:lua: :tangle ./src/server/Establishments/ToolShopManager.server.luau
+:END:
+***** notes
+virtual space for clerks to interact with players
+***** code
+****** variables
+******* remote events
+#+begin_src lua
+  local replicatedStorage = game:GetService("ReplicatedStorage")
+
+  local dialogChoiceEvent = Instance.new("RemoteEvent")
+  dialogChoiceEvent.Name = "DialogChoiceEvent"
+  dialogChoiceEvent.Parent = replicatedStorage
+
+  local tradingEvent = Instance.new("RemoteEvent")
+  tradingEvent.Name = "TradingEvent"
+  tradingEvent.Parent = replicatedStorage
+
+  local displayItemsEvent = Instance.new("RemoteEvent")
+  displayItemsEvent.Name = "DisplayItemsEvent"
+  displayItemsEvent.Parent = replicatedStorage
+
+  local feedbackMessageEvent = Instance.new("RemoteEvent")
+  feedbackMessageEvent.Name = "FeedbackMessageEvent"
+  feedbackMessageEvent.Parent = replicatedStorage
+
+  local PlayerFinderEvent = Instance.new("RemoteEvent")
+  PlayerFinderEvent.Name = "PlayerFinderEvent"
+  PlayerFinderEvent.Parent = replicatedStorage 
+
+  local WireTransferEvent = Instance.new("RemoteEvent")
+  WireTransferEvent.Name = "WireTransferEvent"
+  WireTransferEvent.Parent = replicatedStorage
+
+  local MoneyReciverEvent = Instance.new("RemoteEvent")
+  MoneyReciverEvent.Name = "MoneyReciverEvent"
+  MoneyReciverEvent.Parent = replicatedStorage
+#+end_src
+******* store manager variables 
+#+begin_src lua
+  -- local npc = workspace.Store:WaitForChild("NPC")
+  -- local dialog = npc:WaitForChild("Head"):WaitForChild("Dialog")
+  local depreciationRate = 0.5
+#+end_src
+****** functions
+******* onDialog
+#+begin_src lua
+  local function onDialog(player)
+      --   print(player.Name.. "selected: " .. choiceName)
+      --   local items = {}
+      --   local itemsData = {}
+
+      --   if choiceName == "Buy" then
+	  --       items = itemsFolder:GetChildren()
+	  --       print(items)
+      --   elseif  choiceName == "Sell"  then
+	  --       items = player.Backpack:GetChildren()
+      --   end
+
+      --   for _, item in ipairs(items) do
+	  --       local config = item:FindFirstChild("Configuration")
+	  --       if config and config:FindFirstChild("BuyPrice") then
+	  -- 	      local buyPrice = config.BuyPrice.Value
+	  -- 	      local sellPrice = math.round(buyPrice * depreciationRate) 
+	  -- 	  table.insert(itemsData, {Name = item.Name, BuyPrice = buyPrice , SellPrice = sellPrice})
+	  --       end
+      --   end
+      --   print(itemsData)
+      --   print( "test from aaron")
+      --   displayItemsEvent:FireClient(player, itemsData, choiceName)
+	displayItemsEvent:FireClient(player, "Server got your message!")
+  end  
+#+end_src
+******* onTrading
+#+begin_src  lua
+  local function onTrading(player, itemName, choiceName)
+      --   local playerStats = player:WaitForChild("leaderstats")
+      --   if playerStats then
+	  --       local coins = playerStats:FindFirstChild("Coin")
+	  --       local item = itemsFolder:FindFirstChild(itemName)
+	  --       if coins and item then
+	  -- 	      local config = item:FindFirstChild("Configuration")
+	  -- 	      if config and config:FindFirstChild("BuyPrice") then
+	  -- 		      local buyPrice = config.BuyPrice.Value
+	  -- 		      local sellPrice = math.round(buyPrice * depreciationRate)
+	  -- 		      if choiceName == "Buy" then
+	  -- 			      if coins.Value >= buyPrice then
+	  -- 				      coins.Value = coins.Value - buyPrice
+	  -- 				      local itemClone = item:Clone()
+	  -- 				      itemClone.Parent = player.Backpack
+	  -- 				      print(player.name .. " purchased " .. itemName " for " .. buyPrice)
+	  -- 			      end
+	  -- 		      end
+	  -- 	      end
+	  --       else
+	  -- 	      warn("coins or items not found!")
+	  --       end
+      --   end
+  end
+#+end_src
+****** execution
+#+begin_src lua
+  dialogChoiceEvent.OnServerEvent:Connect(onDialog)
+--tradingEvent.onServerEvent:Connect(onTrading)
+#+end_src
 ** tools
 *** gravity coil
 **** GravityCoilManager
@@ -523,8 +632,28 @@ end
 #+begin_src lua
 players.PlayerAdded:Connect(onPlayerSpawn)
 #+end_src
-* shared 
-* workspace 
+* client 
+** player 
+**** PlayerScript
+:PROPERTIES:
+:header-args:lua: :tangle ./src/client/PlayerScript.client.luau
+:END:
+***** notes
+The logic where players interact with clerks/tool shops using dialog via remote events
+***** code
+****** variables
+#+begin_src lua
+    local Players = game:GetService("Players")
+    local Player = Players.LocalPlayer 
+#+end_src
+****** functions
+#+begin_src lua
+  
+#+end_src
+****** executions
+#+begin_src lua
+  
+#+end_src
 * rojo
 ** default.project
 :properties:
@@ -975,4 +1104,150 @@ players.PlayerAdded:Connect(onPlayerSpawn)
   	end
   	task.wait(refreshRate)
   end
+#+end_src
+** tool shop manager
+#+begin_src lua
+  local toolShop = game:GetService("ReplicatedStorage"):FindFirstChild("Establishments"):FindFirstChild("ToolShop")
+  local dialogChoiceEvent = Instance.new("RemoteEvent")
+  dialogChoiceEvent.Name = "DialogChoiceEvent"
+  dialogChoiceEvent.Parent = toolShop
+
+  local tradingEvent = Instance.new("RemoteEvent")
+  tradingEvent.Name = "TradingEvent"
+  tradingEvent.Parent = toolShop
+
+  local displayItemsEvent = Instance.new("RemoteEvent")
+  displayItemsEvent.Name = "DisplayItemsEvent"
+  displayItemsEvent.Parent = toolShop
+
+  local feedbackMessageEvent = Instance.new("RemoteEvent")
+  feedbackMessageEvent.Name = "FeedbackMessageEvent"
+  feedbackMessageEvent.Parent = toolShop
+
+  -- local PlayerFinderEvent = Instance.new("RemoteEvent")
+  -- PlayerFinderEvent.Name = "PlayerFinderEvent"
+  -- PlayerFinderEvent.Parent = toolShop 
+
+  -- local WireTransferEvent = Instance.new("RemoteEvent")
+  -- WireTransferEvent.Name = "WireTransferEvent"
+  -- WireTransferEvent.Parent = toolShop
+
+  -- local MoneyReciverEvent = Instance.new("RemoteEvent")
+  -- MoneyReciverEvent.Name = "MoneyReciverEvent"
+  -- MoneyReciverEvent.Parent = toolShop
+
+  -- local npc = workspace.Store:WaitForChild("NPC")
+  -- local dialog = npc:WaitForChild("Head"):WaitForChild("Dialog")
+  -- local serverStorage = game:GetService("ServerStorage")
+  local itemsFolder = workspace:WaitForChild("Tools")
+  -- local toolShop = game:GetService("toolShop")
+  -- local dialogChoiceEvent = toolShop:WaitForChild("DialogChoiceEvent")
+  -- local tradingEvent = toolShop:WaitForChild("TradingEvent")
+  -- local displayItemsEvent = toolShop:WaitForChild("DisplayItemsEvent")
+  -- local feedbackMessageEvent = toolShop:WaitForChild("FeedbackMessageEvent")
+  local depreciationRate = 0.5
+
+  local function onDialog(player)
+      --   print(player.Name.. "selected: " .. choiceName)
+      --   local items = {}
+      --   local itemsData = {}
+
+      --   if choiceName == "Buy" then
+	  --       items = itemsFolder:GetChildren()
+	  --       print(items)
+      --   elseif  choiceName == "Sell"  then
+	  --       items = player.Backpack:GetChildren()
+      --   end
+
+      --   for _, item in ipairs(items) do
+	  --       local config = item:FindFirstChild("Configuration")
+	  --       if config and config:FindFirstChild("BuyPrice") then
+	  -- 	      local buyPrice = config.BuyPrice.Value
+	  -- 	      local sellPrice = math.round(buyPrice * depreciationRate) 
+	  -- 	  table.insert(itemsData, {Name = item.Name, BuyPrice = buyPrice , SellPrice = sellPrice})
+	  --       end
+      --   end
+      --   print(itemsData)
+      --   print( "test from aaron")
+      --   displayItemsEvent:FireClient(player, itemsData, choiceName)
+	displayItemsEvent:FireClient(player, "Server got your message!")
+  end
+
+  local function onTrading(player, itemName, choiceName)
+      --   local playerStats = player:WaitForChild("leaderstats")
+      --   if playerStats then
+	  --       local coins = playerStats:FindFirstChild("Coin")
+	  --       local item = itemsFolder:FindFirstChild(itemName)
+	  --       if coins and item then
+	  -- 	      local config = item:FindFirstChild("Configuration")
+	  -- 	      if config and config:FindFirstChild("BuyPrice") then
+	  -- 		      local buyPrice = config.BuyPrice.Value
+	  -- 		      local sellPrice = math.round(buyPrice * depreciationRate)
+	  -- 		      if choiceName == "Buy" then
+	  -- 			      if coins.Value >= buyPrice then
+	  -- 				      coins.Value = coins.Value - buyPrice
+	  -- 				      local itemClone = item:Clone()
+	  -- 				      itemClone.Parent = player.Backpack
+	  -- 				      print(player.name .. " purchased " .. itemName " for " .. buyPrice)
+	  -- 			      end
+	  -- 		      end
+	  -- 	      end
+	  --       else
+	  -- 	      warn("coins or items not found!")
+	  --       end
+      --   end
+  end
+
+  dialogChoiceEvent.OnServerEvent:Connect(onDialog)
+  -- tradingEvent.onServerEvent:Connect(onTrading)
+
+
+#+end_src
+** dialogue manager clerk
+#+begin_src lua
+ local Players = game:GetService("Players")
+local Player = Players.LocalPlayer 
+local choice = nil
+local function createDialog()
+    if script.Parent.Parent == game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Clerks") then 
+        local npc = script.Parent 
+        local dialog = Instance.new("Dialog")
+        dialog.BehaviorType = Enum.DialogBehaviorType.MultiplePlayers
+        dialog.InitialPrompt = "Welcome to Aaron's Tool and Gadgets! I am Mac. "
+        dialog.Parent = npc.Head
+
+        local buyChoice = Instance.new("DialogChoice")
+        buyChoice.UserDialog = "I want to buy a tool"
+        buyChoice.ResponseDialog = "Here are the items available:"
+        buyChoice.Name = "Buy"
+        buyChoice.Parent = dialog 
+
+
+        local sellChoice = Instance.new("DialogChoice")
+        sellChoice.UserDialog = "I want to sell some items."
+        sellChoice.ResponseDialog = "Ok, which items do you want to sell? "
+        sellChoice.Name = "Sell"
+        sellChoice.Parent = dialog
+
+        return sellChoice,buyChoice,npc
+    end
+end
+
+local function sellChoiceConnected(buyChoice,sellChoice)
+    choice = "sell"
+end
+
+local function buyChoiceConnected(buyChoice,sellChoice)
+    choice = "Buy"
+end
+
+local sellChoice,buyChoice,npc = createDialog()
+sellChoice.DialogChoiceSelected:Connect(sellChoiceConnected)
+buyChoice.DialogChoiceSelected:Connect(buyChoiceConnected)
+print(Player"chose"..choice"from"..npc.Name)
+
+
+
+
+ 
 #+end_src
