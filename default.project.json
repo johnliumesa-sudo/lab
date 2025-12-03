@@ -2,15 +2,12 @@
   "name": "lab",
   "tree": {
     "$className": "DataModel",
-
     "ReplicatedStorage": {
         "$path": "src/Shared"
     },
-
     "ServerScriptService": {
         "$path": "src/Server"
     },
-
     "StarterPlayer": {
       "StarterPlayerScripts": {
         "Client": {
@@ -32,7 +29,6 @@
         }
       }
     },
-
     "Lighting": {
       "$properties": {
         "Ambient": [

@@ -156,7 +156,6 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
   local function createPatrol()
       local patrol = Instance.new("Model")
       patrol.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Patrols")
-
       local hrp = Instance.new("Part")
       hrp.Name = "HumanoidRootPart"
       hrp.Size = Vector3.new(2, 2, 1)
@@ -165,27 +164,22 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
       hrp.Anchored = false
       hrp.Parent = patrol
       hrp.CanCollide = true
-
       local humanoid = Instance.new("Humanoid")
       humanoid.Parent = patrol
       humanoid.WalkSpeed = 16
       humanoid.JumpPower = 50
       humanoid.Health = 100
-
       patrol.PrimaryPart = hrp
-
       local torso = Instance.new("Part")
       torso.Name = "Torso"
       torso.Size = Vector3.new(2, 2, 1)
       torso.Color = Color3.new(1, 0, 0) -- Red color for visibility
       torso.Parent = patrol
-
       local head = Instance.new("Part")
       head.Name = "Head"
       head.Size = Vector3.new(1, 1, 1)
       head.Color = Color3.new(1, 0.8, 0.6) -- Skin color
       head.Parent = patrol
-
       local headMesh = Instance.new("SpecialMesh")
       headMesh.MeshType = Enum.MeshType.Head
       headMesh.Parent = head
@@ -194,15 +188,12 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
       weld_hrp_torso.Part0 = hrp
       weld_hrp_torso.Part1 = torso
       weld_hrp_torso.Parent = hrp
-
       torso.CFrame = hrp.CFrame * CFrame.new(0, 1.5, 0)
       head.CFrame = torso.CFrame * CFrame.new(0, 2, 0)
-
       local weld_head_tosro = Instance.new("WeldConstraint")
       weld_head_tosro.Part0 = head
       weld_head_tosro.Part1 = torso
       weld_head_tosro.Parent = torso
-
       return patrol, hrp, humanoid,torso
   end
 #+end_src
@@ -313,7 +304,6 @@ Creates the logic for the store clerk which handles conversations.
   local function createclerk()
       local clerk = Instance.new("Model")
       clerk.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Clerks")
-
       local hrp = Instance.new("Part")
       hrp.Name = "HumanoidRootPart"
       hrp.Size = Vector3.new(2, 2, 1)
@@ -322,44 +312,35 @@ Creates the logic for the store clerk which handles conversations.
       hrp.Anchored = false
       hrp.Parent = clerk
       hrp.CanCollide = true
-
       local humanoid = Instance.new("Humanoid")
       humanoid.Parent = clerk
       humanoid.WalkSpeed = 16
       humanoid.JumpPower = 50
       humanoid.Health = 100
-
       clerk.PrimaryPart = hrp
-
       local torso = Instance.new("Part")
       torso.Name = "Torso"
       torso.Size = Vector3.new(2, 2, 1)
       torso.Color = Color3.new(0.243137, 0.509803, 0.858823) -- Red color for visibility
       torso.Parent = clerk
-
       local head = Instance.new("Part")
       head.Name = "Head"
       head.Size = Vector3.new(1, 1, 1)
       head.Color = Color3.new(1, 0.8, 0.6) -- Skin color
       head.Parent = clerk
-
       local headMesh = Instance.new("SpecialMesh")
       headMesh.MeshType = Enum.MeshType.Head
       headMesh.Parent = head
-
       local weld_hrp_torso = Instance.new("WeldConstraint")
       weld_hrp_torso.Part0 = hrp
       weld_hrp_torso.Part1 = torso
       weld_hrp_torso.Parent = hrp
-
       torso.CFrame = hrp.CFrame * CFrame.new(0, 1.5, 0)
       head.CFrame = torso.CFrame * CFrame.new(0, 2, 0)
-
       local weld_head_tosro = Instance.new("WeldConstraint")
       weld_head_tosro.Part0 = head
       weld_head_tosro.Part1 = torso
       weld_head_tosro.Parent = torso
-
       return clerk, hrp, humanoid,torso
   end
 #+end_src
@@ -383,31 +364,24 @@ virtual space for clerks to interact with players
 ******* remote events
 #+begin_src lua
   local replicatedStorage = game:GetService("ReplicatedStorage")
-
   local dialogChoiceEvent = Instance.new("RemoteEvent")
   dialogChoiceEvent.Name = "DialogChoiceEvent"
   dialogChoiceEvent.Parent = replicatedStorage
-
   local tradingEvent = Instance.new("RemoteEvent")
   tradingEvent.Name = "TradingEvent"
   tradingEvent.Parent = replicatedStorage
-
   local displayItemsEvent = Instance.new("RemoteEvent")
   displayItemsEvent.Name = "DisplayItemsEvent"
   displayItemsEvent.Parent = replicatedStorage
-
   local feedbackMessageEvent = Instance.new("RemoteEvent")
   feedbackMessageEvent.Name = "FeedbackMessageEvent"
   feedbackMessageEvent.Parent = replicatedStorage
-
   local PlayerFinderEvent = Instance.new("RemoteEvent")
   PlayerFinderEvent.Name = "PlayerFinderEvent"
   PlayerFinderEvent.Parent = replicatedStorage 
-
   local WireTransferEvent = Instance.new("RemoteEvent")
   WireTransferEvent.Name = "WireTransferEvent"
   WireTransferEvent.Parent = replicatedStorage
-
   local MoneyReciverEvent = Instance.new("RemoteEvent")
   MoneyReciverEvent.Name = "MoneyReciverEvent"
   MoneyReciverEvent.Parent = replicatedStorage
@@ -425,14 +399,12 @@ virtual space for clerks to interact with players
       --   print(player.Name.. "selected: " .. choiceName)
       --   local items = {}
       --   local itemsData = {}
-
       --   if choiceName == "Buy" then
 	  --       items = itemsFolder:GetChildren()
 	  --       print(items)
       --   elseif  choiceName == "Sell"  then
 	  --       items = player.Backpack:GetChildren()
       --   end
-
       --   for _, item in ipairs(items) do
 	  --       local config = item:FindFirstChild("Configuration")
 	  --       if config and config:FindFirstChild("BuyPrice") then
@@ -587,13 +559,11 @@ creates dialog
       dialog.BehaviorType = Enum.DialogBehaviorType.MultiplePlayers
       dialog.InitialPrompt = "Welcome to Aaron's Tool and Gadgets! I am Mac. "
       dialog.Parent = npc.Head
-
       local buyChoice = Instance.new("DialogChoice")
       buyChoice.UserDialog = "I want to buy a tool"
       buyChoice.ResponseDialog = "Here are the items available:"
       buyChoice.Name = "Buy"
       buyChoice.Parent = dialog 
-
       local sellChoice = Instance.new("DialogChoice")
       sellChoice.UserDialog = "I want to sell some items."
       sellChoice.ResponseDialog = "Ok, which items do you want to sell? "
@@ -639,9 +609,7 @@ players.PlayerAdded:Connect(onPlayerSpawn)
 :header-args:lua: :tangle ./src/client/PlayerScript.client.luau
 :END:
 **** notes
-
 Handles client-side logic, including listening for dialog selections, notifying the server, and processing the server's response.
-
 **** code
 ***** variables
 #+begin_src lua
@@ -653,7 +621,6 @@ Handles client-side logic, including listening for dialog selections, notifying 
   local dialogChoiceEvent = ReplicatedStorage:WaitForChild("DialogChoiceEvent")
   local displayItemsEvent = ReplicatedStorage:WaitForChild("DisplayItemsEvent")
 #+end_src
-
 ***** functions
 ****** onServerResponse
 #+begin_src lua
@@ -679,13 +646,13 @@ Handles client-side logic, including listening for dialog selections, notifying 
     -- Look for existing NPCs with Dialogs
 	for _, npc in pairs(Workspace:WaitForChild("NPCs"):WaitForChild("Clerks"):GetChildren()) do
 	    if npc.Name ~= "Script" then
-	    local head = npc:WaitForChild("Head")
-	    local dialog = head:FindFirstChild("Dialog")
-	    if dialog then
-		dialog.DialogChoiceSelected:Connect(function(player, choice)
-		onDialogChoiceSelected(dialog, choice)
-		end)
-	    end
+		local head = npc:WaitForChild("Head")
+		local dialog = head:FindFirstChild("Dialog")
+		if dialog then
+		    dialog.DialogChoiceSelected:Connect(function(player, choice)
+		    onDialogChoiceSelected(dialog, choice)
+		    end)
+		end
 	    end
 	end
     -- Handle new NPCs added later (if any)
@@ -716,15 +683,12 @@ Handles client-side logic, including listening for dialog selections, notifying 
   "name": "lab",
   "tree": {
     "$className": "DataModel",
-
     "ReplicatedStorage": {
         "$path": "src/Shared"
     },
-
     "ServerScriptService": {
         "$path": "src/Server"
     },
-
     "StarterPlayer": {
       "StarterPlayerScripts": {
         "Client": {
@@ -746,7 +710,6 @@ Handles client-side logic, including listening for dialog selections, notifying 
         }
       }
     },
-
     "Lighting": {
       "$properties": {
         "Ambient": [
@@ -853,13 +816,11 @@ Handles client-side logic, including listening for dialog selections, notifying 
       dialog.BehaviorType = Enum.DialogBehaviorType.MultiplePlayers
       dialog.InitialPrompt = "Welcome to Aaron's Tool and Gadgets! I am Mac. "
       dialog.Parent = npc.Head
-
       local buyChoice = Instance.new("DialogChoice")
       buyChoice.UserDialog = "I want to buy a tool"
       buyChoice.ResponseDialog = "Here are the items available:"
       buyChoice.Name = "Buy"
       buyChoice.Parent = dialog 
-
       local sellChoice = Instance.new("DialogChoice")
       sellChoice.UserDialog = "I want to sell some items."
       sellChoice.ResponseDialog = "Ok, which items do you want to sell? "
@@ -871,31 +832,24 @@ Handles client-side logic, including listening for dialog selections, notifying 
 *** variables 
 #+begin_src lua
   local replicatedStorage = game:GetService("ReplicatedStorage")
-
   local dialogChoiceEvent = Instance.new("RemoteEvent")
   dialogChoiceEvent.Name = "DialogChoiceEvent"
   dialogChoiceEvent.Parent = replicatedStorage
-
   local tradingEvent = Instance.new("RemoteEvent")
   tradingEvent.Name = "TradingEvent"
   tradingEvent.Parent = replicatedStorage
-
   local displayItemsEvent = Instance.new("RemoteEvent")
   displayItemsEvent.Name = "DisplayItemsEvent"
   displayItemsEvent.Parent = replicatedStorage
-
   local feedbackMessageEvent = Instance.new("RemoteEvent")
   feedbackMessageEvent.Name = "FeedbackMessageEvent"
   feedbackMessageEvent.Parent = replicatedStorage
-
   local PlayerFinderEvent = Instance.new("RemoteEvent")
   PlayerFinderEvent.Name = "PlayerFinderEvent"
   PlayerFinderEvent.Parent = replicatedStorage 
-
   local WireTransferEvent = Instance.new("RemoteEvent")
   WireTransferEvent.Name = "WireTransferEvent"
   WireTransferEvent.Parent = replicatedStorage
-
   local MoneyReciverEvent = Instance.new("RemoteEvent")
   MoneyReciverEvent.Name = "MoneyReciverEvent"
   MoneyReciverEvent.Parent = replicatedStorage
@@ -906,11 +860,9 @@ Handles client-side logic, including listening for dialog selections, notifying 
   local blockSize = Vector3.new(4,4,4)
   local minGeometries = 200000
   local areaSize = 400
-
   local geometriesFolder = Instance.new("Folder")
   geometriesFolder.Name = "Geomitries"
   geometriesFolder.Parent = workspace
-
   local blockTemplate = Instance.new("Part")
   blockTemplate.Size = blockSize
   blockTemplate.Anchored = true
@@ -945,7 +897,6 @@ Handles client-side logic, including listening for dialog selections, notifying 
   			initialPosition = initialPosition + Vector3.new(blockSize.X * math.random(-1,1),0,blockSize.z * math.random(-1,1))
   		end
   	end
-
   	for i = 1, #blocks -1 do
   		local currentBlock = blocks[i]
   		local nextBlock = blocks[1 + 1]
@@ -970,11 +921,9 @@ Handles client-side logic, including listening for dialog selections, notifying 
   local players = game:GetService("Players")
   local pathFindingService = game:GetService("PathfindingService")
   local debris = game:GetService("Debris")
-
   local animator = rigHumanoid:WaitForChild("Animator")
   local walkAnimation = animator:LoadAnimation(rig.Animate.walk.WalkAnim)
   local idleAnimation = animator:LoadAnimation(rig.Animate.idle.Animation2)
-
   rigHumanoid.WalkSpeed = math.random(14, 18)
   local targetDistance = math.random(50, 60)
   local refreshRate = 0.001
@@ -1007,21 +956,18 @@ Handles client-side logic, including listening for dialog selections, notifying 
   		rigHumanoid.Jump = true
   		task.wait(0.1)
   	end	
-
   	local alternativeAngles = {
   		CFrame.Angles(0, math.rad(90), 0),
   		CFrame.Angles(0, math.rad(-90), 0),
   		CFrame.Angles(0, math.rad(135), 0),
   		CFrame.Angles(0, math.rad(180), 0)
   	}
-
   	for _, angle in ipairs(alternativeAngles) do
   		local baseDirection = (targetPosition - rigRootPart.Position).Unit
   		local rotatedDirection = (angle * CFrame.new(baseDirection)).LookVector
   		local newTargetPosition = rigRootPart.Position + rotatedDirection * 15
   		rigHumanoid:MoveTo(newTargetPosition)
   		rigHumanoid.MoveToFinished:Wait()
-
   		if (rigRootPart.Position - startPosition).Magnitude > 0.5 then
   			break
   		end
@@ -1034,7 +980,6 @@ Handles client-side logic, including listening for dialog selections, notifying 
   	local startPosition = rigRootPart.Position
   	local moveTimeout = 1
   	local reached = false
-
   	task.spawn(function()
   		local elapsed = 0
   		while elapsed < moveTimeout do
@@ -1045,13 +990,11 @@ Handles client-side logic, including listening for dialog selections, notifying 
   				break
   			end
   		end
-
   		if not reached then
   			local direction = (targetPosition - rigRootPart.Position).Unit
   			local rayParams = RaycastParams.new()
   			rayParams.FilterDescendantsInstances = {rigRootPart}
   			rayParams.FilterType = Enum.RaycastFilterType.Exclude
-
   			local rayResult = workspace:Raycast(rigRootPart.Position, direction * 3, rayParams)
   			if rayResult and rayResult.Instance then
   				handleObstacle(startPosition, targetPosition)
@@ -1073,22 +1016,17 @@ Handles client-side logic, including listening for dialog selections, notifying 
   		WaypointSpacing = 1,
   		Costs = { plastic = 3 }
   	})
-
   	local success, errorMessage = pcall(function()
   		path:ComputeAsync(rigRootPart.Position, playerRootPart.Position)
   	end)
-
   	if success and path.Status == Enum.PathStatus.Success then
   		for _, waypoint in pairs(path:GetWaypoints()) do
   			visualizePath(waypoint)
-
   			local distance = CheckDistance(playerRootPart)
   			local targetPosition = (distance <= stopDistance)
   				and playerRootPart.Position + (rigRootPart.Position - playerRootPart.Position).Unit * stopDistance
   				or waypoint.Position
-
   			rigHumanoid:MoveTo(targetPosition)
-
   			if distance > stopDistance and not walkAnimation.IsPlaying then
   				idleAnimation:Stop()
   				walkAnimation:Play()
@@ -1097,25 +1035,20 @@ Handles client-side logic, including listening for dialog selections, notifying 
   					runningSound:Play() 
   				end
   			end
-
   			if distance <= stopDistance then
   				if walkAnimation.IsPlaying then
   					walkAnimation:Stop(0)
   					local runningSound = rigRootPart:FindFirstChild("Running")
   					if runningSound then runningSound:Stop() end
   				end
-
   				if waypoint.Action == Enum.PathWaypointAction.Jump then
   					rigHumanoid.JumpHeight = 7.2
   					rigHumanoid.Jump = true
   				end
-
   				checkForObstaclesAndJump(targetPosition)
-
   				if not idleAnimation.IsPlaying then
   					idleAnimation:Play()
   				end
-
   				rigRootPart.CFrame = CFrame.lookAt(rigRootPart.Position, playerRootPart.Position)
   			end
   		end
@@ -1162,31 +1095,24 @@ Handles client-side logic, including listening for dialog selections, notifying 
   local dialogChoiceEvent = Instance.new("RemoteEvent")
   dialogChoiceEvent.Name = "DialogChoiceEvent"
   dialogChoiceEvent.Parent = toolShop
-
   local tradingEvent = Instance.new("RemoteEvent")
   tradingEvent.Name = "TradingEvent"
   tradingEvent.Parent = toolShop
-
   local displayItemsEvent = Instance.new("RemoteEvent")
   displayItemsEvent.Name = "DisplayItemsEvent"
   displayItemsEvent.Parent = toolShop
-
   local feedbackMessageEvent = Instance.new("RemoteEvent")
   feedbackMessageEvent.Name = "FeedbackMessageEvent"
   feedbackMessageEvent.Parent = toolShop
-
   -- local PlayerFinderEvent = Instance.new("RemoteEvent")
   -- PlayerFinderEvent.Name = "PlayerFinderEvent"
   -- PlayerFinderEvent.Parent = toolShop 
-
   -- local WireTransferEvent = Instance.new("RemoteEvent")
   -- WireTransferEvent.Name = "WireTransferEvent"
   -- WireTransferEvent.Parent = toolShop
-
   -- local MoneyReciverEvent = Instance.new("RemoteEvent")
   -- MoneyReciverEvent.Name = "MoneyReciverEvent"
   -- MoneyReciverEvent.Parent = toolShop
-
   -- local npc = workspace.Store:WaitForChild("NPC")
   -- local dialog = npc:WaitForChild("Head"):WaitForChild("Dialog")
   -- local serverStorage = game:GetService("ServerStorage")
@@ -1197,19 +1123,16 @@ Handles client-side logic, including listening for dialog selections, notifying 
   -- local displayItemsEvent = toolShop:WaitForChild("DisplayItemsEvent")
   -- local feedbackMessageEvent = toolShop:WaitForChild("FeedbackMessageEvent")
   local depreciationRate = 0.5
-
   local function onDialog(player)
       --   print(player.Name.. "selected: " .. choiceName)
       --   local items = {}
       --   local itemsData = {}
-
       --   if choiceName == "Buy" then
 	  --       items = itemsFolder:GetChildren()
 	  --       print(items)
       --   elseif  choiceName == "Sell"  then
 	  --       items = player.Backpack:GetChildren()
       --   end
-
       --   for _, item in ipairs(items) do
 	  --       local config = item:FindFirstChild("Configuration")
 	  --       if config and config:FindFirstChild("BuyPrice") then
@@ -1223,7 +1146,6 @@ Handles client-side logic, including listening for dialog selections, notifying 
       --   displayItemsEvent:FireClient(player, itemsData, choiceName)
 	displayItemsEvent:FireClient(player, "Server got your message!")
   end
-
   local function onTrading(player, itemName, choiceName)
       --   local playerStats = player:WaitForChild("leaderstats")
       --   if playerStats then
@@ -1248,11 +1170,8 @@ Handles client-side logic, including listening for dialog selections, notifying 
 	  --       end
       --   end
   end
-
   dialogChoiceEvent.OnServerEvent:Connect(onDialog)
   -- tradingEvent.onServerEvent:Connect(onTrading)
-
-
 #+end_src
 ** dialogue manager clerk
 #+begin_src lua
@@ -1266,39 +1185,28 @@ local function createDialog()
         dialog.BehaviorType = Enum.DialogBehaviorType.MultiplePlayers
         dialog.InitialPrompt = "Welcome to Aaron's Tool and Gadgets! I am Mac. "
         dialog.Parent = npc.Head
-
         local buyChoice = Instance.new("DialogChoice")
         buyChoice.UserDialog = "I want to buy a tool"
         buyChoice.ResponseDialog = "Here are the items available:"
         buyChoice.Name = "Buy"
         buyChoice.Parent = dialog 
-
-
         local sellChoice = Instance.new("DialogChoice")
         sellChoice.UserDialog = "I want to sell some items."
         sellChoice.ResponseDialog = "Ok, which items do you want to sell? "
         sellChoice.Name = "Sell"
         sellChoice.Parent = dialog
-
         return sellChoice,buyChoice,npc
     end
 end
-
 local function sellChoiceConnected(buyChoice,sellChoice)
     choice = "sell"
 end
-
 local function buyChoiceConnected(buyChoice,sellChoice)
     choice = "Buy"
 end
-
 local sellChoice,buyChoice,npc = createDialog()
 sellChoice.DialogChoiceSelected:Connect(sellChoiceConnected)
 buyChoice.DialogChoiceSelected:Connect(buyChoiceConnected)
 print(Player"chose"..choice"from"..npc.Name)
-
-
-
-
  
 #+end_src
