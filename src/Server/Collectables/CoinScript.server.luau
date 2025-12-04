@@ -17,12 +17,12 @@ local function onTouched(otherPart)
     local character = otherPart.Parent
     local humanoid = character:FindFirstChildWhichIsA("Humanoid")
     if humanoid then
-	local player = Players:GetPlayerFromCharacter(character)
-	if player then
-	  local leaderstats = player:WaitForChild("leaderstats")
-	  script.Parent:Destroy()
-	  leaderstats.CoinCount.Value += 10
-	end
+      local player = Players:GetPlayerFromCharacter(character)
+      if player then
+	local leaderstats = player:WaitForChild("leaderstats")
+	script.Parent:Destroy()
+	leaderstats.CoinCount.Value += 10
+      end
     end
 end
 
