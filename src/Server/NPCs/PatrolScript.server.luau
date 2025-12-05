@@ -47,23 +47,25 @@ end
 
 local function onTouched(otherPart)
     local character = otherPart.Parent
-    local humanoid = character:FindFirstChildWhichIsA("Humanoid")
-    if humanoid then
-	local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
-    if player then
-	local leaderstats = player:WaitForChild("leaderstats")
-	local coinCount = leaderstats:WaitForChild("CoinCount")
-	leaderstats.CoinCount.Value -= 3
-	script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
-	script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
-	if coinCount.Value < 0 then
-	    humanoid.BreakJointsOnDeath = false
-	    humanoid.Health = 0
-	    coinCount.Value = 0
-	end
-	task.wait(5)
-	script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
-	script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
+    if character and character:IsA("Model") then
+	local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+	if humanoid then
+	    local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
+	    if player then
+		local leaderstats = player:WaitForChild("leaderstats")
+		local coinCount = leaderstats:WaitForChild("CoinCount")
+		leaderstats.CoinCount.Value -= 3
+		script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
+		script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
+		if coinCount.Value < 0 then
+		    humanoid.BreakJointsOnDeath = false
+		    humanoid.Health = 0
+		    coinCount.Value = 0
+		end
+		task.wait(5)
+		script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
+		script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
+	    end
 	end
     end
 end

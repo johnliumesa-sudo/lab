@@ -2,1048 +2,6 @@
 #+AUTHOR: Aaron Liu
 #+DESCRIPTION: A master literate programming file for the Coin Collection game.
 
-* code
-** server
-*** collectables
-**** coins
-***** CoinManager
-:properties:
-:header-args:lua: :tangle ./src/server/Collectables/CoinManager.server.luau
-:END:
-****** notes
-Spawns the coins into the world.
-****** code
-******* variables
-#+begin_src lua
-  local coin = game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Coins"):WaitForChild("Part")
-  local coinScript = script.Parent:FindFirstChild("CoinScript")
-  coinScript.Parent = coin
-  local coinsFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Coins")
-  local spawnRange = 48
-  local coinCount = 21
-#+end_src
-******* functions
-******** randomSpawn
-#+begin_src lua
-  local function randomSpawn()
-    local xpos = math.random (-spawnRange, spawnRange)
-    local zpos = math.random (-spawnRange, spawnRange)
-    local ypos = math.random (5, 30)
-    local coinClone = coin:Clone()
-    coinClone.Parent = coinsFolder
-    coinClone.Position = Vector3.new(xpos,ypos,zpos)
-    local coinScriptClone = coinClone:WaitForChild("CoinScript")
-    coinScriptClone.Parent = coinClone
-    return
-  end
-#+end_src
-******** movements
-#+begin_src lua
-  local function movements(collectablesClone)
-    local spinRate = math.rad
-    while true do
-  	-- Movement logic placeholder
-    end
-  end
-#+end_src
-******* executions
-#+begin_src lua
-  for i = 1, coinCount do
-      randomSpawn()
-  end
-#+end_src
-***** CoinScript
-:properties:
-:header-args:lua: :tangle ./src/server/Collectables/CoinScript.server.luau
-:END:
-****** notes
-Defines individual coin behavior (rotate, touch, reward).
-****** code
-******* variables
-#+begin_src lua
-  local coinBase = Instance.new("Part")
-  coinBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Coins")
-  coinBase.Anchored = true
-  local coin = Instance.new ("SpecialMesh")
-  coin.Parent = coinBase
-  coin.MeshId = "rbxassetid://71877336332186"
-  coin.TextureId = "rbxassetid://9460443119"
-  local rotationRate = 3
-  local Players = game:GetService("Players")
-  local coinFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Coins")
-#+end_src
-******* functions
-******** rotate 
-#+begin_src lua
-  local function rotate()
-      script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
-  end
-#+end_src
-******** onTouched
-#+begin_src lua
-  local function onTouched(otherPart)
-      local character = otherPart.Parent
-      local humanoid = character:FindFirstChildWhichIsA("Humanoid")
-      if humanoid then
-	local player = Players:GetPlayerFromCharacter(character)
-	if player then
-	  local leaderstats = player:WaitForChild("leaderstats")
-	  script.Parent:Destroy()
-	  leaderstats.CoinCount.Value += 10
-	end
-      end
-  end
-#+end_src
-******* executions
-#+begin_src lua
-  if script.Parent.Parent == coinFolder then
-    script.Parent.Touched:Connect(onTouched)
-    game:GetService("RunService").Heartbeat:Connect(rotate)
-  end
-#+end_src
-*** npcs
-**** patrols
-***** PatrolManager
-:properties:
-:header-args:lua: :tangle ./src/server/NPCs/PatrolManager.server.luau
-:END:
-****** notes
-Spawns the Patrol NPCs.
-****** code
-******* variables
-#+begin_src lua
-  local patrol = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Patrols"):WaitForChild("Model")
-  local patrolScript = script.Parent:FindFirstChild("PatrolScript")
-  patrolScript.Parent = patrol
-  local patrolFolder =  game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Patrols") 
-  local spawnRange = 96
-  local patrolCount = 12
-#+end_src
-******* functions
-******** randomSpawn
-#+begin_src lua
-  local function  randomSpawn(index)
-      local xpos = math.random (-spawnRange, spawnRange)
-      local zpos = math.random (-spawnRange, spawnRange)
-      local ypos = 4
-      local patrolClone = patrol:Clone()
-      patrolClone.Parent = patrolFolder
-      patrolClone.Name = ("patrolClone_" .. tostring(index))
-      patrolClone.PrimaryPart = patrolClone:FindFirstChild("HumanoidRootPart")
-      patrolClone:PivotTo(CFrame.new(xpos,ypos,zpos))
-      return  
-  end
-#+end_src
-******* executions
-#+begin_src lua
-  for i = 1, patrolCount do
-      randomSpawn(i)
-  end
-#+end_src
-***** PatrolScript
-:PROPERTIES:
-:header-args:lua: :tangle ./src/server/NPCs/PatrolScript.server.luau
-:END:
-****** notes
-FIXED LOGIC: This script builds the NPC body on the existing model (script.Parent) instead of creating a new ghost model in storage. This ensures hrp.Touched actually works in the Workspace.
-****** code
-******* variables
-#+begin_src lua
-  local StartingPosition = Vector3.new(0, 5, 0)
-  local Players = game:GetService("Players")
-#+end_src
-******* functions
-******** setupPatrolBody
-#+begin_src lua
-  local function createPatrol()
-      local patrol = Instance.new("Model")
-      patrol.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Patrols")
-      local hrp = Instance.new("Part")
-      hrp.Name = "HumanoidRootPart"
-      hrp.Size = Vector3.new(2, 2, 1)
-      hrp.Transparency = 1
-      hrp. CFrame = CFrame.new(StartingPosition)
-      hrp.Anchored = false
-      hrp.Parent = patrol
-      hrp.CanCollide = true
-      local humanoid = Instance.new("Humanoid")
-      humanoid.Parent = patrol
-      humanoid.WalkSpeed = 16
-      humanoid.JumpPower = 50
-      humanoid.Health = 100
-      patrol.PrimaryPart = hrp
-      local torso = Instance.new("Part")
-      torso.Name = "Torso"
-      torso.Size = Vector3.new(2, 2, 1)
-      torso.Color = Color3.new(1, 0, 0) -- Red color for visibility
-      torso.Parent = patrol
-      local head = Instance.new("Part")
-      head.Name = "Head"
-      head.Size = Vector3.new(1, 1, 1)
-      head.Color = Color3.new(1, 0.8, 0.6) -- Skin color
-      head.Parent = patrol
-      local headMesh = Instance.new("SpecialMesh")
-      headMesh.MeshType = Enum.MeshType.Head
-      headMesh.Parent = head
-
-      local weld_hrp_torso = Instance.new("WeldConstraint")
-      weld_hrp_torso.Part0 = hrp
-      weld_hrp_torso.Part1 = torso
-      weld_hrp_torso.Parent = hrp
-      torso.CFrame = hrp.CFrame * CFrame.new(0, 1.5, 0)
-      head.CFrame = torso.CFrame * CFrame.new(0, 2, 0)
-      local weld_head_tosro = Instance.new("WeldConstraint")
-      weld_head_tosro.Part0 = head
-      weld_head_tosro.Part1 = torso
-      weld_head_tosro.Parent = torso
-      return patrol, hrp, humanoid,torso
-  end
-#+end_src
-******** onTouched
-#+begin_src lua
-  local function onTouched(otherPart)
-      local character = otherPart.Parent
-      local humanoid = character:FindFirstChildWhichIsA("Humanoid")
-      if humanoid then
-	  local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
-      if player then
-	  local leaderstats = player:WaitForChild("leaderstats")
-	  local coinCount = leaderstats:WaitForChild("CoinCount")
-	  leaderstats.CoinCount.Value -= 3
-	  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
-	  script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
-	  if coinCount.Value < 0 then
-	      humanoid.BreakJointsOnDeath = false
-	      humanoid.Health = 0
-	      coinCount.Value = 0
-	  end
-	  task.wait(5)
-	  script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
-	  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
-	  end
-      end
-  end
-#+end_src
-******** movement
-#+begin_src lua
-  local function movement()
-     local humanoid = script.Parent:FindFirstChild("Humanoid")
-     local hrp = script.Parent:FindFirstChild("HumanoidRootPart") 
-     StartingPosition = hrp.Position    
-     while true do
-	 local randomX = math.random(-50, 50)
-	 local randomZ = math.random(-50, 50)
-	 local targetPosition = StartingPosition + Vector3.new(randomX, 0, randomZ)
-	 humanoid:MoveTo(targetPosition)
-	 humanoid.MoveToFinished:Wait()
-	 task.wait(0.1)
-     end
-  end
-#+end_src
-******* executions
-#+begin_src lua
-  local patrol, hrp, humanoid,torso = createPatrol()
-  if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Patrols") then
-      script.Parent:FindFirstChild("HumanoidRootPart").Touched:Connect(onTouched)
-      task.spawn(movement)
-  end
-#+end_src
-**** clerks
-***** ClerkManager
-:properties:
-:header-args:lua: :tangle ./src/server/NPCs/ClerkManager.server.luau
-:END:
-****** notes
-Spawns the Clerk NPCs.
-****** code
-******* variables
-#+begin_src lua
-  local clerk = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Clerks"):WaitForChild("Model")
-  local clerkScript = script.Parent:FindFirstChild("ClerkScript")
-  local dialogManager = script.Parent.Parent:FindFirstChild("UI"):FindFirstChild("DialogManager")
-  clerkScript.Parent = clerk
-  dialogManager.Parent = clerk
-  local clerkFolder =  game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Clerks") 
-  local spawnRange = 96
-  local clerkCount = 30
-#+end_src
-******* functions
-******** randomSpawn
-#+begin_src lua
-  local function  randomSpawn(index)
-      local xpos = math.random (-spawnRange, spawnRange)
-      local zpos = math.random (-spawnRange, spawnRange)
-      local ypos = 4
-      local clerkClone = clerk:Clone()
-      clerkClone.Parent = clerkFolder
-      clerkClone.Name = ("clerkClone_" .. tostring(index))
-      clerkClone.PrimaryPart = clerkClone:FindFirstChild("HumanoidRootPart")
-      clerkClone:PivotTo(CFrame.new(xpos,ypos,zpos))
-      return  
-  end
-#+end_src
-******* executions
-#+begin_src lua
-  for i = 1, clerkCount do
-      randomSpawn(i)
-  end
-#+end_src
-***** ClerkScript
-:PROPERTIES:
-:header-args:lua: :tangle ./src/server/NPCs/ClerkScript.server.luau
-:END:
-****** notes
-Creates the logic for the store clerk which handles conversations.
-****** code
-******* variables
-#+begin_src lua
-  local StartingPosition = Vector3.new(0, 5, 0)
-  local Players = game:GetService("Players")  
-#+end_src
-******* functions
-******** setupPatrolBody
-#+begin_src lua
-  local function createclerk()
-      local clerk = Instance.new("Model")
-      clerk.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Clerks")
-      local hrp = Instance.new("Part")
-      hrp.Name = "HumanoidRootPart"
-      hrp.Size = Vector3.new(2, 2, 1)
-      hrp.Transparency = 1
-      hrp. CFrame = CFrame.new(StartingPosition)
-      hrp.Anchored = false
-      hrp.Parent = clerk
-      hrp.CanCollide = true
-      local humanoid = Instance.new("Humanoid")
-      humanoid.Parent = clerk
-      humanoid.WalkSpeed = 16
-      humanoid.JumpPower = 50
-      humanoid.Health = 100
-      clerk.PrimaryPart = hrp
-      local torso = Instance.new("Part")
-      torso.Name = "Torso"
-      torso.Size = Vector3.new(2, 2, 1)
-      torso.Color = Color3.new(0.243137, 0.509803, 0.858823) -- Red color for visibility
-      torso.Parent = clerk
-      local head = Instance.new("Part")
-      head.Name = "Head"
-      head.Size = Vector3.new(1, 1, 1)
-      head.Color = Color3.new(1, 0.8, 0.6) -- Skin color
-      head.Parent = clerk
-      local headMesh = Instance.new("SpecialMesh")
-      headMesh.MeshType = Enum.MeshType.Head
-      headMesh.Parent = head
-      local weld_hrp_torso = Instance.new("WeldConstraint")
-      weld_hrp_torso.Part0 = hrp
-      weld_hrp_torso.Part1 = torso
-      weld_hrp_torso.Parent = hrp
-      torso.CFrame = hrp.CFrame * CFrame.new(0, 1.5, 0)
-      head.CFrame = torso.CFrame * CFrame.new(0, 2, 0)
-      local weld_head_tosro = Instance.new("WeldConstraint")
-      weld_head_tosro.Part0 = head
-      weld_head_tosro.Part1 = torso
-      weld_head_tosro.Parent = torso
-      return clerk, hrp, humanoid,torso
-  end
-#+end_src
-******* executions
-#+begin_src lua
-  local clerk, hrp, humanoid,torso = createclerk()
-  if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Clerks") then
-  end
-#+end_src
-**** attackers
-***** AttackerManager
-:properties:
-:header-args:lua: :tangle ./src/server/NPCs/AttackerManager.server.luau
-:END:
-****** notes
-Spawns the attacker NPCs.
-****** code
-******* variables
-#+begin_src lua
-  local attacker = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Attackers"):WaitForChild("Model")
-  local attackerScript = script.Parent:FindFirstChild("AttackerScript")
-  attackerScript.Parent = attacker
-  local attackerFolder =  game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Attackers") 
-  local spawnRange = 96
-  local attackerCount = 3
-#+end_src
-******* functions
-******** randomSpawn
-#+begin_src lua
-  local function  randomSpawn(index)
-      local xpos = math.random (-spawnRange, spawnRange)
-      local zpos = math.random (-spawnRange, spawnRange)
-      local ypos = 4
-      local attackerClone = attacker:Clone()
-      attackerClone.Parent = attackerFolder
-      attackerClone.Name = ("attackerClone_" .. tostring(index))
-      attackerClone.PrimaryPart = attackerClone:FindFirstChild("HumanoidRootPart")
-      attackerClone:PivotTo(CFrame.new(xpos,ypos,zpos))
-      return  
-  end
-#+end_src
-******* executions
-#+begin_src lua
-  for i = 1, attackerCount do
-      randomSpawn(i)
-  end
-#+end_src
-***** AttackerScript
-:PROPERTIES:
-:header-args:lua: :tangle ./src/server/NPCs/AttackerScript.server.luau
-:END:
-****** notes
-Defines attacker behavior, creation, and logic.
-****** code
-******* variables
-#+begin_src lua
-  local StartingPosition = Vector3.new(0, 5, 0)
-  local Players = game:GetService("Players")
-  local targetDistance = math.random(50, 60)
-  local refreshRate = 0.001
-  local pathFindingService = game:GetService("PathfindingService")
-  local stopDistance = 3
-  local debris = game:GetService("Debris")
-#+end_src
-******* functions
-******** handleObstacle
-#+begin_src lua
-  local function handleObstacle(startPosition, targetPosition, rigRootPart)
-     local rigHumanoid = rigRootPart.Parent:FindFirstChild("Humanoid")
-      for i = 1, 50 do
-	rigHumanoid.Jump = true
-	task.wait(0.1)
-      end	
-      local alternativeAngles = {
-      CFrame.Angles(0, math.rad(90), 0),
-      CFrame.Angles(0, math.rad(-90), 0),
-      CFrame.Angles(0, math.rad(135), 0),
-      CFrame.Angles(0, math.rad(180), 0)
-      }
-      for _, angle in ipairs(alternativeAngles) do
-	local baseDirection = (targetPosition - rigRootPart.Position).Unit
-	local rotatedDirection = (angle * CFrame.new(baseDirection)).LookVector
-	local newTargetPosition = rigRootPart.Position + rotatedDirection * 15
-	rigHumanoid:MoveTo(newTargetPosition)
-	rigHumanoid.MoveToFinished:Wait()
-	if (rigRootPart.Position - startPosition).Magnitude > 0.5 then
-	    break
-	end
-      end
-  end
-#+end_src
-******** checkForObstaclesAndJump
-#+begin_src lua
-  local function checkForObstaclesAndJump(targetPosition, rigRootPart)
-      local startPosition = rigRootPart.Position
-      local moveTimeout = 1
-      local reached = false
-      task.spawn(function()
-	  local elapsed = 0
-	  while elapsed < moveTimeout do
-	      task.wait(0.1)
-	      elapsed += 0.1
-	      if (rigRootPart.Position - startPosition).Magnitude > 0.5 then
-		  reached = true
-		  break
-	      end
-	  end
-	  if not reached then
-	      local direction = (targetPosition - rigRootPart.Position).Unit
-	      local rayParams = RaycastParams.new()
-	      rayParams.FilterDescendantsInstances = {rigRootPart}
-	      rayParams.FilterType = Enum.RaycastFilterType.Exclude
-	      local rayResult = workspace:Raycast(rigRootPart.Position, direction * 3, rayParams)
-	      if rayResult and rayResult.Instance then
-		handleObstacle(startPosition, targetPosition, rigRootPart)
-	      end
-	  end
-      end)
-  end
-#+end_src
-******** CheckDistance
-#+begin_src lua
-  local function CheckDistance(playerRootPart, rigRootPart)
-      return (playerRootPart.Position - rigRootPart.Position).Magnitude
-  end
-#+end_src
-******** visualizePath
-#+begin_src lua
-  local function visualizePath(waypoint)
-      local part = Instance.new("Part")
-      part.Position = waypoint.Position
-      part.Size = Vector3.new(0.5, 0.5, 0.5)
-      part.Color = Color3.new(0, 0, 0)
-      part.Anchored = true
-      part.CanCollide = false
-      part.Parent = workspace
-      debris:AddItem(part, 0.1)
-  end
-#+end_src
-******** moveToPlayer
-#+begin_src lua
-  local function moveToPlayer(playerRootPart, rigRootPart)
-     local rigHumanoid = rigRootPart.Parent:FindFirstChild("Humanoid")
-     local path = pathFindingService:CreatePath({
-	   AgentRadius = 0.1,
-	   AgentHeight = 0.1,
-	   AgentCanJump = true,
-	   AgentCanClimb = true,
-	   AgentJumpHeight = 7.2,
-	   AgentMaxSlope = 89,
-	   WaypointSpacing = 1,
-	   Costs = { plastic = 3 }
-     })
-     local success, errorMessage = pcall(function()
-	   path:ComputeAsync(rigRootPart.Position, playerRootPart.Position)
-     end)     
-     if success and path.Status == Enum.PathStatus.Success then
-	for _, waypoint in pairs(path:GetWaypoints()) do
-	   visualizePath(waypoint)
-	   local distance = CheckDistance(playerRootPart, rigRootPart)
-	   local targetPosition = (distance <= stopDistance)
-	      and playerRootPart.Position + (rigRootPart.Position - playerRootPart.Position).Unit * stopDistance
-	      or waypoint.Position
-	   rigHumanoid:MoveTo(targetPosition)
-	   -- if distance > stopDistance and not walkAnimation.IsPlaying then
-	   --     idleAnimation:Stop()
-	   --     walkAnimation:Play()
-	   --     local runningSound = rigRootPart:FindFirstChild("Running")
-	   --     if runningSound then 
-	   --         runningSound:Play() 
-	   --     end
-	   -- end
-	   if distance <= stopDistance then
-	      -- if walkAnimation.IsPlaying then
-	      --     walkAnimation:Stop(0)
-	      --     local runningSound = rigRootPart:FindFirstChild("Running")
-	      --     if runningSound then runningSound:Stop() end
-	      -- end
-	      if waypoint.Action == Enum.PathWaypointAction.Jump then
-		 rigHumanoid.JumpHeight = 7.2
-		 rigHumanoid.Jump = true
-	      end
-	      checkForObstaclesAndJump(targetPosition, rigRootPart)
-	      -- if not idleAnimation.IsPlaying then
-	      --     idleAnimation:Play()
-	      -- end
-	      rigRootPart.CFrame = CFrame.lookAt(rigRootPart.Position, playerRootPart.Position)
-	   end
-	end
-     else
-	warn("-ErRoR 403: Pathfinding failed -")
-     end
-  end
-#+end_src
-******** createAttacker
-#+begin_src lua
-  local function createAttacker()
-      local attacker = Instance.new("Model")
-      attacker.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Attackers")
-      local hrp = Instance.new("Part")
-      hrp.Name = "HumanoidRootPart"
-      hrp.Size = Vector3.new(2, 2, 1)
-      hrp.Transparency = 1
-      hrp. CFrame = CFrame.new(StartingPosition)
-      hrp.Anchored = false
-      hrp.Parent = attacker
-      hrp.CanCollide = true
-      local humanoid = Instance.new("Humanoid")
-      humanoid.Parent = attacker
-      humanoid.WalkSpeed = 16
-      humanoid.JumpPower = 50
-      humanoid.Health = 100
-      attacker.PrimaryPart = hrp
-      local torso = Instance.new("Part")
-      torso.Name = "Torso"
-      torso.Size = Vector3.new(2, 2, 1)
-      torso.Color = Color3.new(1, 1, 0) -- Red color for visibility
-      torso.Parent = attacker
-      local head = Instance.new("Part")
-      head.Name = "Head"
-      head.Size = Vector3.new(1, 1, 1)
-      head.Color = Color3.new(1, 0.8, 0.6) -- Skin color
-      head.Parent = attacker
-      local headMesh = Instance.new("SpecialMesh")
-      headMesh.MeshType = Enum.MeshType.Head
-      headMesh.Parent = head
-
-      local weld_hrp_torso = Instance.new("WeldConstraint")
-      weld_hrp_torso.Part0 = hrp
-      weld_hrp_torso.Part1 = torso
-      weld_hrp_torso.Parent = hrp
-      torso.CFrame = hrp.CFrame * CFrame.new(0, 1.5, 0)
-      head.CFrame = torso.CFrame * CFrame.new(0, 2, 0)
-      local weld_head_tosro = Instance.new("WeldConstraint")
-      weld_head_tosro.Part0 = head
-      weld_head_tosro.Part1 = torso
-      weld_head_tosro.Parent = torso
-      return attacker, hrp, humanoid,torso
-  end
-#+end_src
-******** onTouched
-#+begin_src lua
-  local function onTouched(otherPart)
-      local character = otherPart.Parent
-      local humanoid = character:FindFirstChildWhichIsA("Humanoid")
-      if humanoid then
-	  local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
-      if player then
-	  local leaderstats = player:WaitForChild("leaderstats")
-	  -- local coinCount = leaderstats:WaitForChild("CoinCount")
-	  -- leaderstats.CoinCount.Value -= 3
-	  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
-	  script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
-	  -- if coinCount.Value < 0 then
-	      humanoid.BreakJointsOnDeath = false
-	      humanoid.Health = 0
-	      -- coinCount.Value = 0
-	  -- end
-	  task.wait(5)
-	  script.Parent:FindFirstChild("Torso").Color = Color3.new(0.666666, 0.023529, 0.921568)
-	  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
-	  end
-      end
-  end
-#+end_src
-******** movement
-#+begin_src lua
-  local function movement()
-     local humanoid = script.Parent:FindFirstChild("Humanoid")
-     local hrp = script.Parent:FindFirstChild("HumanoidRootPart") 
-     StartingPosition = hrp.Position    
-     while true do
-	 local randomX = math.random(-50, 50)
-	 local randomZ = math.random(-50, 50)
-	 local targetPosition = StartingPosition + Vector3.new(randomX, 0, randomZ)
-	 humanoid:MoveTo(targetPosition)
-	 humanoid.MoveToFinished:Wait()
-	 task.wait(0.1)
-     end
-  end
-#+end_src
-******** getClosestPlayer
-#+begin_src lua
-  local function getClosestPlayer(rigRootPart)
-      local closestPlayer = nil
-      local closestDistance = math.huge
-      for _, player in ipairs(Players:GetPlayers()) do
-  		local character = player.Character
-  		if character and character:FindFirstChild("HumanoidRootPart") then
-  			local distance = (character.HumanoidRootPart.Position - rigRootPart.Position).Magnitude
-  			if distance < closestDistance then
-  			closestDistance = distance
-  			closestPlayer = player
-  			print("Found a player at distance:", closestDistance)
-  			end
-  		end
-      end
-      return closestPlayer, closestDistance
-  end
-#+end_src
-******* executions
-#+begin_src lua
-  createAttacker()
-  if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Attackers") then
-     script.Parent:FindFirstChild("HumanoidRootPart").Touched:Connect(onTouched)     
-     local rigRootPart = script.Parent:FindFirstChild("HumanoidRootPart")
-     -- task.spawn(movement)
-     while true do
-	local closestPlayer, closestDistance = getClosestPlayer(rigRootPart)
-	if closestPlayer and closestPlayer.Character then
-	   local playerRootPart = closestPlayer.Character:WaitForChild("HumanoidRootPart")
-	   if closestDistance <= targetDistance then
-	      moveToPlayer(playerRootPart, rigRootPart)
-	   end
-	end
-	task.wait(refreshRate)
-     end
-  end
-#+end_src
-*** obstacles
-*** establishments 
-**** tool shop 
-***** ToolShopManager
-:properties:
-:header-args:lua: :tangle ./src/server/Establishments/ToolShopManager.server.luau
-:END:
-****** notes
-virtual space for clerks to interact with players
-****** code
-******* variables
-******** remote events
-#+begin_src lua
-  local replicatedStorage = game:GetService("ReplicatedStorage")
-  local dialogChoiceEvent = Instance.new("RemoteEvent")
-  dialogChoiceEvent.Name = "DialogChoiceEvent"
-  dialogChoiceEvent.Parent = replicatedStorage
-  local tradingEvent = Instance.new("RemoteEvent")
-  tradingEvent.Name = "TradingEvent"
-  tradingEvent.Parent = replicatedStorage
-  local displayItemsEvent = Instance.new("RemoteEvent")
-  displayItemsEvent.Name = "DisplayItemsEvent"
-  displayItemsEvent.Parent = replicatedStorage
-  local feedbackMessageEvent = Instance.new("RemoteEvent")
-  feedbackMessageEvent.Name = "FeedbackMessageEvent"
-  feedbackMessageEvent.Parent = replicatedStorage
-  local PlayerFinderEvent = Instance.new("RemoteEvent")
-  PlayerFinderEvent.Name = "PlayerFinderEvent"
-  PlayerFinderEvent.Parent = replicatedStorage 
-  local WireTransferEvent = Instance.new("RemoteEvent")
-  WireTransferEvent.Name = "WireTransferEvent"
-  WireTransferEvent.Parent = replicatedStorage
-  local MoneyReciverEvent = Instance.new("RemoteEvent")
-  MoneyReciverEvent.Name = "MoneyReciverEvent"
-  MoneyReciverEvent.Parent = replicatedStorage
-#+end_src
-******** store manager variables 
-#+begin_src lua
-  -- local npc = workspace.Store:WaitForChild("NPC")
-  -- local dialog = npc:WaitForChild("Head"):WaitForChild("Dialog")
-  local depreciationRate = 0.5
-#+end_src
-******* functions
-******** onDialog
-#+begin_src lua
-  local function onDialog(player)
-      --   print(player.Name.. "selected: " .. choiceName)
-      --   local items = {}
-      --   local itemsData = {}
-      --   if choiceName == "Buy" then
-	  --       items = itemsFolder:GetChildren()
-	  --       print(items)
-      --   elseif  choiceName == "Sell"  then
-	  --       items = player.Backpack:GetChildren()
-      --   end
-      --   for _, item in ipairs(items) do
-	  --       local config = item:FindFirstChild("Configuration")
-	  --       if config and config:FindFirstChild("BuyPrice") then
-	  -- 	      local buyPrice = config.BuyPrice.Value
-	  -- 	      local sellPrice = math.round(buyPrice * depreciationRate) 
-	  -- 	  table.insert(itemsData, {Name = item.Name, BuyPrice = buyPrice , SellPrice = sellPrice})
-	  --       end
-      --   end
-      --   print(itemsData)
-      --   print( "test from aaron")
-      --   displayItemsEvent:FireClient(player, itemsData, choiceName)
-	displayItemsEvent:FireClient(player, "Server got your message!")
-  end  
-#+end_src
-******** onTrading
-#+begin_src  lua
-  local function onTrading(player, itemName, choiceName)
-      --   local playerStats = player:WaitForChild("leaderstats")
-      --   if playerStats then
-	  --       local coins = playerStats:FindFirstChild("Coin")
-	  --       local item = itemsFolder:FindFirstChild(itemName)
-	  --       if coins and item then
-	  -- 	      local config = item:FindFirstChild("Configuration")
-	  -- 	      if config and config:FindFirstChild("BuyPrice") then
-	  -- 		      local buyPrice = config.BuyPrice.Value
-	  -- 		      local sellPrice = math.round(buyPrice * depreciationRate)
-	  -- 		      if choiceName == "Buy" then
-	  -- 			      if coins.Value >= buyPrice then
-	  -- 				      coins.Value = coins.Value - buyPrice
-	  -- 				      local itemClone = item:Clone()
-	  -- 				      itemClone.Parent = player.Backpack
-	  -- 				      print(player.name .. " purchased " .. itemName " for " .. buyPrice)
-	  -- 			      end
-	  -- 		      end
-	  -- 	      end
-	  --       else
-	  -- 	      warn("coins or items not found!")
-	  --       end
-      --   end
-  end
-#+end_src
-******* execution
-#+begin_src lua
-  dialogChoiceEvent.OnServerEvent:Connect(onDialog)
---tradingEvent.onServerEvent:Connect(onTrading)
-#+end_src
-*** tools
-**** gravity coil
-***** GravityCoilManager
-:properties:
-:header-args:lua: :tangle ./src/server/Tools/GravityCoilManager.server.luau
-:END:
-****** notes
-Spawns gravity coils into the world.
-****** code
-******* variables
-#+begin_src lua
-  local gravityCoil = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("GravityCoils"):WaitForChild("Tool")
-  local gravityCoilScript = script.Parent:FindFirstChild("GravityCoilScript")
-  gravityCoilScript.Parent = gravityCoil
-  local gravityCoilsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("GravityCoils")
-  local spawnRange = 48
-  local gravityCoilCount = 3
-#+end_src
-******* functions
-******** randomSpawn
-#+begin_src lua
-  local function randomSpawn()
-    local xpos = math.random (-spawnRange, spawnRange)
-    local zpos = math.random (-spawnRange, spawnRange)
-    local ypos = math.random (5, 30)
-    local gravityCoilClone = gravityCoil:Clone()
-    local gravityCoilHandleClone = gravityCoilClone:FindFirstChild("Handle")
-    gravityCoilClone.Parent = gravityCoilsFolder
-    gravityCoilHandleClone.Position = Vector3.new(xpos,ypos,zpos)
-    local gravityCoilScriptClone = gravityCoilClone:WaitForChild("GravityCoilScript")
-    gravityCoilScriptClone.Parent = gravityCoilClone
-    return
-  end
-#+end_src
-******** movements
-#+begin_src lua
-  local function movements(ToolsClone)
-    local spinRate = math.rad
-    while true do
-	-- Movement logic placeholder
-    end
-  end
-#+end_src
-******* executions
-#+begin_src lua
-  for i = 1, gravityCoilCount do
-     randomSpawn()
-  end
-#+end_src
-***** GravityCoilScript
-:properties:
-:header-args:lua: :tangle ./src/server/Tools/GravityCoilScript.server.luau
-:END:
-****** notes
-Defines individual gravity coil behavior. Handle is a mesh part but it has to have the name "Handle" for it to have the TouchInterest, to support the onEquipped event.
-****** code
-******* variables
-#+begin_src lua
-  local gravityCoilBase = Instance.new("Tool")
-  gravityCoilBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("GravityCoils")
-  local gravityCoilHandle = Instance.new("MeshPart")
-  gravityCoilHandle.Parent =  gravityCoilBase
-  gravityCoilHandle.Name = "Handle"
-  local gravityCoil = Instance.new ("SpecialMesh")
-  gravityCoil.Parent = gravityCoilHandle
-  gravityCoil.MeshId = "rbxassetid://16606212"
-  gravityCoil.TextureId = "rbxassetid://16606141"
-  local rotationRate = 3
-  local Players = game:GetService("Players")
-  local gravityCoilFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("GravityCoils")
-#+end_src
-******* functions
-******** rotate 
-#+begin_src lua
-  local function rotate()
-      script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
-  end
-#+end_src
-******** onEquipped
-#+begin_src lua
-  local function onEquipped()
-      local character = script.Parent.Parent
-      character.Humanoid.JumpHeight = 15
-  end
-#+end_src
-******* executions
-#+begin_src lua
-  if script.Parent.Parent == gravityCoilFolder then
-    script.Parent.Equipped:Connect(onEquipped)
-  end
-#+end_src
-*** ui
-**** dialog
-***** DialogManager
-:properties:
-:header-args:lua: :tangle ./src/server/UI/DialogManager.server.luau
-:END:
-****** notes
-creates dialog
-****** code
-******* variables
-#+begin_src lua
-  if script.Parent.Parent == game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Clerks") then 
-      local npc = script.Parent 
-      local dialog = Instance.new("Dialog")
-      dialog.BehaviorType = Enum.DialogBehaviorType.MultiplePlayers
-      dialog.InitialPrompt = "Welcome to Aaron's Tool and Gadgets! I am Mac. "
-      dialog.Parent = npc.Head
-      local buyChoice = Instance.new("DialogChoice")
-      buyChoice.UserDialog = "I want to buy a tool"
-      buyChoice.ResponseDialog = "Here are the items available:"
-      buyChoice.Name = "Buy"
-      buyChoice.Parent = dialog 
-      local sellChoice = Instance.new("DialogChoice")
-      sellChoice.UserDialog = "I want to sell some items."
-      sellChoice.ResponseDialog = "Ok, which items do you want to sell? "
-      sellChoice.Name = "Sell"
-      sellChoice.Parent = dialog
-  end
-#+end_src
-******* functions
-******* executions
-**** leaderboard
-***** LeaderboardManager
-:properties:
-:header-args:lua: :tangle ./src/server/UI/LeaderboardManager.server.luau
-:END:
-****** notes
-Standard leaderboard setup to track coins.
-****** code
-******* variables
-#+begin_src lua
-local players = game:GetService("Players")
-#+end_src
-******* functions
-******** onPlayerSpawn
-#+begin_src lua
-local function onPlayerSpawn(player)
-local leaderstats = Instance.new("Folder")
-leaderstats.Name = "leaderstats"
-leaderstats.Parent = player
-local coinCount = Instance.new("IntValue")
-coinCount.Name = "CoinCount"
-coinCount.Parent = leaderstats
-coinCount.Value = 0
-end
-#+end_src
-******* executions
-#+begin_src lua
-players.PlayerAdded:Connect(onPlayerSpawn)
-#+end_src
-** client 
-*** player 
-**** PlayerScript
-:PROPERTIES:
-:header-args:lua: :tangle ./src/client/PlayerScript.client.luau
-:END:
-***** notes
-Handles client-side logic, including listening for dialog selections, notifying the server, and processing the server's response.
-***** code
-****** variables
-#+begin_src lua
-  local Players = game:GetService("Players")
-  local ReplicatedStorage = game:GetService("ReplicatedStorage")
-  local Workspace = game:GetService("Workspace")
-  local player = Players.LocalPlayer
-  -- Wait for the events to be created by the server script (ToolShopManager)
-  local dialogChoiceEvent = ReplicatedStorage:WaitForChild("DialogChoiceEvent")
-  local displayItemsEvent = ReplicatedStorage:WaitForChild("DisplayItemsEvent")
-#+end_src
-****** functions
-******* onServerResponse
-#+begin_src lua
-  local function onServerResponse(data)
-     -- This triggers when the server fires back via displayItemsEvent
-	print("recieved request from server.")
-     -- You can process the 'data' here (e.g., open a GUI)
-  end
-#+end_src
-******* onDialogChoiceSelected
-#+begin_src lua
-  local function onDialogChoiceSelected(dialog, choice)
-     -- Check if the choice is relevant (Buy/Sell)
-	if choice.Name == "Buy" or choice.Name == "Sell" then
-	   -- Fire the server so it knows what we picked
-	      dialogChoiceEvent:FireServer(choice.Name)
-	end
-  end
-#+end_src
-******* setupDialogListeners
-#+begin_src lua
-  local function setupDialogListeners()
-    -- Look for existing NPCs with Dialogs
-	for _, npc in pairs(Workspace:WaitForChild("NPCs"):WaitForChild("Clerks"):GetChildren()) do
-	    if npc.Name ~= "Script" then
-		local head = npc:WaitForChild("Head")
-		local dialog = head:FindFirstChild("Dialog")
-		if dialog then
-		    dialog.DialogChoiceSelected:Connect(function(player, choice)
-		    onDialogChoiceSelected(dialog, choice)
-		    end)
-		end
-	    end
-	end
-    -- Handle new NPCs added later (if any)
-	Workspace.NPCs.Clerks.ChildAdded:Connect(function(npc)
-	    local head = npc:WaitForChild("Head")
-	    local dialog = head:WaitForChild("Dialog")
-	    dialog.DialogChoiceSelected:Connect(function(player, choice)
-	    onDialogChoiceSelected(dialog, choice)
-	    end)
-	end)
-  end
-#+end_src
-****** executions
-#+begin_src lua
-  -- Connect the listener for the server response
-     displayItemsEvent.OnClientEvent:Connect(onServerResponse)
-  -- Initialize listeners for Dialog interactions
-     setupDialogListeners()
-#+end_src
-** rojo
-*** default.project
-:properties:
-:header-args:json: :tangle ./default.project.json
-:END:
-**** code
-#+begin_src json
-{
-  "name": "lab",
-  "tree": {
-    "$className": "DataModel",
-    "ReplicatedStorage": {
-        "$path": "src/Shared"
-    },
-    "ServerScriptService": {
-        "$path": "src/Server"
-    },
-    "StarterPlayer": {
-      "StarterPlayerScripts": {
-        "Client": {
-          "$path": "src/Client"
-        }
-      }
-    },
-    
-    "Workspace": {
-      "$path": "src/Workspace",
-      "Baseplate": {
-        "$className": "Part",
-        "$properties": {
-          "Anchored": true,
-          "Color": [0.38823, 0.37254, 0.38823],
-          "Locked": true,
-          "Position": [0, -10, 0],
-          "Size": [512, 20, 512]
-        }
-      }
-    },
-    "Lighting": {
-      "$properties": {
-        "Ambient": [
-          0,
-          0,
-          0
-        ],
-        "Brightness": 2,
-        "GlobalShadows": true,
-        "Outlines": false,
-        "Technology": "Voxel"
-      }
-    },
-    
-    "SoundService": {
-      "$properties": {
-        "RespectFilteringEnabled": true
-      }
-    }
-  }
-} 
-#+end_src
 * references
 ** store manager
 *** variables 
@@ -1672,4 +630,1044 @@ end
 	task.wait(refreshRate)
     end
   end
+#+end_src
+* code
+** server
+*** collectables
+**** coins
+***** CoinManager
+:properties:
+:header-args:lua: :tangle ./src/server/Collectables/CoinManager.server.luau
+:END:
+****** notes
+Spawns the coins into the world.
+****** code
+******* variables
+#+begin_src lua
+  local coin = game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Coins"):WaitForChild("Part")
+  local coinScript = script.Parent:FindFirstChild("CoinScript")
+  coinScript.Parent = coin
+  local coinsFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Coins")
+  local spawnRange = 48
+  local coinCount = 21
+#+end_src
+******* functions
+******** randomSpawn
+#+begin_src lua
+  local function randomSpawn()
+    local xpos = math.random (-spawnRange, spawnRange)
+    local zpos = math.random (-spawnRange, spawnRange)
+    local ypos = math.random (5, 30)
+    local coinClone = coin:Clone()
+    coinClone.Parent = coinsFolder
+    coinClone.Position = Vector3.new(xpos,ypos,zpos)
+    local coinScriptClone = coinClone:WaitForChild("CoinScript")
+    coinScriptClone.Parent = coinClone
+    return
+  end
+#+end_src
+******** movements
+#+begin_src lua
+  local function movements(collectablesClone)
+    local spinRate = math.rad
+    while true do
+  	-- Movement logic placeholder
+    end
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  for i = 1, coinCount do
+      randomSpawn()
+  end
+#+end_src
+***** CoinScript
+:properties:
+:header-args:lua: :tangle ./src/server/Collectables/CoinScript.server.luau
+:END:
+****** notes
+Defines individual coin behavior (rotate, touch, reward).
+****** code
+******* variables
+#+begin_src lua
+  local coinBase = Instance.new("Part")
+  coinBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Coins")
+  coinBase.Anchored = true
+  local coin = Instance.new ("SpecialMesh")
+  coin.Parent = coinBase
+  coin.MeshId = "rbxassetid://71877336332186"
+  coin.TextureId = "rbxassetid://9460443119"
+  local rotationRate = 3
+  local Players = game:GetService("Players")
+  local coinFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Coins")
+#+end_src
+******* functions
+******** rotate 
+#+begin_src lua
+  local function rotate()
+      script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
+  end
+#+end_src
+******** onTouched
+#+begin_src lua
+  local function onTouched(otherPart)
+      local character = otherPart.Parent
+      local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+      if humanoid then
+	local player = Players:GetPlayerFromCharacter(character)
+	if player then
+	  local leaderstats = player:WaitForChild("leaderstats")
+	  script.Parent:Destroy()
+	  leaderstats.CoinCount.Value += 10
+	end
+      end
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  if script.Parent.Parent == coinFolder then
+    script.Parent.Touched:Connect(onTouched)
+    game:GetService("RunService").Heartbeat:Connect(rotate)
+  end
+#+end_src
+*** npcs
+**** patrols
+***** PatrolManager
+:properties:
+:header-args:lua: :tangle ./src/server/NPCs/PatrolManager.server.luau
+:END:
+****** notes
+Spawns the Patrol NPCs.
+****** code
+******* variables
+#+begin_src lua
+  local patrol = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Patrols"):WaitForChild("Model")
+  local patrolScript = script.Parent:FindFirstChild("PatrolScript")
+  patrolScript.Parent = patrol
+  local patrolFolder =  game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Patrols") 
+  local spawnRange = 96
+  local patrolCount = 12
+#+end_src
+******* functions
+******** randomSpawn
+#+begin_src lua
+  local function  randomSpawn(index)
+      local xpos = math.random (-spawnRange, spawnRange)
+      local zpos = math.random (-spawnRange, spawnRange)
+      local ypos = 4
+      local patrolClone = patrol:Clone()
+      patrolClone.Parent = patrolFolder
+      patrolClone.Name = ("patrolClone_" .. tostring(index))
+      patrolClone.PrimaryPart = patrolClone:FindFirstChild("HumanoidRootPart")
+      patrolClone:PivotTo(CFrame.new(xpos,ypos,zpos))
+      return  
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  for i = 1, patrolCount do
+      randomSpawn(i)
+  end
+#+end_src
+***** PatrolScript
+:PROPERTIES:
+:header-args:lua: :tangle ./src/server/NPCs/PatrolScript.server.luau
+:END:
+****** notes
+FIXED LOGIC: This script builds the NPC body on the existing model (script.Parent) instead of creating a new ghost model in storage. This ensures hrp.Touched actually works in the Workspace.
+****** code
+******* variables
+#+begin_src lua
+  local StartingPosition = Vector3.new(0, 5, 0)
+  local Players = game:GetService("Players")
+#+end_src
+******* functions
+******** setupPatrolBody
+#+begin_src lua
+  local function createPatrol()
+      local patrol = Instance.new("Model")
+      patrol.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Patrols")
+      local hrp = Instance.new("Part")
+      hrp.Name = "HumanoidRootPart"
+      hrp.Size = Vector3.new(2, 2, 1)
+      hrp.Transparency = 1
+      hrp. CFrame = CFrame.new(StartingPosition)
+      hrp.Anchored = false
+      hrp.Parent = patrol
+      hrp.CanCollide = true
+      local humanoid = Instance.new("Humanoid")
+      humanoid.Parent = patrol
+      humanoid.WalkSpeed = 16
+      humanoid.JumpPower = 50
+      humanoid.Health = 100
+      patrol.PrimaryPart = hrp
+      local torso = Instance.new("Part")
+      torso.Name = "Torso"
+      torso.Size = Vector3.new(2, 2, 1)
+      torso.Color = Color3.new(1, 0, 0) -- Red color for visibility
+      torso.Parent = patrol
+      local head = Instance.new("Part")
+      head.Name = "Head"
+      head.Size = Vector3.new(1, 1, 1)
+      head.Color = Color3.new(1, 0.8, 0.6) -- Skin color
+      head.Parent = patrol
+      local headMesh = Instance.new("SpecialMesh")
+      headMesh.MeshType = Enum.MeshType.Head
+      headMesh.Parent = head
+
+      local weld_hrp_torso = Instance.new("WeldConstraint")
+      weld_hrp_torso.Part0 = hrp
+      weld_hrp_torso.Part1 = torso
+      weld_hrp_torso.Parent = hrp
+      torso.CFrame = hrp.CFrame * CFrame.new(0, 1.5, 0)
+      head.CFrame = torso.CFrame * CFrame.new(0, 2, 0)
+      local weld_head_tosro = Instance.new("WeldConstraint")
+      weld_head_tosro.Part0 = head
+      weld_head_tosro.Part1 = torso
+      weld_head_tosro.Parent = torso
+      return patrol, hrp, humanoid,torso
+  end
+#+end_src
+******** onTouched
+#+begin_src lua
+  local function onTouched(otherPart)
+      local character = otherPart.Parent
+      if character and character:IsA("Model") then
+	  local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+	  if humanoid then
+	      local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
+	      if player then
+		  local leaderstats = player:WaitForChild("leaderstats")
+		  local coinCount = leaderstats:WaitForChild("CoinCount")
+		  leaderstats.CoinCount.Value -= 3
+		  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
+		  script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
+		  if coinCount.Value < 0 then
+		      humanoid.BreakJointsOnDeath = false
+		      humanoid.Health = 0
+		      coinCount.Value = 0
+		  end
+		  task.wait(5)
+		  script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
+		  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
+	      end
+	  end
+      end
+  end
+#+end_src
+******** movement
+#+begin_src lua
+  local function movement()
+     local humanoid = script.Parent:FindFirstChild("Humanoid")
+     local hrp = script.Parent:FindFirstChild("HumanoidRootPart") 
+     StartingPosition = hrp.Position    
+     while true do
+	 local randomX = math.random(-50, 50)
+	 local randomZ = math.random(-50, 50)
+	 local targetPosition = StartingPosition + Vector3.new(randomX, 0, randomZ)
+	 humanoid:MoveTo(targetPosition)
+	 humanoid.MoveToFinished:Wait()
+	 task.wait(0.1)
+     end
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  local patrol, hrp, humanoid,torso = createPatrol()
+  if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Patrols") then
+      script.Parent:FindFirstChild("HumanoidRootPart").Touched:Connect(onTouched)
+      task.spawn(movement)
+  end
+#+end_src
+**** clerks
+***** ClerkManager
+:properties:
+:header-args:lua: :tangle ./src/server/NPCs/ClerkManager.server.luau
+:END:
+****** notes
+Spawns the Clerk NPCs.
+****** code
+******* variables
+#+begin_src lua
+  local clerk = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Clerks"):WaitForChild("Model")
+  local clerkScript = script.Parent:FindFirstChild("ClerkScript")
+  local dialogManager = script.Parent.Parent:FindFirstChild("UI"):FindFirstChild("DialogManager")
+  clerkScript.Parent = clerk
+  dialogManager.Parent = clerk
+  local clerkFolder =  game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Clerks") 
+  local spawnRange = 96
+  local clerkCount = 30
+#+end_src
+******* functions
+******** randomSpawn
+#+begin_src lua
+  local function  randomSpawn(index)
+      local xpos = math.random (-spawnRange, spawnRange)
+      local zpos = math.random (-spawnRange, spawnRange)
+      local ypos = 4
+      local clerkClone = clerk:Clone()
+      clerkClone.Parent = clerkFolder
+      clerkClone.Name = ("clerkClone_" .. tostring(index))
+      clerkClone.PrimaryPart = clerkClone:FindFirstChild("HumanoidRootPart")
+      clerkClone:PivotTo(CFrame.new(xpos,ypos,zpos))
+      return  
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  for i = 1, clerkCount do
+      randomSpawn(i)
+  end
+#+end_src
+***** ClerkScript
+:PROPERTIES:
+:header-args:lua: :tangle ./src/server/NPCs/ClerkScript.server.luau
+:END:
+****** notes
+Creates the logic for the store clerk which handles conversations.
+****** code
+******* variables
+#+begin_src lua
+  local StartingPosition = Vector3.new(0, 5, 0)
+  local Players = game:GetService("Players")  
+#+end_src
+******* functions
+******** setupPatrolBody
+#+begin_src lua
+  local function createclerk()
+      local clerk = Instance.new("Model")
+      clerk.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Clerks")
+      local hrp = Instance.new("Part")
+      hrp.Name = "HumanoidRootPart"
+      hrp.Size = Vector3.new(2, 2, 1)
+      hrp.Transparency = 1
+      hrp. CFrame = CFrame.new(StartingPosition)
+      hrp.Anchored = false
+      hrp.Parent = clerk
+      hrp.CanCollide = true
+      local humanoid = Instance.new("Humanoid")
+      humanoid.Parent = clerk
+      humanoid.WalkSpeed = 16
+      humanoid.JumpPower = 50
+      humanoid.Health = 100
+      clerk.PrimaryPart = hrp
+      local torso = Instance.new("Part")
+      torso.Name = "Torso"
+      torso.Size = Vector3.new(2, 2, 1)
+      torso.Color = Color3.new(0.243137, 0.509803, 0.858823) -- Red color for visibility
+      torso.Parent = clerk
+      local head = Instance.new("Part")
+      head.Name = "Head"
+      head.Size = Vector3.new(1, 1, 1)
+      head.Color = Color3.new(1, 0.8, 0.6) -- Skin color
+      head.Parent = clerk
+      local headMesh = Instance.new("SpecialMesh")
+      headMesh.MeshType = Enum.MeshType.Head
+      headMesh.Parent = head
+      local weld_hrp_torso = Instance.new("WeldConstraint")
+      weld_hrp_torso.Part0 = hrp
+      weld_hrp_torso.Part1 = torso
+      weld_hrp_torso.Parent = hrp
+      torso.CFrame = hrp.CFrame * CFrame.new(0, 1.5, 0)
+      head.CFrame = torso.CFrame * CFrame.new(0, 2, 0)
+      local weld_head_tosro = Instance.new("WeldConstraint")
+      weld_head_tosro.Part0 = head
+      weld_head_tosro.Part1 = torso
+      weld_head_tosro.Parent = torso
+      return clerk, hrp, humanoid,torso
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  local clerk, hrp, humanoid,torso = createclerk()
+  if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Clerks") then
+  end
+#+end_src
+**** attackers
+***** AttackerManager
+:properties:
+:header-args:lua: :tangle ./src/server/NPCs/AttackerManager.server.luau
+:END:
+****** notes
+Spawns the attacker NPCs.
+****** code
+******* variables
+#+begin_src lua
+  local attacker = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Attackers"):WaitForChild("Model")
+  local attackerScript = script.Parent:FindFirstChild("AttackerScript")
+  attackerScript.Parent = attacker
+  local attackerFolder =  game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Attackers") 
+  local spawnRange = 96
+  local attackerCount = 3
+#+end_src
+******* functions
+******** randomSpawn
+#+begin_src lua
+  local function  randomSpawn(index)
+      local xpos = math.random (-spawnRange, spawnRange)
+      local zpos = math.random (-spawnRange, spawnRange)
+      local ypos = 4
+      local attackerClone = attacker:Clone()
+      attackerClone.Parent = attackerFolder
+      attackerClone.Name = ("attackerClone_" .. tostring(index))
+      attackerClone.PrimaryPart = attackerClone:FindFirstChild("HumanoidRootPart")
+      attackerClone:PivotTo(CFrame.new(xpos,ypos,zpos))
+      return  
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  for i = 1, attackerCount do
+      randomSpawn(i)
+  end
+#+end_src
+***** AttackerScript
+:PROPERTIES:
+:header-args:lua: :tangle ./src/server/NPCs/AttackerScript.server.luau
+:END:
+****** notes
+Defines attacker behavior, creation, and logic.
+****** code
+******* variables
+#+begin_src lua
+  local StartingPosition = Vector3.new(0, 5, 0)
+  local Players = game:GetService("Players")
+  local targetDistance = math.random(50, 60)
+  local refreshRate = 0.001
+  local pathFindingService = game:GetService("PathfindingService")
+  local stopDistance = 3
+  local debris = game:GetService("Debris")
+#+end_src
+******* functions
+******** handleObstacle
+#+begin_src lua
+  local function handleObstacle(startPosition, targetPosition, rigRootPart)
+     local rigHumanoid = rigRootPart.Parent:FindFirstChild("Humanoid")
+      for i = 1, 50 do
+	rigHumanoid.Jump = true
+	task.wait(0.1)
+      end	
+      local alternativeAngles = {
+      CFrame.Angles(0, math.rad(90), 0),
+      CFrame.Angles(0, math.rad(-90), 0),
+      CFrame.Angles(0, math.rad(135), 0),
+      CFrame.Angles(0, math.rad(180), 0)
+      }
+      for _, angle in ipairs(alternativeAngles) do
+	local baseDirection = (targetPosition - rigRootPart.Position).Unit
+	local rotatedDirection = (angle * CFrame.new(baseDirection)).LookVector
+	local newTargetPosition = rigRootPart.Position + rotatedDirection * 15
+	rigHumanoid:MoveTo(newTargetPosition)
+	rigHumanoid.MoveToFinished:Wait()
+	if (rigRootPart.Position - startPosition).Magnitude > 0.5 then
+	    break
+	end
+      end
+  end
+#+end_src
+******** checkForObstaclesAndJump
+#+begin_src lua
+  local function checkForObstaclesAndJump(targetPosition, rigRootPart)
+      local startPosition = rigRootPart.Position
+      local moveTimeout = 1
+      local reached = false
+      task.spawn(function()
+	  local elapsed = 0
+	  while elapsed < moveTimeout do
+	      task.wait(0.1)
+	      elapsed += 0.1
+	      if (rigRootPart.Position - startPosition).Magnitude > 0.5 then
+		  reached = true
+		  break
+	      end
+	  end
+	  if not reached then
+	      local direction = (targetPosition - rigRootPart.Position).Unit
+	      local rayParams = RaycastParams.new()
+	      rayParams.FilterDescendantsInstances = {rigRootPart}
+	      rayParams.FilterType = Enum.RaycastFilterType.Exclude
+	      local rayResult = workspace:Raycast(rigRootPart.Position, direction * 3, rayParams)
+	      if rayResult and rayResult.Instance then
+		handleObstacle(startPosition, targetPosition, rigRootPart)
+	      end
+	  end
+      end)
+  end
+#+end_src
+******** CheckDistance
+#+begin_src lua
+  local function CheckDistance(playerRootPart, rigRootPart)
+      return (playerRootPart.Position - rigRootPart.Position).Magnitude
+  end
+#+end_src
+******** visualizePath
+#+begin_src lua
+  local function visualizePath(waypoint)
+      local part = Instance.new("Part")
+      part.Position = waypoint.Position
+      part.Size = Vector3.new(0.5, 0.5, 0.5)
+      part.Color = Color3.new(0, 0, 0)
+      part.Anchored = true
+      part.CanCollide = false
+      part.Parent = workspace
+      debris:AddItem(part, 0.1)
+  end
+#+end_src
+******** moveToPlayer
+#+begin_src lua
+  local function moveToPlayer(playerRootPart, rigRootPart)
+     local rigHumanoid = rigRootPart.Parent:FindFirstChild("Humanoid")
+     local path = pathFindingService:CreatePath({
+	   AgentRadius = 0.1,
+	   AgentHeight = 0.1,
+	   AgentCanJump = true,
+	   AgentCanClimb = true,
+	   AgentJumpHeight = 7.2,
+	   AgentMaxSlope = 89,
+	   WaypointSpacing = 1,
+	   Costs = { plastic = 3 }
+     })
+     local success, errorMessage = pcall(function()
+	   path:ComputeAsync(rigRootPart.Position, playerRootPart.Position)
+     end)     
+     if success and path.Status == Enum.PathStatus.Success then
+	for _, waypoint in pairs(path:GetWaypoints()) do
+	   visualizePath(waypoint)
+	   local distance = CheckDistance(playerRootPart, rigRootPart)
+	   local targetPosition = (distance <= stopDistance)
+	      and playerRootPart.Position + (rigRootPart.Position - playerRootPart.Position).Unit * stopDistance
+	      or waypoint.Position
+	   rigHumanoid:MoveTo(targetPosition)
+	   -- if distance > stopDistance and not walkAnimation.IsPlaying then
+	   --     idleAnimation:Stop()
+	   --     walkAnimation:Play()
+	   --     local runningSound = rigRootPart:FindFirstChild("Running")
+	   --     if runningSound then 
+	   --         runningSound:Play() 
+	   --     end
+	   -- end
+	   if distance <= stopDistance then
+	      -- if walkAnimation.IsPlaying then
+	      --     walkAnimation:Stop(0)
+	      --     local runningSound = rigRootPart:FindFirstChild("Running")
+	      --     if runningSound then runningSound:Stop() end
+	      -- end
+	      if waypoint.Action == Enum.PathWaypointAction.Jump then
+		 rigHumanoid.JumpHeight = 7.2
+		 rigHumanoid.Jump = true
+	      end
+	      checkForObstaclesAndJump(targetPosition, rigRootPart)
+	      -- if not idleAnimation.IsPlaying then
+	      --     idleAnimation:Play()
+	      -- end
+	      rigRootPart.CFrame = CFrame.lookAt(rigRootPart.Position, playerRootPart.Position)
+	   end
+	end
+     else
+	warn("-ErRoR 403: Pathfinding failed -")
+     end
+  end
+#+end_src
+******** createAttacker
+#+begin_src lua
+  local function createAttacker()
+      local attacker = Instance.new("Model")
+      attacker.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Attackers")
+      local hrp = Instance.new("Part")
+      hrp.Name = "HumanoidRootPart"
+      hrp.Size = Vector3.new(2, 2, 1)
+      hrp.Transparency = 1
+      hrp. CFrame = CFrame.new(StartingPosition)
+      hrp.Anchored = false
+      hrp.Parent = attacker
+      hrp.CanCollide = true
+      local humanoid = Instance.new("Humanoid")
+      humanoid.Parent = attacker
+      humanoid.WalkSpeed = 16
+      humanoid.JumpPower = 50
+      humanoid.Health = 100
+      attacker.PrimaryPart = hrp
+      local torso = Instance.new("Part")
+      torso.Name = "Torso"
+      torso.Size = Vector3.new(2, 2, 1)
+      torso.Color = Color3.new(1, 1, 0) -- Red color for visibility
+      torso.Parent = attacker
+      local head = Instance.new("Part")
+      head.Name = "Head"
+      head.Size = Vector3.new(1, 1, 1)
+      head.Color = Color3.new(1, 0.8, 0.6) -- Skin color
+      head.Parent = attacker
+      local headMesh = Instance.new("SpecialMesh")
+      headMesh.MeshType = Enum.MeshType.Head
+      headMesh.Parent = head
+
+      local weld_hrp_torso = Instance.new("WeldConstraint")
+      weld_hrp_torso.Part0 = hrp
+      weld_hrp_torso.Part1 = torso
+      weld_hrp_torso.Parent = hrp
+      torso.CFrame = hrp.CFrame * CFrame.new(0, 1.5, 0)
+      head.CFrame = torso.CFrame * CFrame.new(0, 2, 0)
+      local weld_head_tosro = Instance.new("WeldConstraint")
+      weld_head_tosro.Part0 = head
+      weld_head_tosro.Part1 = torso
+      weld_head_tosro.Parent = torso
+      return attacker, hrp, humanoid,torso
+  end
+#+end_src
+******** onTouched
+#+begin_src lua
+  local function onTouched(otherPart)
+    local character = otherPart.Parent
+    if character and character:IsA("Model") then
+	local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+	if humanoid then
+	    local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
+	    if player then
+		script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
+		script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
+		humanoid.BreakJointsOnDeath = false
+		humanoid.Health = 0
+		task.wait(5)
+		script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
+		script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
+	    end
+	end
+    end
+  end
+#+end_src
+******** movement
+#+begin_src lua
+  local function movement()
+     local humanoid = script.Parent:FindFirstChild("Humanoid")
+     local hrp = script.Parent:FindFirstChild("HumanoidRootPart") 
+     StartingPosition = hrp.Position    
+     while true do
+	 local randomX = math.random(-50, 50)
+	 local randomZ = math.random(-50, 50)
+	 local targetPosition = StartingPosition + Vector3.new(randomX, 0, randomZ)
+	 humanoid:MoveTo(targetPosition)
+	 humanoid.MoveToFinished:Wait()
+	 task.wait(0.1)
+     end
+  end
+#+end_src
+******** getClosestPlayer
+#+begin_src lua
+  local function getClosestPlayer(rigRootPart)
+      local closestPlayer = nil
+      local closestDistance = math.huge
+      for _, player in ipairs(Players:GetPlayers()) do
+  		local character = player.Character
+  		if character and character:FindFirstChild("HumanoidRootPart") then
+  			local distance = (character.HumanoidRootPart.Position - rigRootPart.Position).Magnitude
+  			if distance < closestDistance then
+  			closestDistance = distance
+  			closestPlayer = player
+  			print("Found a player at distance:", closestDistance)
+  			end
+  		end
+      end
+      return closestPlayer, closestDistance
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  createAttacker()
+  if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Attackers") then
+     script.Parent:FindFirstChild("HumanoidRootPart").Touched:Connect(onTouched)     
+     local rigRootPart = script.Parent:FindFirstChild("HumanoidRootPart")
+     -- task.spawn(movement)
+     while true do
+	local closestPlayer, closestDistance = getClosestPlayer(rigRootPart)
+	if closestPlayer and closestPlayer.Character then
+	   local playerRootPart = closestPlayer.Character:WaitForChild("HumanoidRootPart")
+	   if closestDistance <= targetDistance then
+	      moveToPlayer(playerRootPart, rigRootPart)
+	   end
+	end
+	task.wait(refreshRate)
+     end
+  end
+#+end_src
+*** obstacles
+*** establishments 
+**** tool shop 
+***** ToolShopManager
+:properties:
+:header-args:lua: :tangle ./src/server/Establishments/ToolShopManager.server.luau
+:END:
+****** notes
+virtual space for clerks to interact with players
+****** code
+******* variables
+******** remote events
+#+begin_src lua
+  local replicatedStorage = game:GetService("ReplicatedStorage")
+  local dialogChoiceEvent = Instance.new("RemoteEvent")
+  dialogChoiceEvent.Name = "DialogChoiceEvent"
+  dialogChoiceEvent.Parent = replicatedStorage
+  local tradingEvent = Instance.new("RemoteEvent")
+  tradingEvent.Name = "TradingEvent"
+  tradingEvent.Parent = replicatedStorage
+  local displayItemsEvent = Instance.new("RemoteEvent")
+  displayItemsEvent.Name = "DisplayItemsEvent"
+  displayItemsEvent.Parent = replicatedStorage
+  local feedbackMessageEvent = Instance.new("RemoteEvent")
+  feedbackMessageEvent.Name = "FeedbackMessageEvent"
+  feedbackMessageEvent.Parent = replicatedStorage
+  local PlayerFinderEvent = Instance.new("RemoteEvent")
+  PlayerFinderEvent.Name = "PlayerFinderEvent"
+  PlayerFinderEvent.Parent = replicatedStorage 
+  local WireTransferEvent = Instance.new("RemoteEvent")
+  WireTransferEvent.Name = "WireTransferEvent"
+  WireTransferEvent.Parent = replicatedStorage
+  local MoneyReciverEvent = Instance.new("RemoteEvent")
+  MoneyReciverEvent.Name = "MoneyReciverEvent"
+  MoneyReciverEvent.Parent = replicatedStorage
+#+end_src
+******** store manager variables 
+#+begin_src lua
+  -- local npc = workspace.Store:WaitForChild("NPC")
+  -- local dialog = npc:WaitForChild("Head"):WaitForChild("Dialog")
+  local depreciationRate = 0.5
+#+end_src
+******* functions
+******** onDialog
+#+begin_src lua
+  local function onDialog(player)
+      --   print(player.Name.. "selected: " .. choiceName)
+      --   local items = {}
+      --   local itemsData = {}
+      --   if choiceName == "Buy" then
+	  --       items = itemsFolder:GetChildren()
+	  --       print(items)
+      --   elseif  choiceName == "Sell"  then
+	  --       items = player.Backpack:GetChildren()
+      --   end
+      --   for _, item in ipairs(items) do
+	  --       local config = item:FindFirstChild("Configuration")
+	  --       if config and config:FindFirstChild("BuyPrice") then
+	  -- 	      local buyPrice = config.BuyPrice.Value
+	  -- 	      local sellPrice = math.round(buyPrice * depreciationRate) 
+	  -- 	  table.insert(itemsData, {Name = item.Name, BuyPrice = buyPrice , SellPrice = sellPrice})
+	  --       end
+      --   end
+      --   print(itemsData)
+      --   print( "test from aaron")
+      --   displayItemsEvent:FireClient(player, itemsData, choiceName)
+	displayItemsEvent:FireClient(player, "Server got your message!")
+  end  
+#+end_src
+******** onTrading
+#+begin_src  lua
+  local function onTrading(player, itemName, choiceName)
+      --   local playerStats = player:WaitForChild("leaderstats")
+      --   if playerStats then
+	  --       local coins = playerStats:FindFirstChild("Coin")
+	  --       local item = itemsFolder:FindFirstChild(itemName)
+	  --       if coins and item then
+	  -- 	      local config = item:FindFirstChild("Configuration")
+	  -- 	      if config and config:FindFirstChild("BuyPrice") then
+	  -- 		      local buyPrice = config.BuyPrice.Value
+	  -- 		      local sellPrice = math.round(buyPrice * depreciationRate)
+	  -- 		      if choiceName == "Buy" then
+	  -- 			      if coins.Value >= buyPrice then
+	  -- 				      coins.Value = coins.Value - buyPrice
+	  -- 				      local itemClone = item:Clone()
+	  -- 				      itemClone.Parent = player.Backpack
+	  -- 				      print(player.name .. " purchased " .. itemName " for " .. buyPrice)
+	  -- 			      end
+	  -- 		      end
+	  -- 	      end
+	  --       else
+	  -- 	      warn("coins or items not found!")
+	  --       end
+      --   end
+  end
+#+end_src
+******* execution
+#+begin_src lua
+  dialogChoiceEvent.OnServerEvent:Connect(onDialog)
+--tradingEvent.onServerEvent:Connect(onTrading)
+#+end_src
+*** tools
+**** gravity coil
+***** GravityCoilManager
+:properties:
+:header-args:lua: :tangle ./src/server/Tools/GravityCoilManager.server.luau
+:END:
+****** notes
+Spawns gravity coils into the world.
+****** code
+******* variables
+#+begin_src lua
+  local gravityCoil = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("GravityCoils"):WaitForChild("Tool")
+  local gravityCoilScript = script.Parent:FindFirstChild("GravityCoilScript")
+  gravityCoilScript.Parent = gravityCoil
+  local gravityCoilsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("GravityCoils")
+  local spawnRange = 48
+  local gravityCoilCount = 3
+#+end_src
+******* functions
+******** randomSpawn
+#+begin_src lua
+  local function randomSpawn()
+    local xpos = math.random (-spawnRange, spawnRange)
+    local zpos = math.random (-spawnRange, spawnRange)
+    local ypos = math.random (5, 30)
+    local gravityCoilClone = gravityCoil:Clone()
+    local gravityCoilHandleClone = gravityCoilClone:FindFirstChild("Handle")
+    gravityCoilClone.Parent = gravityCoilsFolder
+    gravityCoilHandleClone.Position = Vector3.new(xpos,ypos,zpos)
+    local gravityCoilScriptClone = gravityCoilClone:WaitForChild("GravityCoilScript")
+    gravityCoilScriptClone.Parent = gravityCoilClone
+    return
+  end
+#+end_src
+******** movements
+#+begin_src lua
+  local function movements(ToolsClone)
+    local spinRate = math.rad
+    while true do
+	-- Movement logic placeholder
+    end
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  for i = 1, gravityCoilCount do
+     randomSpawn()
+  end
+#+end_src
+***** GravityCoilScript
+:properties:
+:header-args:lua: :tangle ./src/server/Tools/GravityCoilScript.server.luau
+:END:
+****** notes
+Defines individual gravity coil behavior. Handle is a mesh part but it has to have the name "Handle" for it to have the TouchInterest, to support the onEquipped event.
+****** code
+******* variables
+#+begin_src lua
+  local gravityCoilBase = Instance.new("Tool")
+  gravityCoilBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("GravityCoils")
+  local gravityCoilHandle = Instance.new("MeshPart")
+  gravityCoilHandle.Parent =  gravityCoilBase
+  gravityCoilHandle.Name = "Handle"
+  local gravityCoil = Instance.new ("SpecialMesh")
+  gravityCoil.Parent = gravityCoilHandle
+  gravityCoil.MeshId = "rbxassetid://16606212"
+  gravityCoil.TextureId = "rbxassetid://16606141"
+  local rotationRate = 3
+  local Players = game:GetService("Players")
+  local gravityCoilFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("GravityCoils")
+#+end_src
+******* functions
+******** rotate 
+#+begin_src lua
+  local function rotate()
+      script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
+  end
+#+end_src
+******** onEquipped
+#+begin_src lua
+  local function onEquipped()
+      local character = script.Parent.Parent
+      character.Humanoid.JumpHeight = 15
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  if script.Parent.Parent == gravityCoilFolder then
+    script.Parent.Equipped:Connect(onEquipped)
+  end
+#+end_src
+*** ui
+**** dialog
+***** DialogManager
+:properties:
+:header-args:lua: :tangle ./src/server/UI/DialogManager.server.luau
+:END:
+****** notes
+creates dialog
+****** code
+******* variables
+#+begin_src lua
+  if script.Parent.Parent == game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Clerks") then 
+      local npc = script.Parent 
+      local dialog = Instance.new("Dialog")
+      dialog.BehaviorType = Enum.DialogBehaviorType.MultiplePlayers
+      dialog.InitialPrompt = "Welcome to Aaron's Tool and Gadgets! I am Mac. "
+      dialog.Parent = npc.Head
+      local buyChoice = Instance.new("DialogChoice")
+      buyChoice.UserDialog = "I want to buy a tool"
+      buyChoice.ResponseDialog = "Here are the items available:"
+      buyChoice.Name = "Buy"
+      buyChoice.Parent = dialog 
+      local sellChoice = Instance.new("DialogChoice")
+      sellChoice.UserDialog = "I want to sell some items."
+      sellChoice.ResponseDialog = "Ok, which items do you want to sell? "
+      sellChoice.Name = "Sell"
+      sellChoice.Parent = dialog
+  end
+#+end_src
+******* functions
+******* executions
+**** leaderboard
+***** LeaderboardManager
+:properties:
+:header-args:lua: :tangle ./src/server/UI/LeaderboardManager.server.luau
+:END:
+****** notes
+Standard leaderboard setup to track coins.
+****** code
+******* variables
+#+begin_src lua
+local players = game:GetService("Players")
+#+end_src
+******* functions
+******** onPlayerSpawn
+#+begin_src lua
+local function onPlayerSpawn(player)
+local leaderstats = Instance.new("Folder")
+leaderstats.Name = "leaderstats"
+leaderstats.Parent = player
+local coinCount = Instance.new("IntValue")
+coinCount.Name = "CoinCount"
+coinCount.Parent = leaderstats
+coinCount.Value = 0
+end
+#+end_src
+******* executions
+#+begin_src lua
+players.PlayerAdded:Connect(onPlayerSpawn)
+#+end_src
+** client 
+*** player 
+**** PlayerScript
+:PROPERTIES:
+:header-args:lua: :tangle ./src/client/PlayerScript.client.luau
+:END:
+***** notes
+Handles client-side logic, including listening for dialog selections, notifying the server, and processing the server's response.
+***** code
+****** variables
+#+begin_src lua
+  local Players = game:GetService("Players")
+  local ReplicatedStorage = game:GetService("ReplicatedStorage")
+  local Workspace = game:GetService("Workspace")
+  local player = Players.LocalPlayer
+  -- Wait for the events to be created by the server script (ToolShopManager)
+  local dialogChoiceEvent = ReplicatedStorage:WaitForChild("DialogChoiceEvent")
+  local displayItemsEvent = ReplicatedStorage:WaitForChild("DisplayItemsEvent")
+#+end_src
+****** functions
+******* onServerResponse
+#+begin_src lua
+  local function onServerResponse(data)
+     -- This triggers when the server fires back via displayItemsEvent
+	print("recieved request from server.")
+     -- You can process the 'data' here (e.g., open a GUI)
+  end
+#+end_src
+******* onDialogChoiceSelected
+#+begin_src lua
+  local function onDialogChoiceSelected(dialog, choice)
+     -- Check if the choice is relevant (Buy/Sell)
+	if choice.Name == "Buy" or choice.Name == "Sell" then
+	   -- Fire the server so it knows what we picked
+	      dialogChoiceEvent:FireServer(choice.Name)
+	end
+  end
+#+end_src
+******* setupDialogListeners
+#+begin_src lua
+  local function setupDialogListeners()
+    -- Look for existing NPCs with Dialogs
+	for _, npc in pairs(Workspace:WaitForChild("NPCs"):WaitForChild("Clerks"):GetChildren()) do
+	    if npc.Name ~= "Script" then
+		local head = npc:WaitForChild("Head")
+		local dialog = head:FindFirstChild("Dialog")
+		if dialog then
+		    dialog.DialogChoiceSelected:Connect(function(player, choice)
+		    onDialogChoiceSelected(dialog, choice)
+		    end)
+		end
+	    end
+	end
+    -- Handle new NPCs added later (if any)
+	Workspace.NPCs.Clerks.ChildAdded:Connect(function(npc)
+	    local head = npc:WaitForChild("Head")
+	    local dialog = head:WaitForChild("Dialog")
+	    dialog.DialogChoiceSelected:Connect(function(player, choice)
+	    onDialogChoiceSelected(dialog, choice)
+	    end)
+	end)
+  end
+#+end_src
+****** executions
+#+begin_src lua
+  -- Connect the listener for the server response
+     displayItemsEvent.OnClientEvent:Connect(onServerResponse)
+  -- Initialize listeners for Dialog interactions
+     setupDialogListeners()
+#+end_src
+** rojo
+*** default.project
+:properties:
+:header-args:json: :tangle ./default.project.json
+:END:
+**** code
+#+begin_src json
+{
+  "name": "lab",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+        "$path": "src/Shared"
+    },
+    "ServerScriptService": {
+        "$path": "src/Server"
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Client": {
+          "$path": "src/Client"
+        }
+      }
+    },
+    
+    "Workspace": {
+      "$path": "src/Workspace",
+      "Baseplate": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "Color": [0.38823, 0.37254, 0.38823],
+          "Locked": true,
+          "Position": [0, -10, 0],
+          "Size": [512, 20, 512]
+        }
+      }
+    },
+    "Lighting": {
+      "$properties": {
+        "Ambient": [
+          0,
+          0,
+          0
+        ],
+        "Brightness": 2,
+        "GlobalShadows": true,
+        "Outlines": false,
+        "Technology": "Voxel"
+      }
+    },
+    
+    "SoundService": {
+      "$properties": {
+        "RespectFilteringEnabled": true
+      }
+    }
+  }
+} 
 #+end_src
