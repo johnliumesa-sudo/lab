@@ -9,8 +9,8 @@ local debris = game:GetService("Debris")
 local function handleObstacle(startPosition, targetPosition, rigRootPart)
    local rigHumanoid = rigRootPart.Parent:FindFirstChild("Humanoid")
     for i = 1, 50 do
-	rigHumanoid.Jump = true
-	task.wait(0.1)
+      rigHumanoid.Jump = true
+      task.wait(0.1)
     end	
     local alternativeAngles = {
     CFrame.Angles(0, math.rad(90), 0),
@@ -19,14 +19,14 @@ local function handleObstacle(startPosition, targetPosition, rigRootPart)
     CFrame.Angles(0, math.rad(180), 0)
     }
     for _, angle in ipairs(alternativeAngles) do
-	local baseDirection = (targetPosition - rigRootPart.Position).Unit
-	local rotatedDirection = (angle * CFrame.new(baseDirection)).LookVector
-	local newTargetPosition = rigRootPart.Position + rotatedDirection * 15
-	rigHumanoid:MoveTo(newTargetPosition)
-	rigHumanoid.MoveToFinished:Wait()
-	if (rigRootPart.Position - startPosition).Magnitude > 0.5 then
-	    break
-	end
+      local baseDirection = (targetPosition - rigRootPart.Position).Unit
+      local rotatedDirection = (angle * CFrame.new(baseDirection)).LookVector
+      local newTargetPosition = rigRootPart.Position + rotatedDirection * 15
+      rigHumanoid:MoveTo(newTargetPosition)
+      rigHumanoid.MoveToFinished:Wait()
+      if (rigRootPart.Position - startPosition).Magnitude > 0.5 then
+	  break
+      end
     end
 end
 
@@ -35,25 +35,25 @@ local function checkForObstaclesAndJump(targetPosition, rigRootPart)
     local moveTimeout = 1
     local reached = false
     task.spawn(function()
-	  local elapsed = 0
-	  while elapsed < moveTimeout do
-	      task.wait(0.1)
-	      elapsed += 0.1
-	      if (rigRootPart.Position - startPosition).Magnitude > 0.5 then
-		  reached = true
-		  break
-	      end
-	  end
-	  if not reached then
-	      local direction = (targetPosition - rigRootPart.Position).Unit
-	      local rayParams = RaycastParams.new()
-	      rayParams.FilterDescendantsInstances = {rigRootPart}
-	      rayParams.FilterType = Enum.RaycastFilterType.Exclude
-	      local rayResult = workspace:Raycast(rigRootPart.Position, direction * 3, rayParams)
-	      if rayResult and rayResult.Instance then
-		handleObstacle(startPosition, targetPosition, rigRootPart)
-	      end
-	  end
+	local elapsed = 0
+	while elapsed < moveTimeout do
+	    task.wait(0.1)
+	    elapsed += 0.1
+	    if (rigRootPart.Position - startPosition).Magnitude > 0.5 then
+		reached = true
+		break
+	    end
+	end
+	if not reached then
+	    local direction = (targetPosition - rigRootPart.Position).Unit
+	    local rayParams = RaycastParams.new()
+	    rayParams.FilterDescendantsInstances = {rigRootPart}
+	    rayParams.FilterType = Enum.RaycastFilterType.Exclude
+	    local rayResult = workspace:Raycast(rigRootPart.Position, direction * 3, rayParams)
+	    if rayResult and rayResult.Instance then
+	      handleObstacle(startPosition, targetPosition, rigRootPart)
+	    end
+	end
     end)
 end
 
@@ -75,53 +75,53 @@ end
 local function moveToPlayer(playerRootPart, rigRootPart)
    local rigHumanoid = rigRootPart.Parent:FindFirstChild("Humanoid")
    local path = pathFindingService:CreatePath({
-	   AgentRadius = 0.1,
-	   AgentHeight = 0.1,
-	   AgentCanJump = true,
-	   AgentCanClimb = true,
-	   AgentJumpHeight = 7.2,
-	   AgentMaxSlope = 89,
-	   WaypointSpacing = 1,
-	   Costs = { plastic = 3 }
+	 AgentRadius = 0.1,
+	 AgentHeight = 0.1,
+	 AgentCanJump = true,
+	 AgentCanClimb = true,
+	 AgentJumpHeight = 7.2,
+	 AgentMaxSlope = 89,
+	 WaypointSpacing = 1,
+	 Costs = { plastic = 3 }
    })
    local success, errorMessage = pcall(function()
-	   path:ComputeAsync(rigRootPart.Position, playerRootPart.Position)
+	 path:ComputeAsync(rigRootPart.Position, playerRootPart.Position)
    end)     
    if success and path.Status == Enum.PathStatus.Success then
-	for _, waypoint in pairs(path:GetWaypoints()) do
-	   visualizePath(waypoint)
-	   local distance = CheckDistance(playerRootPart, rigRootPart)
-	   local targetPosition = (distance <= stopDistance)
-	      and playerRootPart.Position + (rigRootPart.Position - playerRootPart.Position).Unit * stopDistance
-	      or waypoint.Position
-	   rigHumanoid:MoveTo(targetPosition)
-	   -- if distance > stopDistance and not walkAnimation.IsPlaying then
-	   --     idleAnimation:Stop()
-	   --     walkAnimation:Play()
-	   --     local runningSound = rigRootPart:FindFirstChild("Running")
-	   --     if runningSound then 
-	   --         runningSound:Play() 
-	   --     end
-	   -- end
-	   if distance <= stopDistance then
-	      -- if walkAnimation.IsPlaying then
-	      --     walkAnimation:Stop(0)
-	      --     local runningSound = rigRootPart:FindFirstChild("Running")
-	      --     if runningSound then runningSound:Stop() end
-	      -- end
-	      if waypoint.Action == Enum.PathWaypointAction.Jump then
-		 rigHumanoid.JumpHeight = 7.2
-		 rigHumanoid.Jump = true
-	      end
-	      checkForObstaclesAndJump(targetPosition, rigRootPart)
-	      -- if not idleAnimation.IsPlaying then
-	      --     idleAnimation:Play()
-	      -- end
-	      rigRootPart.CFrame = CFrame.lookAt(rigRootPart.Position, playerRootPart.Position)
-	   end
-	end
+      for _, waypoint in pairs(path:GetWaypoints()) do
+	 visualizePath(waypoint)
+	 local distance = CheckDistance(playerRootPart, rigRootPart)
+	 local targetPosition = (distance <= stopDistance)
+	    and playerRootPart.Position + (rigRootPart.Position - playerRootPart.Position).Unit * stopDistance
+	    or waypoint.Position
+	 rigHumanoid:MoveTo(targetPosition)
+	 -- if distance > stopDistance and not walkAnimation.IsPlaying then
+	 --     idleAnimation:Stop()
+	 --     walkAnimation:Play()
+	 --     local runningSound = rigRootPart:FindFirstChild("Running")
+	 --     if runningSound then 
+	 --         runningSound:Play() 
+	 --     end
+	 -- end
+	 if distance <= stopDistance then
+	    -- if walkAnimation.IsPlaying then
+	    --     walkAnimation:Stop(0)
+	    --     local runningSound = rigRootPart:FindFirstChild("Running")
+	    --     if runningSound then runningSound:Stop() end
+	    -- end
+	    if waypoint.Action == Enum.PathWaypointAction.Jump then
+	       rigHumanoid.JumpHeight = 7.2
+	       rigHumanoid.Jump = true
+	    end
+	    checkForObstaclesAndJump(targetPosition, rigRootPart)
+	    -- if not idleAnimation.IsPlaying then
+	    --     idleAnimation:Play()
+	    -- end
+	    rigRootPart.CFrame = CFrame.lookAt(rigRootPart.Position, playerRootPart.Position)
+	 end
+      end
    else
-	warn("-ErRoR 403: Pathfinding failed -")
+      warn("-ErRoR 403: Pathfinding failed -")
    end
 end
 
@@ -173,22 +173,22 @@ local function onTouched(otherPart)
     local character = otherPart.Parent
     local humanoid = character:FindFirstChildWhichIsA("Humanoid")
     if humanoid then
-	  local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
+	local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
     if player then
-	  local leaderstats = player:WaitForChild("leaderstats")
-	  local coinCount = leaderstats:WaitForChild("CoinCount")
-	  leaderstats.CoinCount.Value -= 3
-	  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
-	  script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
-	  if coinCount.Value < 0 then
-	      humanoid.BreakJointsOnDeath = false
-	      humanoid.Health = 0
-	      coinCount.Value = 0
-	  end
-	  task.wait(5)
-	  script.Parent:FindFirstChild("Torso").Color = Color3.new(0.666666, 0.023529, 0.921568)
-	  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
-	  end
+	local leaderstats = player:WaitForChild("leaderstats")
+	-- local coinCount = leaderstats:WaitForChild("CoinCount")
+	-- leaderstats.CoinCount.Value -= 3
+	script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
+	script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
+	-- if coinCount.Value < 0 then
+	    humanoid.BreakJointsOnDeath = false
+	    humanoid.Health = 0
+	    -- coinCount.Value = 0
+	-- end
+	task.wait(5)
+	script.Parent:FindFirstChild("Torso").Color = Color3.new(0.666666, 0.023529, 0.921568)
+	script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
+	end
     end
 end
 
@@ -197,12 +197,12 @@ local function movement()
    local hrp = script.Parent:FindFirstChild("HumanoidRootPart") 
    StartingPosition = hrp.Position    
    while true do
-	 local randomX = math.random(-50, 50)
-	 local randomZ = math.random(-50, 50)
-	 local targetPosition = StartingPosition + Vector3.new(randomX, 0, randomZ)
-	 humanoid:MoveTo(targetPosition)
-	 humanoid.MoveToFinished:Wait()
-	 task.wait(0.1)
+       local randomX = math.random(-50, 50)
+       local randomZ = math.random(-50, 50)
+       local targetPosition = StartingPosition + Vector3.new(randomX, 0, randomZ)
+       humanoid:MoveTo(targetPosition)
+       humanoid.MoveToFinished:Wait()
+       task.wait(0.1)
    end
 end
 
@@ -210,32 +210,32 @@ local function getClosestPlayer(rigRootPart)
     local closestPlayer = nil
     local closestDistance = math.huge
     for _, player in ipairs(Players:GetPlayers()) do
-		local character = player.Character
-		if character and character:FindFirstChild("HumanoidRootPart") then
-			local distance = (character.HumanoidRootPart.Position - rigRootPart.Position).Magnitude
-			if distance < closestDistance then
-			closestDistance = distance
-			closestPlayer = player
-			print("Found a player at distance:", closestDistance)
-			end
-		end
+  	      local character = player.Character
+  	      if character and character:FindFirstChild("HumanoidRootPart") then
+  		      local distance = (character.HumanoidRootPart.Position - rigRootPart.Position).Magnitude
+  		      if distance < closestDistance then
+  		      closestDistance = distance
+  		      closestPlayer = player
+  		      print("Found a player at distance:", closestDistance)
+  		      end
+  	      end
     end
     return closestPlayer, closestDistance
 end
 
 createAttacker()
 if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Attackers") then
-    -- script.Parent:FindFirstChild("HumanoidRootPart").Touched:Connect(onTouched)
-    local rigRootPart = script.Parent:FindFirstChild("HumanoidRootPart")
-    -- task.spawn(movement)
-    while true do
-	  local closestPlayer, closestDistance = getClosestPlayer(rigRootPart)
-	  if closestPlayer and closestPlayer.Character then
-	      local playerRootPart = closestPlayer.Character:WaitForChild("HumanoidRootPart")
-	      if closestDistance <= targetDistance then
-		  moveToPlayer(playerRootPart, rigRootPart)
-	      end
-	  end
-	  task.wait(refreshRate)
-    end
+   script.Parent:FindFirstChild("HumanoidRootPart").Touched:Connect(onTouched)     
+   local rigRootPart = script.Parent:FindFirstChild("HumanoidRootPart")
+   -- task.spawn(movement)
+   while true do
+      local closestPlayer, closestDistance = getClosestPlayer(rigRootPart)
+      if closestPlayer and closestPlayer.Character then
+	 local playerRootPart = closestPlayer.Character:WaitForChild("HumanoidRootPart")
+	 if closestDistance <= targetDistance then
+	    moveToPlayer(playerRootPart, rigRootPart)
+	 end
+      end
+      task.wait(refreshRate)
+   end
 end

@@ -1,17 +1,19 @@
 #+TITLE: Roblox Game Design Document
 #+AUTHOR: Aaron Liu
 #+DESCRIPTION: A master literate programming file for the Coin Collection game.
-* server
-** collectables
-*** coins
-**** CoinManager
+
+* code
+** server
+*** collectables
+**** coins
+***** CoinManager
 :properties:
 :header-args:lua: :tangle ./src/server/Collectables/CoinManager.server.luau
 :END:
-***** notes
+****** notes
 Spawns the coins into the world.
-***** code
-****** variables
+****** code
+******* variables
 #+begin_src lua
   local coin = game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Coins"):WaitForChild("Part")
   local coinScript = script.Parent:FindFirstChild("CoinScript")
@@ -20,8 +22,8 @@ Spawns the coins into the world.
   local spawnRange = 48
   local coinCount = 21
 #+end_src
-****** functions
-******* randomSpawn
+******* functions
+******** randomSpawn
 #+begin_src lua
   local function randomSpawn()
     local xpos = math.random (-spawnRange, spawnRange)
@@ -35,7 +37,7 @@ Spawns the coins into the world.
     return
   end
 #+end_src
-******* movements
+******** movements
 #+begin_src lua
   local function movements(collectablesClone)
     local spinRate = math.rad
@@ -44,20 +46,20 @@ Spawns the coins into the world.
     end
   end
 #+end_src
-****** executions
+******* executions
 #+begin_src lua
   for i = 1, coinCount do
       randomSpawn()
   end
 #+end_src
-**** CoinScript
+***** CoinScript
 :properties:
 :header-args:lua: :tangle ./src/server/Collectables/CoinScript.server.luau
 :END:
-***** notes
+****** notes
 Defines individual coin behavior (rotate, touch, reward).
-***** code
-****** variables
+****** code
+******* variables
 #+begin_src lua
   local coinBase = Instance.new("Part")
   coinBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Coins")
@@ -70,14 +72,14 @@ Defines individual coin behavior (rotate, touch, reward).
   local Players = game:GetService("Players")
   local coinFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Coins")
 #+end_src
-****** functions
-******* rotate 
+******* functions
+******** rotate 
 #+begin_src lua
   local function rotate()
       script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
   end
 #+end_src
-******* onTouched
+******** onTouched
 #+begin_src lua
   local function onTouched(otherPart)
       local character = otherPart.Parent
@@ -92,23 +94,23 @@ Defines individual coin behavior (rotate, touch, reward).
       end
   end
 #+end_src
-****** executions
+******* executions
 #+begin_src lua
   if script.Parent.Parent == coinFolder then
     script.Parent.Touched:Connect(onTouched)
     game:GetService("RunService").Heartbeat:Connect(rotate)
   end
 #+end_src
-** npcs
-*** patrols
-**** PatrolManager
+*** npcs
+**** patrols
+***** PatrolManager
 :properties:
 :header-args:lua: :tangle ./src/server/NPCs/PatrolManager.server.luau
 :END:
-***** notes
+****** notes
 Spawns the Patrol NPCs.
-***** code
-****** variables
+****** code
+******* variables
 #+begin_src lua
   local patrol = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Patrols"):WaitForChild("Model")
   local patrolScript = script.Parent:FindFirstChild("PatrolScript")
@@ -117,8 +119,8 @@ Spawns the Patrol NPCs.
   local spawnRange = 96
   local patrolCount = 12
 #+end_src
-****** functions
-******* randomSpawn
+******* functions
+******** randomSpawn
 #+begin_src lua
   local function  randomSpawn(index)
       local xpos = math.random (-spawnRange, spawnRange)
@@ -132,26 +134,26 @@ Spawns the Patrol NPCs.
       return  
   end
 #+end_src
-****** executions
+******* executions
 #+begin_src lua
   for i = 1, patrolCount do
       randomSpawn(i)
   end
 #+end_src
-**** PatrolScript
+***** PatrolScript
 :PROPERTIES:
 :header-args:lua: :tangle ./src/server/NPCs/PatrolScript.server.luau
 :END:
-***** notes
+****** notes
 FIXED LOGIC: This script builds the NPC body on the existing model (script.Parent) instead of creating a new ghost model in storage. This ensures hrp.Touched actually works in the Workspace.
-***** code
-****** variables
+****** code
+******* variables
 #+begin_src lua
   local StartingPosition = Vector3.new(0, 5, 0)
   local Players = game:GetService("Players")
 #+end_src
-****** functions
-******* setupPatrolBody
+******* functions
+******** setupPatrolBody
 #+begin_src lua
   local function createPatrol()
       local patrol = Instance.new("Model")
@@ -197,7 +199,7 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
       return patrol, hrp, humanoid,torso
   end
 #+end_src
-******* onTouched
+******** onTouched
 #+begin_src lua
   local function onTouched(otherPart)
       local character = otherPart.Parent
@@ -222,7 +224,7 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
       end
   end
 #+end_src
-******* movement
+******** movement
 #+begin_src lua
   local function movement()
      local humanoid = script.Parent:FindFirstChild("Humanoid")
@@ -238,7 +240,7 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
      end
   end
 #+end_src
-****** executions
+******* executions
 #+begin_src lua
   local patrol, hrp, humanoid,torso = createPatrol()
   if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Patrols") then
@@ -246,15 +248,15 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
       task.spawn(movement)
   end
 #+end_src
-*** clerks
-**** ClerkManager
+**** clerks
+***** ClerkManager
 :properties:
 :header-args:lua: :tangle ./src/server/NPCs/ClerkManager.server.luau
 :END:
-***** notes
+****** notes
 Spawns the Clerk NPCs.
-***** code
-****** variables
+****** code
+******* variables
 #+begin_src lua
   local clerk = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Clerks"):WaitForChild("Model")
   local clerkScript = script.Parent:FindFirstChild("ClerkScript")
@@ -265,8 +267,8 @@ Spawns the Clerk NPCs.
   local spawnRange = 96
   local clerkCount = 30
 #+end_src
-****** functions
-******* randomSpawn
+******* functions
+******** randomSpawn
 #+begin_src lua
   local function  randomSpawn(index)
       local xpos = math.random (-spawnRange, spawnRange)
@@ -280,26 +282,26 @@ Spawns the Clerk NPCs.
       return  
   end
 #+end_src
-****** executions
+******* executions
 #+begin_src lua
   for i = 1, clerkCount do
       randomSpawn(i)
   end
 #+end_src
-**** ClerkScript
+***** ClerkScript
 :PROPERTIES:
 :header-args:lua: :tangle ./src/server/NPCs/ClerkScript.server.luau
 :END:
-***** notes
+****** notes
 Creates the logic for the store clerk which handles conversations.
-***** code
-****** variables
+****** code
+******* variables
 #+begin_src lua
   local StartingPosition = Vector3.new(0, 5, 0)
   local Players = game:GetService("Players")  
 #+end_src
-****** functions
-******* setupPatrolBody
+******* functions
+******** setupPatrolBody
 #+begin_src lua
   local function createclerk()
       local clerk = Instance.new("Model")
@@ -344,21 +346,21 @@ Creates the logic for the store clerk which handles conversations.
       return clerk, hrp, humanoid,torso
   end
 #+end_src
-****** executions
+******* executions
 #+begin_src lua
   local clerk, hrp, humanoid,torso = createclerk()
   if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Clerks") then
   end
 #+end_src
-*** attackers
-**** AttackerManager
+**** attackers
+***** AttackerManager
 :properties:
 :header-args:lua: :tangle ./src/server/NPCs/AttackerManager.server.luau
 :END:
-***** notes
+****** notes
 Spawns the attacker NPCs.
-***** code
-****** variables
+****** code
+******* variables
 #+begin_src lua
   local attacker = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Attackers"):WaitForChild("Model")
   local attackerScript = script.Parent:FindFirstChild("AttackerScript")
@@ -367,8 +369,8 @@ Spawns the attacker NPCs.
   local spawnRange = 96
   local attackerCount = 3
 #+end_src
-****** functions
-******* randomSpawn
+******* functions
+******** randomSpawn
 #+begin_src lua
   local function  randomSpawn(index)
       local xpos = math.random (-spawnRange, spawnRange)
@@ -382,20 +384,20 @@ Spawns the attacker NPCs.
       return  
   end
 #+end_src
-****** executions
+******* executions
 #+begin_src lua
   for i = 1, attackerCount do
       randomSpawn(i)
   end
 #+end_src
-**** AttackerScript
+***** AttackerScript
 :PROPERTIES:
 :header-args:lua: :tangle ./src/server/NPCs/AttackerScript.server.luau
 :END:
-***** notes
+****** notes
 Defines attacker behavior, creation, and logic.
-***** code
-****** variables
+****** code
+******* variables
 #+begin_src lua
   local StartingPosition = Vector3.new(0, 5, 0)
   local Players = game:GetService("Players")
@@ -405,8 +407,8 @@ Defines attacker behavior, creation, and logic.
   local stopDistance = 3
   local debris = game:GetService("Debris")
 #+end_src
-****** functions
-******* handleObstacle
+******* functions
+******** handleObstacle
 #+begin_src lua
   local function handleObstacle(startPosition, targetPosition, rigRootPart)
      local rigHumanoid = rigRootPart.Parent:FindFirstChild("Humanoid")
@@ -432,7 +434,7 @@ Defines attacker behavior, creation, and logic.
       end
   end
 #+end_src
-******* checkForObstaclesAndJump
+******** checkForObstaclesAndJump
 #+begin_src lua
   local function checkForObstaclesAndJump(targetPosition, rigRootPart)
       local startPosition = rigRootPart.Position
@@ -461,13 +463,13 @@ Defines attacker behavior, creation, and logic.
       end)
   end
 #+end_src
-******* CheckDistance
+******** CheckDistance
 #+begin_src lua
   local function CheckDistance(playerRootPart, rigRootPart)
       return (playerRootPart.Position - rigRootPart.Position).Magnitude
   end
 #+end_src
-******* visualizePath
+******** visualizePath
 #+begin_src lua
   local function visualizePath(waypoint)
       local part = Instance.new("Part")
@@ -480,7 +482,7 @@ Defines attacker behavior, creation, and logic.
       debris:AddItem(part, 0.1)
   end
 #+end_src
-******* moveToPlayer
+******** moveToPlayer
 #+begin_src lua
   local function moveToPlayer(playerRootPart, rigRootPart)
      local rigHumanoid = rigRootPart.Parent:FindFirstChild("Humanoid")
@@ -535,7 +537,7 @@ Defines attacker behavior, creation, and logic.
      end
   end
 #+end_src
-******* createAttacker
+******** createAttacker
 #+begin_src lua
   local function createAttacker()
       local attacker = Instance.new("Model")
@@ -581,7 +583,7 @@ Defines attacker behavior, creation, and logic.
       return attacker, hrp, humanoid,torso
   end
 #+end_src
-******* onTouched
+******** onTouched
 #+begin_src lua
   local function onTouched(otherPart)
       local character = otherPart.Parent
@@ -590,15 +592,15 @@ Defines attacker behavior, creation, and logic.
 	  local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
       if player then
 	  local leaderstats = player:WaitForChild("leaderstats")
-	  local coinCount = leaderstats:WaitForChild("CoinCount")
-	  leaderstats.CoinCount.Value -= 3
+	  -- local coinCount = leaderstats:WaitForChild("CoinCount")
+	  -- leaderstats.CoinCount.Value -= 3
 	  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
 	  script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
-	  if coinCount.Value < 0 then
+	  -- if coinCount.Value < 0 then
 	      humanoid.BreakJointsOnDeath = false
 	      humanoid.Health = 0
-	      coinCount.Value = 0
-	  end
+	      -- coinCount.Value = 0
+	  -- end
 	  task.wait(5)
 	  script.Parent:FindFirstChild("Torso").Color = Color3.new(0.666666, 0.023529, 0.921568)
 	  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
@@ -606,7 +608,7 @@ Defines attacker behavior, creation, and logic.
       end
   end
 #+end_src
-******* movement
+******** movement
 #+begin_src lua
   local function movement()
      local humanoid = script.Parent:FindFirstChild("Humanoid")
@@ -622,7 +624,7 @@ Defines attacker behavior, creation, and logic.
      end
   end
 #+end_src
-******* getClosestPlayer
+******** getClosestPlayer
 #+begin_src lua
   local function getClosestPlayer(rigRootPart)
       local closestPlayer = nil
@@ -641,37 +643,37 @@ Defines attacker behavior, creation, and logic.
       return closestPlayer, closestDistance
   end
 #+end_src
-****** executions
+******* executions
 #+begin_src lua
   createAttacker()
   if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Attackers") then
-      -- script.Parent:FindFirstChild("HumanoidRootPart").Touched:Connect(onTouched)
-      local rigRootPart = script.Parent:FindFirstChild("HumanoidRootPart")
-      -- task.spawn(movement)
-      while true do
-	  local closestPlayer, closestDistance = getClosestPlayer(rigRootPart)
-	  if closestPlayer and closestPlayer.Character then
-	      local playerRootPart = closestPlayer.Character:WaitForChild("HumanoidRootPart")
-	      if closestDistance <= targetDistance then
-		  moveToPlayer(playerRootPart, rigRootPart)
-	      end
-	  end
-	  task.wait(refreshRate)
-      end
+     script.Parent:FindFirstChild("HumanoidRootPart").Touched:Connect(onTouched)     
+     local rigRootPart = script.Parent:FindFirstChild("HumanoidRootPart")
+     -- task.spawn(movement)
+     while true do
+	local closestPlayer, closestDistance = getClosestPlayer(rigRootPart)
+	if closestPlayer and closestPlayer.Character then
+	   local playerRootPart = closestPlayer.Character:WaitForChild("HumanoidRootPart")
+	   if closestDistance <= targetDistance then
+	      moveToPlayer(playerRootPart, rigRootPart)
+	   end
+	end
+	task.wait(refreshRate)
+     end
   end
 #+end_src
-** obstacles
-** establishments 
-*** tool shop 
-**** ToolShopManager
+*** obstacles
+*** establishments 
+**** tool shop 
+***** ToolShopManager
 :properties:
 :header-args:lua: :tangle ./src/server/Establishments/ToolShopManager.server.luau
 :END:
-***** notes
+****** notes
 virtual space for clerks to interact with players
-***** code
-****** variables
-******* remote events
+****** code
+******* variables
+******** remote events
 #+begin_src lua
   local replicatedStorage = game:GetService("ReplicatedStorage")
   local dialogChoiceEvent = Instance.new("RemoteEvent")
@@ -696,14 +698,14 @@ virtual space for clerks to interact with players
   MoneyReciverEvent.Name = "MoneyReciverEvent"
   MoneyReciverEvent.Parent = replicatedStorage
 #+end_src
-******* store manager variables 
+******** store manager variables 
 #+begin_src lua
   -- local npc = workspace.Store:WaitForChild("NPC")
   -- local dialog = npc:WaitForChild("Head"):WaitForChild("Dialog")
   local depreciationRate = 0.5
 #+end_src
-****** functions
-******* onDialog
+******* functions
+******** onDialog
 #+begin_src lua
   local function onDialog(player)
       --   print(player.Name.. "selected: " .. choiceName)
@@ -729,7 +731,7 @@ virtual space for clerks to interact with players
 	displayItemsEvent:FireClient(player, "Server got your message!")
   end  
 #+end_src
-******* onTrading
+******** onTrading
 #+begin_src  lua
   local function onTrading(player, itemName, choiceName)
       --   local playerStats = player:WaitForChild("leaderstats")
@@ -756,21 +758,21 @@ virtual space for clerks to interact with players
       --   end
   end
 #+end_src
-****** execution
+******* execution
 #+begin_src lua
   dialogChoiceEvent.OnServerEvent:Connect(onDialog)
 --tradingEvent.onServerEvent:Connect(onTrading)
 #+end_src
-** tools
-*** gravity coil
-**** GravityCoilManager
+*** tools
+**** gravity coil
+***** GravityCoilManager
 :properties:
 :header-args:lua: :tangle ./src/server/Tools/GravityCoilManager.server.luau
 :END:
-***** notes
+****** notes
 Spawns gravity coils into the world.
-***** code
-****** variables
+****** code
+******* variables
 #+begin_src lua
   local gravityCoil = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("GravityCoils"):WaitForChild("Tool")
   local gravityCoilScript = script.Parent:FindFirstChild("GravityCoilScript")
@@ -779,8 +781,8 @@ Spawns gravity coils into the world.
   local spawnRange = 48
   local gravityCoilCount = 3
 #+end_src
-****** functions
-******* randomSpawn
+******* functions
+******** randomSpawn
 #+begin_src lua
   local function randomSpawn()
     local xpos = math.random (-spawnRange, spawnRange)
@@ -795,7 +797,7 @@ Spawns gravity coils into the world.
     return
   end
 #+end_src
-******* movements
+******** movements
 #+begin_src lua
   local function movements(ToolsClone)
     local spinRate = math.rad
@@ -804,20 +806,20 @@ Spawns gravity coils into the world.
     end
   end
 #+end_src
-****** executions
+******* executions
 #+begin_src lua
   for i = 1, gravityCoilCount do
      randomSpawn()
   end
 #+end_src
-**** GravityCoilScript
+***** GravityCoilScript
 :properties:
 :header-args:lua: :tangle ./src/server/Tools/GravityCoilScript.server.luau
 :END:
-***** notes
+****** notes
 Defines individual gravity coil behavior. Handle is a mesh part but it has to have the name "Handle" for it to have the TouchInterest, to support the onEquipped event.
-***** code
-****** variables
+****** code
+******* variables
 #+begin_src lua
   local gravityCoilBase = Instance.new("Tool")
   gravityCoilBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("GravityCoils")
@@ -832,36 +834,36 @@ Defines individual gravity coil behavior. Handle is a mesh part but it has to ha
   local Players = game:GetService("Players")
   local gravityCoilFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("GravityCoils")
 #+end_src
-****** functions
-******* rotate 
+******* functions
+******** rotate 
 #+begin_src lua
   local function rotate()
       script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
   end
 #+end_src
-******* onEquipped
+******** onEquipped
 #+begin_src lua
   local function onEquipped()
       local character = script.Parent.Parent
       character.Humanoid.JumpHeight = 15
   end
 #+end_src
-****** executions
+******* executions
 #+begin_src lua
   if script.Parent.Parent == gravityCoilFolder then
     script.Parent.Equipped:Connect(onEquipped)
   end
 #+end_src
-** ui
-*** dialog
-**** DialogManager
+*** ui
+**** dialog
+***** DialogManager
 :properties:
 :header-args:lua: :tangle ./src/server/UI/DialogManager.server.luau
 :END:
-***** notes
+****** notes
 creates dialog
-***** code
-****** variables
+****** code
+******* variables
 #+begin_src lua
   if script.Parent.Parent == game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Clerks") then 
       local npc = script.Parent 
@@ -881,22 +883,22 @@ creates dialog
       sellChoice.Parent = dialog
   end
 #+end_src
-****** functions
-****** executions
-*** leaderboard
-**** LeaderboardManager
+******* functions
+******* executions
+**** leaderboard
+***** LeaderboardManager
 :properties:
 :header-args:lua: :tangle ./src/server/UI/LeaderboardManager.server.luau
 :END:
-***** notes
+****** notes
 Standard leaderboard setup to track coins.
-***** code
-****** variables
+****** code
+******* variables
 #+begin_src lua
 local players = game:GetService("Players")
 #+end_src
-****** functions
-******* onPlayerSpawn
+******* functions
+******** onPlayerSpawn
 #+begin_src lua
 local function onPlayerSpawn(player)
 local leaderstats = Instance.new("Folder")
@@ -908,20 +910,20 @@ coinCount.Parent = leaderstats
 coinCount.Value = 0
 end
 #+end_src
-****** executions
+******* executions
 #+begin_src lua
 players.PlayerAdded:Connect(onPlayerSpawn)
 #+end_src
-* client 
-** player 
-*** PlayerScript
+** client 
+*** player 
+**** PlayerScript
 :PROPERTIES:
 :header-args:lua: :tangle ./src/client/PlayerScript.client.luau
 :END:
-**** notes
+***** notes
 Handles client-side logic, including listening for dialog selections, notifying the server, and processing the server's response.
-**** code
-***** variables
+***** code
+****** variables
 #+begin_src lua
   local Players = game:GetService("Players")
   local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -931,8 +933,8 @@ Handles client-side logic, including listening for dialog selections, notifying 
   local dialogChoiceEvent = ReplicatedStorage:WaitForChild("DialogChoiceEvent")
   local displayItemsEvent = ReplicatedStorage:WaitForChild("DisplayItemsEvent")
 #+end_src
-***** functions
-****** onServerResponse
+****** functions
+******* onServerResponse
 #+begin_src lua
   local function onServerResponse(data)
      -- This triggers when the server fires back via displayItemsEvent
@@ -940,7 +942,7 @@ Handles client-side logic, including listening for dialog selections, notifying 
      -- You can process the 'data' here (e.g., open a GUI)
   end
 #+end_src
-****** onDialogChoiceSelected
+******* onDialogChoiceSelected
 #+begin_src lua
   local function onDialogChoiceSelected(dialog, choice)
      -- Check if the choice is relevant (Buy/Sell)
@@ -950,7 +952,7 @@ Handles client-side logic, including listening for dialog selections, notifying 
 	end
   end
 #+end_src
-****** setupDialogListeners
+******* setupDialogListeners
 #+begin_src lua
   local function setupDialogListeners()
     -- Look for existing NPCs with Dialogs
@@ -975,19 +977,19 @@ Handles client-side logic, including listening for dialog selections, notifying 
 	end)
   end
 #+end_src
-***** executions
+****** executions
 #+begin_src lua
   -- Connect the listener for the server response
      displayItemsEvent.OnClientEvent:Connect(onServerResponse)
   -- Initialize listeners for Dialog interactions
      setupDialogListeners()
 #+end_src
-* rojo
-** default.project
+** rojo
+*** default.project
 :properties:
 :header-args:json: :tangle ./default.project.json
 :END:
-*** code
+**** code
 #+begin_src json
 {
   "name": "lab",

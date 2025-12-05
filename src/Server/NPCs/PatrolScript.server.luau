@@ -49,22 +49,22 @@ local function onTouched(otherPart)
     local character = otherPart.Parent
     local humanoid = character:FindFirstChildWhichIsA("Humanoid")
     if humanoid then
-	  local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
+	local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
     if player then
-	  local leaderstats = player:WaitForChild("leaderstats")
-	  local coinCount = leaderstats:WaitForChild("CoinCount")
-	  leaderstats.CoinCount.Value -= 3
-	  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
-	  script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
-	  if coinCount.Value < 0 then
-	      humanoid.BreakJointsOnDeath = false
-	      humanoid.Health = 0
-	      coinCount.Value = 0
-	  end
-	  task.wait(5)
-	  script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
-	  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
-	  end
+	local leaderstats = player:WaitForChild("leaderstats")
+	local coinCount = leaderstats:WaitForChild("CoinCount")
+	leaderstats.CoinCount.Value -= 3
+	script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
+	script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
+	if coinCount.Value < 0 then
+	    humanoid.BreakJointsOnDeath = false
+	    humanoid.Health = 0
+	    coinCount.Value = 0
+	end
+	task.wait(5)
+	script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
+	script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
+	end
     end
 end
 
@@ -73,12 +73,12 @@ local function movement()
    local hrp = script.Parent:FindFirstChild("HumanoidRootPart") 
    StartingPosition = hrp.Position    
    while true do
-	 local randomX = math.random(-50, 50)
-	 local randomZ = math.random(-50, 50)
-	 local targetPosition = StartingPosition + Vector3.new(randomX, 0, randomZ)
-	 humanoid:MoveTo(targetPosition)
-	 humanoid.MoveToFinished:Wait()
-	 task.wait(0.1)
+       local randomX = math.random(-50, 50)
+       local randomZ = math.random(-50, 50)
+       local targetPosition = StartingPosition + Vector3.new(randomX, 0, randomZ)
+       humanoid:MoveTo(targetPosition)
+       humanoid.MoveToFinished:Wait()
+       task.wait(0.1)
    end
 end
 

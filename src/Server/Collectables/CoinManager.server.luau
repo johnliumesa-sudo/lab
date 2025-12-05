@@ -20,7 +20,7 @@ end
 local function movements(collectablesClone)
   local spinRate = math.rad
   while true do
-	-- Movement logic placeholder
+      -- Movement logic placeholder
   end
 end
 
