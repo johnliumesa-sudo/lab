@@ -21,7 +21,7 @@ local function createPatrol()
     local torso = Instance.new("Part")
     torso.Name = "Torso"
     torso.Size = Vector3.new(2, 2, 1)
-    torso.Color = Color3.new(1, 0, 0) -- Red color for visibility
+    torso.Color = Color3.new(1, 1, 0) -- yellow color for visibility(warning)
     torso.Parent = patrol
     local head = Instance.new("Part")
     head.Name = "Head"
