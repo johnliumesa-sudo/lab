@@ -9,29 +9,24 @@ local debris = game:GetService("Debris")
 local function handleObstacle(rigRootPart)
   local humanoid = rigRootPart.Parent:FindFirstChild("Humanoid")
   if humanoid then
-      -- Force the jump state
       humanoid.Jump = true
-      humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
   end
 end
 
 local function checkForObstacles(rigRootPart)
-  -- Look forward relative to the HRP
   local origin = rigRootPart.Position
-  local direction = rigRootPart.CFrame.LookVector * 4 -- Check 4 studs ahead
   local rayParams = RaycastParams.new()
   rayParams.FilterDescendantsInstances = {rigRootPart.Parent} -- Ignore self
   rayParams.FilterType = Enum.RaycastFilterType.Exclude
   local rayResult = workspace:Raycast(origin, direction, rayParams)
   if rayResult and rayResult.Instance then
-      -- If we hit a part that is CanCollide (a wall/block), Jump!
       if rayResult.Instance.CanCollide then
 	  handleObstacle(rigRootPart)
       end
   end
 end
 
-local function CheckDistance(playerRootPart, rigRootPart)
+local function checkDistance(playerRootPart, rigRootPart)
     return (playerRootPart.Position - rigRootPart.Position).Magnitude
 end
 
@@ -64,19 +59,13 @@ local function moveToPlayer(playerRootPart, rigRootPart)
    if success and path.Status == Enum.PathStatus.Success then
       for _, waypoint in pairs(path:GetWaypoints()) do
 	 visualizePath(waypoint)
-	 local distance = CheckDistance(playerRootPart, rigRootPart)
+	 local distance = checkDistance(playerRootPart, rigRootPart)
 	 local targetPosition = (distance <= stopDistance)
 	    and playerRootPart.Position + (rigRootPart.Position - playerRootPart.Position).Unit * stopDistance
 	    or waypoint.Position
 	 rigHumanoid:MoveTo(targetPosition)
-	 if distance <= stopDistance then
-	    if waypoint.Action == Enum.PathWaypointAction.Jump then
-	       rigHumanoid.JumpHeight = 7.2
-	       rigHumanoid.Jump = true
-	    end
-	    checkForObstacles(targetPosition, rigRootPart)
-	    rigRootPart.CFrame = CFrame.lookAt(rigRootPart.Position, playerRootPart.Position)
-	 end
+	  checkForObstacles(rigRootPart)
+	  rigRootPart.CFrame = CFrame.lookAt(rigRootPart.Position, playerRootPart.Position)
       end
    else
       warn("-ErRoR 403: Pathfinding failed -")
