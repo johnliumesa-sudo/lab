@@ -6,22 +6,27 @@ local pathFindingService = game:GetService("PathfindingService")
 local stopDistance = 3
 local debris = game:GetService("Debris")
 
-local function handleObstacle(rigRootPart)
+local function handleObstacle(rigRootPart, targetPosition)
   local humanoid = rigRootPart.Parent:FindFirstChild("Humanoid")
+  local origin = rigRootPart.Position
+--   local jumpPosition = rigRootPart.Position - (rigRootPart.CFrame.LookVector * 300)
   if humanoid then
-      humanoid.Jump = true
+    --   humanoid:MoveTo(jumpPosition)
+      rigRootPart.CFrame = rigRootPart.CFrame * CFrame.new(0,0,3)
+      humanoid:MoveTo(targetPosition)
   end
 end
 
-local function checkForObstacles(rigRootPart)
+local function checkForObstacles(targetPosition,rigRootPart)
   local origin = rigRootPart.Position
   local rayParams = RaycastParams.new()
   rayParams.FilterDescendantsInstances = {rigRootPart.Parent} -- Ignore self
   rayParams.FilterType = Enum.RaycastFilterType.Exclude
+  local direction = (targetPosition - rigRootPart.Position).Unit
   local rayResult = workspace:Raycast(origin, direction, rayParams)
   if rayResult and rayResult.Instance then
       if rayResult.Instance.CanCollide then
-	  handleObstacle(rigRootPart)
+	  handleObstacle(rigRootPart, targetPosition)
       end
   end
 end
@@ -64,7 +69,7 @@ local function moveToPlayer(playerRootPart, rigRootPart)
 	    and playerRootPart.Position + (rigRootPart.Position - playerRootPart.Position).Unit * stopDistance
 	    or waypoint.Position
 	 rigHumanoid:MoveTo(targetPosition)
-	  checkForObstacles(rigRootPart)
+	  checkForObstacles(targetPosition, rigRootPart)
 	  rigRootPart.CFrame = CFrame.lookAt(rigRootPart.Position, playerRootPart.Position)
       end
    else
