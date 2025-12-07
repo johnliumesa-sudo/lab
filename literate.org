@@ -631,6 +631,166 @@ end
     end
   end
 #+end_src
+* learn
+https://create.roblox.com/docs
+** experiences
+*** tutorials
+https://create.roblox.com/docs/tutorials
+*** md 
+https://github.com/Roblox/creator-docs.git  
+**** root
+***** affiliates.md
+***** ai-data-sharing.md
+***** assets.md
+***** creation.md
+***** creator-fund.md
+***** creator-hub.md
+***** creator-programs
+***** creator-rewards.md
+***** discovery.md
+***** experiences.md
+***** get-started.md
+***** platform.md
+***** safety.md
+***** scale.md
+***** unity.md
+***** unreal.md
+***** what-is-roblox.md
+**** animation
+**** art
+**** assets
+**** assistant
+**** audio
+**** avatar
+**** avatar-setup
+**** characters
+**** chat
+**** cloud
+**** cloud-services
+**** education
+**** effects
+**** environment
+**** includes
+**** input
+**** ip-licensing
+**** luau
+**** makeup
+**** marketplace
+**** matchmaking
+**** parts
+**** performance-optimization
+**** physics
+**** players
+**** production
+**** projects
+**** reference
+**** resources
+**** scripting
+**** sound
+**** studio
+**** tutorials
+***** index
+https://create.roblox.com/docs/en-us/tutorials
+****** index.md
+***** contents
+****** curriculum
+******* index 
+https://create.roblox.com/docs/en-us/tutorials/curriculums/core
+https://create.roblox.com/docs/en-us/tutorials/curriculums/core
+******** curriculum-overview.md
+******* contents
+******** animator
+********* get-started.md
+********* index.md
+********* next-steps.md
+********* play-your-animation.md
+********* test-and-save.md
+********* work-with-the-animation-editor.md
+******** artist
+********* get-started.md
+********* index.md
+********* next-steps.md
+********* test-and-save.md
+********* work-with-particle-emitters.md
+******** building
+********* code-with-assistant.md
+********* get-started.md
+********* index.md
+********* next-steps.md
+********* test-and-save.md
+********* work-with-parts.md
+******** coding
+********* customize-strings.md
+********* get-started.md
+********* index.md
+********* next-steps.md
+********* test-and-save.md
+********* work-with-variables.md
+******** core
+********* index
+********** index.md
+********* contents
+********** building
+*********** apply-polished-assets.md
+*********** create-a-project.md
+*********** create-an-environment-with-terrain.md
+*********** create-basic-visual-effects.md
+*********** customize-global-lighting.md
+*********** greybox-a-playable-area.md
+********** scripting
+*********** create-player-hazards.md
+*********** record-and-display-player-data.md
+*********** script-an-upgrade-button.md
+*********** script-game-behavior.md
+******** environmental-art
+********* assemble-an-asset-library.md
+********* construct-your-world.md
+********* develop-polished-assets.md
+********* greybox-your-environment.md
+********* index.md
+********* optimize-your-experience.md
+******** gameplay-scripting
+********* add-rounds.md
+********* create-teams.md
+********* detect-hits.md
+********* implement-blasters.md
+********* index.md
+********* spawn-respawn.md
+******** studio
+********* create-account.md
+********* explore-ui.md
+********* index.md
+********* install-studio.md
+********* next-steps.md
+******** user-interface-design
+********* choose-an-art-style.md
+********* implement-designs-in-studio.md
+********* index.md
+********* wireframe-your-layouts.md
+****** first-experience
+****** fundamentals
+******* coding-1
+******* coding-2
+******* coding-3
+******* coding-4
+******* coding-5
+******* coding-6
+****** use-case-tutorials
+**** ui
+**** workspace
+********** 
+********** 
+********** 
+********** 
+********** 
+******** 
+******** 
+** avatar
+** assets
+** open cloud
+https://create.roblox.com/docs/cloud
+** scale
+** monetize
 * source
 ** server
 *** collectables
