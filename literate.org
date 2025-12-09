@@ -631,6 +631,56 @@ end
     end
   end
 #+end_src
+** tool spawn
+*** variables
+#+begin_src lua
+  --This is a tool spawner script which will desplay the tool.
+  local spawner = script.Parent
+  local tool = nil
+  --local region = Region3.new(Vector3.new(spawner.Position.X - 2, spawner.Position.Y, spawner.Position.Z - 2), Vector3.new(spawner.Position.X + spawner.Size.Y/2, spawner.Position.Y + 4, spawner.Position.Z + spawner.Size.Y/2))
+  local regionCenter = spawner.CFrame + Vector3.new(0, 2, 0)
+  local parts = game.Workspace:GetPartBoundsInBox(regionCenter,Vector3.new(4,4,4))
+#+end_src
+*** functions 
+**** nil func 
+#+begin_src lua
+#+end_src
+*** executions 
+#+begin_src lua
+  for _, part in pairs(parts) do 
+	  if part and part.Parent and part.Parent:IsA("Tool")then
+		  tool = part.Parent
+	  end
+  end
+  if tool then
+	  while true do 
+		  local toolCopy = tool
+		  local handle = toolCopy:FindFirstChild("Handle")
+		  toolCopy.Parent = script.Parent
+		  local toolOnPad = true
+		  local parentConnection
+		  parentConnection = toolCopy.AncestryChanged:Connect(function()
+			  if handle then 
+				  handle.Anchored = false
+			  end
+			  toolOnPad = false
+			  parentConnection:Disconnect()
+		  end)
+		  if handle then
+			  handle.CFrame = (spawner.CFrame * CFrame.fromEulerAngles(0,0, math.rad(-90)) + Vector3.new(0, handle.Size.Y * 1.2, 0))
+			  handle.Anchored = true
+		  end
+		  while toolOnPad do 
+			  if handle then
+				  handle.CFrame = handle.CFrame * CFrame.Angles( math.pi/60, 0,0)
+			  end
+			  task.wait()
+		  end
+		  task.wait(60)
+	  end
+  end
+
+#+end_src
 * source
 ** server
 *** collectables
@@ -1041,24 +1091,29 @@ Defines attacker behavior, creation, and logic.
 ******* functions
 ******** handleObstacle
 #+begin_src lua
-  local function handleObstacle(rigRootPart)
+  local function handleObstacle(rigRootPart, targetPosition)
     local humanoid = rigRootPart.Parent:FindFirstChild("Humanoid")
+    local origin = rigRootPart.Position
+  --   local jumpPosition = rigRootPart.Position - (rigRootPart.CFrame.LookVector * 300)
     if humanoid then
-	humanoid.Jump = true
+      --   humanoid:MoveTo(jumpPosition)
+	rigRootPart.CFrame = rigRootPart.CFrame * CFrame.new(0,0,3)
+	humanoid:MoveTo(targetPosition)
     end
   end
 #+end_src
 ******** checkForObstacles
 #+begin_src lua
-  local function checkForObstacles(rigRootPart)
+  local function checkForObstacles(targetPosition,rigRootPart)
     local origin = rigRootPart.Position
     local rayParams = RaycastParams.new()
     rayParams.FilterDescendantsInstances = {rigRootPart.Parent} -- Ignore self
     rayParams.FilterType = Enum.RaycastFilterType.Exclude
+    local direction = (targetPosition - rigRootPart.Position).Unit
     local rayResult = workspace:Raycast(origin, direction, rayParams)
     if rayResult and rayResult.Instance then
 	if rayResult.Instance.CanCollide then
-	    handleObstacle(rigRootPart)
+	    handleObstacle(rigRootPart, targetPosition)
 	end
     end
   end
@@ -1107,7 +1162,7 @@ Defines attacker behavior, creation, and logic.
 	      and playerRootPart.Position + (rigRootPart.Position - playerRootPart.Position).Unit * stopDistance
 	      or waypoint.Position
 	   rigHumanoid:MoveTo(targetPosition)
-	    checkForObstacles(rigRootPart)
+	    checkForObstacles(targetPosition, rigRootPart)
 	    rigRootPart.CFrame = CFrame.lookAt(rigRootPart.Position, playerRootPart.Position)
 	end
      else
@@ -1410,7 +1465,8 @@ virtual space for clerks to interact with players
 ****** notes
 Spawns gravity coils into the world.
 ****** code
-******* variables
+******* variables 
+******** gravity coil variables
 #+begin_src lua
   local gravityCoil = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("GravityCoils"):WaitForChild("Tool")
   local gravityCoilScript = script.Parent:FindFirstChild("GravityCoilScript")
@@ -1419,17 +1475,32 @@ Spawns gravity coils into the world.
   local spawnRange = 48
   local gravityCoilCount = 3
 #+end_src
+******** tool spawner variables
+#+begin_src lua
+  local spawner = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners"):WaitForChild("Part")
+  local spawnerScript = script.Parent:FindFirstChild("ToolSpawnerScript")
+  spawnerScript.Parent = spawner
+  local spawnersFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners")
+  local spawnRange = 48
+  local spawnerCount = 3
+#+end_src
 ******* functions
 ******** randomSpawn
 #+begin_src lua
   local function randomSpawn()
     local xpos = math.random (-spawnRange, spawnRange)
     local zpos = math.random (-spawnRange, spawnRange)
-    local ypos = math.random (5, 30)
     local gravityCoilClone = gravityCoil:Clone()
     local gravityCoilHandleClone = gravityCoilClone:FindFirstChild("Handle")
+    local spawnerClone = spawner:Clone()
+    local spawnerScriptClone = spawnerClone:WaitForChild("ToolSpawnerScript")
+    spawnerClone.Parent = spawnersFolder
+    spawnerClone.Position = Vector3.new(xpos,1,zpos)
+    spawnerClone.Anchored = true
+    spawnerScriptClone.Parent = spawnerClone
     gravityCoilClone.Parent = gravityCoilsFolder
-    gravityCoilHandleClone.Position = Vector3.new(xpos,ypos,zpos)
+    gravityCoilHandleClone.Position = Vector3.new(xpos,4,zpos)
+    gravityCoilHandleClone.Anchored = true
     local gravityCoilScriptClone = gravityCoilClone:WaitForChild("GravityCoilScript")
     gravityCoilScriptClone.Parent = gravityCoilClone
     return
@@ -1445,6 +1516,7 @@ Spawns gravity coils into the world.
   end
 #+end_src
 ******* executions
+******** gravity coil executions
 #+begin_src lua
   for i = 1, gravityCoilCount do
      randomSpawn()
@@ -1490,6 +1562,68 @@ Defines individual gravity coil behavior. Handle is a mesh part but it has to ha
 #+begin_src lua
   if script.Parent.Parent == gravityCoilFolder then
     script.Parent.Equipped:Connect(onEquipped)
+  end
+#+end_src
+**** tool spawner
+***** ToolSpawnerScript
+:properties:
+:header-args:lua: :tangle ./src/server/Tools/ToolSpawnerScript.server.luau
+:END:
+****** notes
+Defines internal behavior of toolstands.
+****** code
+******* variables
+#+begin_src lua
+    --This is a tool spawner script which will desplay the tool.
+    local spawner = Instance.new("Part")
+    spawner.Shape = Enum.PartType.Cylinder
+    spawner.Rotation = Vector3.new(0,0,90)
+    spawner.Size = Vector3.new(1, 6, 6)
+    spawner.Material = Enum.Material.WoodPlanks
+    spawner.Color = Color3.new(0.729411, 0.525490, 0.149019)
+    spawner.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners")
+    local tool = nil
+    --local region = Region3.new(Vector3.new(spawner.Position.X - 2, spawner.Position.Y, spawner.Position.Z - 2), Vector3.new(spawner.Position.X + spawner.Size.Y/2, spawner.Position.Y + 4, spawner.Position.Z + spawner.Size.Y/2))
+    local regionCenter = spawner.CFrame + Vector3.new(0, 2, 0)
+    local parts = game.Workspace:GetPartBoundsInBox(regionCenter,Vector3.new(4,4,4))
+#+end_src
+******* functions 
+******** nil func 
+#+begin_src lua
+#+end_src
+******* executions 
+#+begin_src lua
+  for _, part in pairs(parts) do 
+	  if part and part.Parent and part.Parent:IsA("Tool")then
+		  tool = part.Parent
+	  end
+  end
+  if tool then
+	  while true do 
+		  local toolCopy = tool
+		  local handle = toolCopy:FindFirstChild("Handle")
+		  toolCopy.Parent = script.Parent
+		  local toolOnPad = true
+		  local parentConnection
+		  parentConnection = toolCopy.AncestryChanged:Connect(function()
+			  if handle then 
+				  handle.Anchored = false
+			  end
+			  toolOnPad = false
+			  parentConnection:Disconnect()
+		  end)
+		  if handle then
+			  handle.CFrame = (spawner.CFrame * CFrame.fromEulerAngles(0,0, math.rad(-90)) + Vector3.new(0, handle.Size.Y * 1.2, 0))
+			  handle.Anchored = true
+		  end
+		  while toolOnPad do 
+			  if handle then
+				  handle.CFrame = handle.CFrame * CFrame.Angles( math.pi/60, 0,0)
+			  end
+			  task.wait()
+		  end
+		  task.wait(60)
+	  end
   end
 #+end_src
 *** ui
@@ -1682,4 +1816,5 @@ Handles client-side logic, including listening for dialog selections, notifying 
   }
 } 
 #+end_src
+
 
