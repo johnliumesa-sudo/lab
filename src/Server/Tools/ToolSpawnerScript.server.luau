@@ -2,7 +2,7 @@
 local spawner = Instance.new("Part")
 spawner.Shape = Enum.PartType.Cylinder
 spawner.Rotation = Vector3.new(0,0,90)
-spawner.Size = Vector3.new(3, 2, 3)
+spawner.Size = Vector3.new(1, 6, 6)
 spawner.Material = Enum.Material.WoodPlanks
 spawner.Color = Color3.new(0.729411, 0.525490, 0.149019)
 spawner.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners")
