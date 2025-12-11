@@ -23,7 +23,7 @@ if script.Parent.Parent.Parent.Parent == game.Workspace then
 	  while true do
 		  local toolCopy = tool
 		  local handle = toolCopy:FindFirstChild("Handle")
-		  toolCopy.Parent = script.Parent
+		  --toolCopy.Parent = script.Parent
 		  local toolOnPad = true
 		  local parentConnection
 		  parentConnection = toolCopy.AncestryChanged:Connect(function()
