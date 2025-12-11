@@ -2,356 +2,1793 @@
 #+AUTHOR: Aaron Liu
 #+DESCRIPTION: A master learn note for Roblox.
 
-* creator docs 
+* toc 
+** complete docs 
 https://github.com/Roblox/creator-docs.git  
-** root
-*** affiliates.md
-*** ai-data-sharing.md
-*** assets.md
-*** creation.md
-*** creator-fund.md
-*** creator-hub.md
-*** creator-programs
-*** creator-rewards.md
-*** discovery.md
-*** experiences.md
-*** get-started.md
-*** platform.md
-*** safety.md
-*** scale.md
-*** unity.md
-*** unreal.md
-*** what-is-roblox.md
-** animation
-** art
-** assets
-** assistant
-** audio
-** avatar
-** avatar-setup
-** characters
-** chat
-** cloud
-** cloud-services
-** education
-** effects
-** environment
-** includes
-** input
-** ip-licensing
-** luau
-** makeup
-** marketplace
-** matchmaking
-** parts
-** performance-optimization
-** physics
-** players
-** production
-** projects
-** reference
-** resources
-** scripting
-** sound
-** studio
-** tutorials
-*** index
+*** root
+**** affiliates.md
+**** ai-data-sharing.md
+**** assets.md
+**** creation.md
+**** creator-fund.md
+**** creator-hub.md
+**** creator-programs
+**** creator-rewards.md
+**** discovery.md
+**** experiences.md
+**** get-started.md
+**** platform.md
+**** safety.md
+**** scale.md
+**** unity.md
+**** unreal.md
+**** what-is-roblox.md
+*** animation
+*** art
+*** assets
+*** assistant
+*** audio
+*** avatar
+*** avatar-setup
+*** characters
+*** chat
+*** cloud
+*** cloud-services
+*** education
+*** effects
+*** environment
+*** includes
+*** input
+*** ip-licensing
+*** luau
+*** makeup
+*** marketplace
+*** matchmaking
+*** parts
+*** performance-optimization
+*** physics
+*** players
+*** production
+*** projects
+*** reference
+*** resources
+*** scripting
+*** sound
+*** studio
+*** tutorials
+**** index
 https://create.roblox.com/docs/en-us/tutorials
-**** index.md
-*** contents
-**** curriculum
-***** index 
+***** index.md
+**** contents
+***** curriculum
+****** index 
 https://create.roblox.com/docs/en-us/tutorials/curriculums/core
 https://create.roblox.com/docs/en-us/tutorials/curriculums/core
-****** curriculum-overview.md
-***** contents
-****** animator
-******* get-started.md
-******* index.md
-******* next-steps.md
-******* play-your-animation.md
-******* test-and-save.md
-******* work-with-the-animation-editor.md
-****** artist
-******* get-started.md
-******* index.md
-******* next-steps.md
-******* test-and-save.md
-******* work-with-particle-emitters.md
-****** building
-******* code-with-assistant.md
-******* get-started.md
-******* index.md
-******* next-steps.md
-******* test-and-save.md
-******* work-with-parts.md
-****** coding
-******* customize-strings.md
-******* get-started.md
-******* index.md
-******* next-steps.md
-******* test-and-save.md
-******* work-with-variables.md
-****** core
-******* index
+******* curriculum-overview.md
+****** contents
+******* animator
+******** get-started.md
 ******** index.md
-******* contents
-******** building
-********* apply-polished-assets.md
-********* create-a-project.md
-********* create-an-environment-with-terrain.md
-********* create-basic-visual-effects.md
-********* customize-global-lighting.md
-********* greybox-a-playable-area.md
-******** scripting
-********* create-player-hazards.md
-********* record-and-display-player-data.md
-********* script-an-upgrade-button.md
-********* script-game-behavior.md
-****** environmental-art
-******* assemble-an-asset-library.md
-******* construct-your-world.md
-******* develop-polished-assets.md
-******* greybox-your-environment.md
-******* index.md
-******* optimize-your-experience.md
-****** gameplay-scripting
-******* add-rounds.md
-******* create-teams.md
-******* detect-hits.md
-******* implement-blasters.md
-******* index.md
-******* spawn-respawn.md
-****** studio
-******* create-account.md
-******* explore-ui.md
-******* index.md
-******* install-studio.md
-******* next-steps.md
-****** user-interface-design
-******* choose-an-art-style.md
-******* implement-designs-in-studio.md
-******* index.md
-******* wireframe-your-layouts.md
-**** first-experience
-**** fundamentals
-***** coding-1
-***** coding-2
-***** coding-3
-***** coding-4
-***** coding-5
-***** coding-6
-**** use-case-tutorials
-** ui
-** workspace
-* create
-** experiences
-*** guides 
+******** next-steps.md
+******** play-your-animation.md
+******** test-and-save.md
+******** work-with-the-animation-editor.md
+******* artist
+******** get-started.md
+******** index.md
+******** next-steps.md
+******** test-and-save.md
+******** work-with-particle-emitters.md
+******* building
+******** code-with-assistant.md
+******** get-started.md
+******** index.md
+******** next-steps.md
+******** test-and-save.md
+******** work-with-parts.md
+******* coding
+******** customize-strings.md
+******** get-started.md
+******** index.md
+******** next-steps.md
+******** test-and-save.md
+******** work-with-variables.md
+******* core
+******** index
+********* index.md
+******** contents
+********* building
+********** apply-polished-assets.md
+********** create-a-project.md
+********** create-an-environment-with-terrain.md
+********** create-basic-visual-effects.md
+********** customize-global-lighting.md
+********** greybox-a-playable-area.md
+********* scripting
+********** create-player-hazards.md
+********** record-and-display-player-data.md
+********** script-an-upgrade-button.md
+********** script-game-behavior.md
+******* environmental-art
+******** assemble-an-asset-library.md
+******** construct-your-world.md
+******** develop-polished-assets.md
+******** greybox-your-environment.md
+******** index.md
+******** optimize-your-experience.md
+******* gameplay-scripting
+******** add-rounds.md
+******** create-teams.md
+******** detect-hits.md
+******** implement-blasters.md
+******** index.md
+******** spawn-respawn.md
+******* studio
+******** create-account.md
+******** explore-ui.md
+******** index.md
+******** install-studio.md
+******** next-steps.md
+******* user-interface-design
+******** choose-an-art-style.md
+******** implement-designs-in-studio.md
+******** index.md
+******** wireframe-your-layouts.md
+***** first-experience
+***** fundamentals
+****** coding-1
+****** coding-2
+****** coding-3
+****** coding-4
+****** coding-5
+****** coding-6
+***** use-case-tutorials
+*** ui
+*** workspace
+** role based guides 
+*** developers
+**** experiences 
+***** get started 
 https://create.roblox.com/docs/en-us/experiences
-**** tutorials
-https://create.roblox.com/docs/tutorials
-**** samples
-https://create.roblox.com/docs/en-us/samples
-**** engine api reference
-https://create.roblox.com/docs/en-us/reference/engine
-**** studio
-https://create.roblox.com/docs/en-us/studio
-*** contents
-**** overview
-******** get started
-**** create
+****** overview
+******* get started
+****** create
+******* overview
+******* projects
 ******** overview
-******** projects
-******** 3d workspace
+******** experiences and places
+********* create and publish
+********* configure
+********* release updates
+******** cross-platform development
+******** architecture
+********* data model
+********* client-server runtime
+********* instance streaming
+********* server authority
+********* overview
+********* advanced techniques
+******** manage
+********* experience ownership transfer
+********* place files
+******** work in teams
+********* groups
+********* collaboration
+********* activity history
+********* external tools
+******* 3d workspace
+******** overview
+******** parts
+********* overview
+********* solid modeling
+********* textures and decals
+********* meshes
+********* models
+********* materials
+********* terrain
+******** physics
+********* overview
+********* assemblies
+********* network ownership
+********* mechanical constraints
+********** overview
+********** ballsocket
+********** hinge
+********** prismatic
+********** cylindrical
+********** spring
+********** torsionspring
+********** universal
+********** rope
+********** rod
+********** plane
+********** weld
+********** rigid
+********** nocollision
+********* mover constraints
+********** overview
+********** linearvelocity
+********** angularvelocity
+********** alignposition
+********** alignorientation
+********** vectorforce
+********** torque
+********** lineforce
+********** sleep system
+********** adaptive timestepping
+********** character controllers
+********** roblox units
+******** effects
+********* overview
+********* light sources
+********* particle emitters
+********* beams
+********* trails
+********* highlighting
+******** camera
+******** spatial data
+********* cframes
+********* collisions
+********* raycasting
+******* scripting
+******** overview
+******** types and locations
+******** reuse code
+******** services
+******** properties and attributes
+******** events
+********* overview
+********* deferred
+********* bindable
+********* remote
+******** advanced
+********* scheduler
+********* multi-threading
+********* native code generation
+********* script capabilities
+********* security tactics and cheat mitigation
+******** luau reference
+********* overview
+********* types
+********** nil
+********** booleans
+********** numbers
+********** strings
+********** tables
+********** enums
+********** tuples
+********** userdata
+********* data structures
+********** queues
+********** stacks
+********** metatables
+********* features
+********** comments
+********** variables
+********** scope
+********** operators
+********** control structures
+********** functions
+********** type coercion
+********** type checking
+******* environment
+******** overview
+******** global lighting
+******** atmosphere
+******** clouds
+******** global wind
+******** post-processing effects
+******** skyboxes
+******* characters
+******** overview
+******** appearance
+******** adaptive animation
+******** emotes
+******** pathfinding
+******** name and health display
+******** r6 to r15 adapter
+******* players
+******** overview
+******** teleporting
+******** teams
+******** in-experience tools
+******** leaderboards
+******** loading screens
+******** player ui
+********* avatar editor
+********* avatar inspect menu
+********* avatar context menu
+********* disable default ui
+******* input
+******** overview
+******** input action system
+******** mouse & keyboard
+******** mobile
+******** gamepad
+******* audio
+******** overview
+******** assets
+******** objects
+******** effects
+******** legacy
+********* sound
+********* objects
+********* groups
+********* dynamic effects
+******* user interface
+******** overview
+******** on-screen ui
+******** in-experience ui
+******** accessibility guidelines
+******** ui objects
+********* labels
+********* buttons
+********* frames
+********* scrolling frames
+********* viewport frames
+********* video frames
+********* text input fields
+********* 2d paths
+********* proximity prompts
+********* ui drag detectors
+********* 3d drag detectors
+******** position and size
+******** layout structure
+********* list and flex layouts
+********* grids and tables
+********* page layouts
+******** appearance modifiers
+******** size modifiers and constraints
+******** ui animation/tweens
+******** ui styling
+********* overview
+********* style editor
+********* compatibility
+********* css comparisons
+******** 9-slice design
+******** rich text markup
+******** text filtering
+******* animation
+******** overview
+******** create animations
+********* animation editor
+********* animation events
+********* animation capture
+********* curve editor
+********* inverse kinematics
+******** use animations
+******* chat
+******** voice chat
+******** text chat
+********* overview
+********* guidelines
+********* chat window
+********* bubble chat
+********* examples
+********** chat tags
+********** proximity chat
+********** custom ui
+********** custom chat commands
+******* matchmaking
+******** overview
+******** server scoring
+******** attributes and signals
+******** customize your matchmaking configuration
+******** analytics
+******** glossary
+******* performance optimization
+******** overview
+******** design for performance
+******** identify issues
+******** microprofiler
+********* overview
+********* modes
+********* task scheduler
+********* tag reference
+********* network usage
+********* walkthrough
+******** improve performance
+******** monitor performance
+******* cloud services
+******** data stores vs memory stores
+******** data stores
+********* overview
+********* data stores manager
+********* versioning, listing, and caching
+********* error codes and limits
+********* observability
+********* best practices
+********* implement player data and purchase systems
+******** memory stores
+********* overview
+********* sorted map
+********* queue
+********* hash map
+********* observability
+********* per-partition limits
+********* best practices
+******** secrets stores
+******** in-experience http requests
+******** extended services
+******** cross-server communication
+******* roblox for unity developers
+******* roblox for unreal developers
+****** scale
+******* discovery
+******** charts page
+********* genres
+********* icons
+********* thumbnails
+********* badges
+******** events
+******** player invite prompts
+******** connection referral system
+******** notifications
+******** social media links
+******** share links
+******* localization
+******** overview
+******** automatic translations
+********* enable automatic translations
+********* translate dynamic content
+******** manual translations
+********* overview
+********* add source content
+********* remove content
+********* add translations
+********* dynamic content
 ******** scripting
-******** environment
-******** characters
-******** players
-******** input
-******** audio
-******** user interface
-******** animation
-******** chat
-******** matchmaking
-******** performance optimization
-******** cloud services
-******** roblox for unity developers
-******** roblox for unreal developers
-**** Scale
-******** Discovery
-******** Localization
-******** Game design
-**** Monetize
-******** Overview
-******** Earn
-******** License
-******** Advertise
-** avatar
-*** guides 
-https://create.roblox.com/docs/en-us/avatar
-**** accessories
-https://create.roblox.com/docs/en-us/art/accessories
-**** clothing
-https://create.roblox.com/docs/en-us/art/accessories
-https://create.roblox.com/docs/en-us/art/accessories/layered-clothing
-**** characters
-https://create.roblox.com/docs/en-us/art/characters
-**** publishing and selling
-https://create.roblox.com/docs/en-us/marketplace/publish-to-marketplace
-*** contents
-**** overview
-***** get started
-***** resources
-**** create
-***** validation errors
-***** in-experience creation
-***** photo-to-avatar generation
-**** monetize
-***** overview
-***** fees and commissions
-***** in-experience sales
-***** in-experience creation
-***** sponsor items
-***** randomized items
-**** policies and guidelines
-***** marketplace policy
-***** intellectual property
-***** moderation
-***** faq
-** assets
-*** guides 
-https://create.roblox.com/docs/en-us/assets
-**** 3d art
-https://create.roblox.com/docs/en-us/art
-*** contents
-**** overview
-***** overview
-***** assets
-***** manage
-***** packages
-***** asset privacy
-***** creator store
-***** monetize models and plugins
-**** creation tools
+******** work with translators
+******** language codes
+******* game design
+********* design your experience
+********** design for roblox
+********** roblox user base
+********** core loops
+********** prototyping
+********* build your experience
+********** onboarding
+********** onboarding techniques
+********** quest design
+********** ui and ux
+********** adaptive design guidelines
+********** overview
+********** console
+********** vr
+********* monetize your experience
+********** monetization
+********** season passes
+********** starter packs
+********** subscriptions
+********** contextual purchases
+********** virtual economies
+********* support your experience
+********** liveops essentials
+********** liveops planning
+********** analytics essentials
+********** content updates
+****** monetize
+******* overview
+******* earn
+******** creator rewards
+******** private servers
+******** subscriptions
+******** passes
+******** developer products
+******** commerce products
+******** paid access in robux
+******** paid access in local currency
+******** price optimization
+******** regional pricing
+******* license
+******** tools for ip holders
+********* get started
+********* license manager
+********* rights manager
+******** ip licensing for creators
+******** faq and guidelines
+******** glossary
+******* advertise
+******** ads manager
+******** reporting and billing
+******** roblox-served ads vs. independent ads
+******** immersive ads
+******** rewarded video ads
+******** search ads
+******** advertising standards
+***** tutorials
+https://create.roblox.com/docs/tutorials
+****** get started
+******* overview
+******* create your first experience
+******* luau basics
+****** intermediate tutorials
+******* overview
+******* modeling
+******** neon signs
+******** modular environments
+******* user interfaces
+******** hud meters
+******** interactive ui
+******** proximity prompts
+******** score bars
+******* audio
+******** 2d audio
+******** 3d audio
+******** voice chat
+******** text-to-speech
+******** speech-to-text
+******* lighting
+******** indoor environments
+******** outdoor environments
+******* vfx
+******** laser beams
+******** waterfalls
+******** volcanoes
+******** explosions
+******* physics
+******** moving objects
+******** spinning objects
+******* animation
+******** in studio
+******** in blender
+******* scripting
+******** basic gameplay
+******** intermediate gameplay
+******* input and camera
+******** control the user's camera
+******** detect user input
+******* data storage
+******** save player data
+******** create a custom leaderboard
+******* avatar items
+******** create accessories from an existing model
+******** rig and cage an existing model
+******** create basic heads
+******** create face accessories
+******** publish eyebrows and eyelashes
+******** test characters
+****** advanced paths
+******* overview
+******* environmental art
+******* gameplay scripting
+******* user interface design
+******* rigid accessories
+******* clothing
+******* bodies
+***** samples
+https://create.roblox.com/docs/en-us/samples
+****** code samples
+******* overview
+****** feature packages
+******* overview
+******* bundles
+******* missions
+******* season passes
+******* engagement rewards
+******* changelog
+****** developer modules
+******* overview
+******* selfie mode
+******* merch booth
+******* friends locator
+******* profile card
+******* emote bar
+******* spawn with friends
+******* photo booth
+******* surface art
+******* scavenger hunt
+******* social interactions
+******* event sequencer
+****** scripting libraries
+******* overview
+****** projects and kits
+******* templates
+******* roblox connect project
+******* plant reference project
+****** resources
+******* the mystery of duvall drive
+********* overview
+********* construct the house
+********* materialize the world
+********* immersive narrative
+********* stream in immersion
+********* develop a moving world
+********* design dark soundscapes
+******** technical overview
+********* overview
+********* main design requirements
+********* foundational gameplay systems
+********* supporting systems
+********* the mystery of duvall drive
+******* beyond the dark
+********* overview
+********* architecture
+********* characters
+********* layered clothing
+********* sound design
+********* user interface
+******* battle royale
+********* overview
+********* installation and setup
+********* run the game
+********* core scripts
+********* pickup system
+********* building system
+********* minimap system
+********* the storm
+******* weapons kit
+******* npc kit
+***** engine api reference
+https://create.roblox.com/docs/en-us/reference/engine
 ***** studio
-***** in-experience
-**** 3d art
+https://create.roblox.com/docs/en-us/studio
+****** roblox studio
+******* overview
+******* setup
+******* interface
+******* assistant
+****** building tools
+******* align
+******* pivot
+******* terrain editor
+******* material generator
+******* texture generator
+******* rig generator
+****** scripting tools
+******* script editor
+******* debugging
+****** testing tools
+******* testing modes
+******* output
+******* developer console
+****** ui reference
+******* explorer
+******* properties
+******* game settings
+******* avatar settings
+****** plugins
+******* overview
+******* studio widgets
+*** artists
+**** avatar
+https://create.roblox.com/docs/en-us/avatar
 ***** overview
-***** 3d importer
-***** reimport
-***** gltf export
-***** roblox blender plugin
-** open cloud
-*** guides 
-https://create.roblox.com/docs/en-us/cloud
-**** guide
-https://create.roblox.com/docs/en-us/cloud/guides
-*** contents
-**** overview
-***** reference
-***** guides
-***** common components
-**** authentication
-***** api keys
-***** oauth 2.0
-**** features
-***** accounts
-***** assets
-***** avatars
-***** badges
-***** bans and blocks
-***** connections
-***** creator store
-***** data and memory stores
-***** developer products
-***** game passes
-***** generative ai
-***** groups
-***** interactions
-***** inventories
-***** localization
-***** luau execution
-***** matchmaking
-***** metadata
-***** notifications
-***** places
-***** private servers
-***** sponsored campaigns
-***** team create
-***** thumbnails
-***** trades
-***** universes
-***** user profiles
-***** users
-**** domains
-***** apis.roblox.com
-***** accountinformation.roblox.com
-***** accountsettings.roblox.com
-***** adconfiguration.roblox.com
-***** assetdelivery.roblox.com
-***** auth.roblox.com
-***** avatar.roblox.com
-***** badges.roblox.com
-***** catalog.roblox.com
-***** clientsettings.roblox.com
-***** contacts.roblox.com
-***** develop.roblox.com
-***** economy.roblox.com
-***** economycreatorstats.roblox.com
-***** engagementpayouts.roblox.com
-***** followings.roblox.com
-***** friends.roblox.com
-***** gameinternationalization.roblox.com
-***** games.roblox.com
-***** groups.roblox.com
-***** inventory.roblox.com
-***** itemconfiguration.roblox.com
-***** locale.roblox.com
-***** localizationtables.roblox.com
-***** metrics.roblox.com
-***** notifications.roblox.com
-***** premiumfeatures.roblox.com
-***** presence.roblox.com
-***** privatemessages.roblox.com
-***** publish.roblox.com
-***** thumbnails.roblox.com
-***** thumbnailsresizer.roblox.com
-***** trades.roblox.com
-***** translationroles.roblox.com
-***** twostepverification.roblox.com
-***** users.roblox.com
-** scale and monetize
-*** guides 
-**** scale
-https://create.roblox.com/docs/en-us/scale
-***** discovery
-https://create.roblox.com/docs/discovery
-***** localization
-https://create.roblox.com/docs/production/localization
-***** analytics
-https://create.roblox.com/docs/production/analytics
-***** game design
-https://create.roblox.com/docs/production/game-design
-**** monetize
-https://create.roblox.com/docs/en-us/monetize
-***** experiences
-https://create.roblox.com/docs/monetize-experiences
-***** avatar
-https://create.roblox.com/docs/monetize-avatar
-***** assets
-https://create.roblox.com/docs/production/sell-on-creator-store
-*** contents
-**** platform
-***** get started
+****** get started
+****** resources
 ***** create
-***** scale
+****** classic clothing
+******* overview
+******* test in studio
+******* upload and sell
+****** accessories
+******* overview
+******* specifications
+******* body scale
+******* export settings
+******* import into studio
+****** clothing
+******* overview
+******* specifications
+******* reference files
+******* caging
+******* export settings
+******* import into studio
+****** characters
+******* overview
+******* specifications
+******* reference files
+******* export settings
+******* import into studio
+******* heads
+******** overview
+******** in studio
+******** head animation
+******** moods
+******** facs poses reference
+****** emotes
+******* overview
+******* specifications
+******* export settings
+******* import and configure in studio
+****** makeup
+******* overview
+******* specifications
+******* reassign textures
+******* import into studio
+******* face cage optimizations
+****** publish
+******* overview
+******* publish to marketplace
+******* ugc homestore
+****** avatar setup
+******* overview
+******* auto-setup
+******* auto-setup requirements
+******* preview and edit tools
+****** more studio tools
+******* 3d importer
+******* accessory fitting
+******* automatic skinning transfer
+******* thumbnails
+****** validation errors
+****** 3rd party add-ons
+******* roblox blender plugin
+******* calisthenics tool
+******* clothing validation tool
+****** in-experience creation
+****** photo-to-avatar generation
 ***** monetize
-****** earn on roblox
-***** guidelines and polices
-****** safety on roblox
-****** content maturity
-****** gdpr and ccpa
-****** dmca
-****** ai data sharing
-****** account verification
-****** group guidelines
+****** overview
+****** fees and commissions
+****** in-experience sales
+****** in-experience creation
+****** sponsor items
+****** randomized items
+***** policies and guidelines
+****** marketplace policy
+****** intellectual property
+****** moderation
+****** faq
+**** assets
+***** get started 
+https://create.roblox.com/docs/en-us/assets
+****** overview
+******* overview
+******* assets
+******* manage
+******** asset manager
+******** toolbox
+******** external catalog queries
+******* packages
+******* asset privacy
+******* creator store
+******* monetize models and plugins
+****** creation tools
+******* studio
+******* third party software
+******** overview
+******** blender
+******** reaper
+******* in-experience
+****** 3d art
+******* overview
+******* modeling
+******** overview
+******** modeling specifications
+******** reference assets
+******** rigging and skinning
+******** blender / maya export settings
+******* texturing
+******** texture specifications
+******** blender / maya texture settings
+******** physically-based rendering (pbr)
+******** pbr material references
+******* animation
+******** export from maya
+******** head animation
+******* 3d importer
+******* reimport
+******* gltf export
+******* roblox blender plugin
+*** architects
+**** open cloud 
+***** api reference 
+https://create.roblox.com/docs/en-us/cloud
+****** overview
+******* reference
+******* guides
+******* common components
+****** authentication
+******* api keys
+******* oauth 2.0
+****** features
+******* accounts
+******* assets
+******* avatars
+******* badges
+******* bans and blocks
+******* connections
+******* creator store
+******* data and memory stores
+******* developer products
+******* game passes
+******* generative ai
+******* groups
+******* interactions
+******* inventories
+******* localization
+******* luau execution
+******* matchmaking
+******* metadata
+******* notifications
+******* places
+******* private servers
+******* sponsored campaigns
+******* team create
+******* thumbnails
+******* trades
+******* universes
+******* user profiles
+******* users
+****** domains
+******* apis.roblox.com
+******* accountinformation.roblox.com
+******* accountsettings.roblox.com
+******* adconfiguration.roblox.com
+******* assetdelivery.roblox.com
+******* auth.roblox.com
+******* avatar.roblox.com
+******* badges.roblox.com
+******* catalog.roblox.com
+******* clientsettings.roblox.com
+******* contacts.roblox.com
+******* develop.roblox.com
+******* economy.roblox.com
+******* economycreatorstats.roblox.com
+******* engagementpayouts.roblox.com
+******* followings.roblox.com
+******* friends.roblox.com
+******* gameinternationalization.roblox.com
+******* games.roblox.com
+******* groups.roblox.com
+******* inventory.roblox.com
+******* itemconfiguration.roblox.com
+******* locale.roblox.com
+******* localizationtables.roblox.com
+******* metrics.roblox.com
+******* notifications.roblox.com
+******* premiumfeatures.roblox.com
+******* presence.roblox.com
+******* privatemessages.roblox.com
+******* publish.roblox.com
+******* thumbnails.roblox.com
+******* thumbnailsresizer.roblox.com
+******* trades.roblox.com
+******* translationroles.roblox.com
+******* twostepverification.roblox.com
+******* users.roblox.com
+***** guides
+https://create.roblox.com/docs/en-us/cloud/guides
+****** guides
+******* data stores
+******* assets
+******* secrets stores
+******* user inventories
+******* engine instances
+******* user notifications
+******* messaging
+******* place publishing
+****** webhooks
+******* webhook notifications
+******* right to erasure requests
+*** marketing executives
+**** scale and monetize 
+***** platform
+****** get started
+https://create.roblox.com/docs/en-us/get-started
+****** create
+****** scale
+****** monetize
+******* earn on roblox
+****** guidelines and polices
+******* safety on roblox
+******* content maturity
+******* gdpr and ccpa
+******* dmca
+******* ai data sharing
+******* account verification
+******* group guidelines
+***** scale
+https://create.roblox.com/docs/en-us/scale
+****** discovery
+https://create.roblox.com/docs/discovery
+****** localization
+https://create.roblox.com/docs/production/localization
+****** analytics
+https://create.roblox.com/docs/production/analytics
+****** game design
+https://create.roblox.com/docs/production/game-design
+***** monetize
+https://create.roblox.com/docs/en-us/monetize
+****** experiences
+https://create.roblox.com/docs/monetize-experiences
+****** avatar
+https://create.roblox.com/docs/monetize-avatar
+****** assets
+https://create.roblox.com/docs/production/sell-on-creator-store
+* notes
+** complete docs 
+https://github.com/Roblox/creator-docs.git  
+*** root
+**** affiliates.md
+**** ai-data-sharing.md
+**** assets.md
+**** creation.md
+**** creator-fund.md
+**** creator-hub.md
+**** creator-programs
+**** creator-rewards.md
+**** discovery.md
+**** experiences.md
+**** get-started.md
+**** platform.md
+**** safety.md
+**** scale.md
+**** unity.md
+**** unreal.md
+**** what-is-roblox.md
+*** animation
+*** art
+*** assets
+*** assistant
+*** audio
+*** avatar
+*** avatar-setup
+*** characters
+*** chat
+*** cloud
+*** cloud-services
+*** education
+*** effects
+*** environment
+*** includes
+*** input
+*** ip-licensing
+*** luau
+*** makeup
+*** marketplace
+*** matchmaking
+*** parts
+*** performance-optimization
+*** physics
+*** players
+*** production
+*** projects
+*** reference
+*** resources
+*** scripting
+*** sound
+*** studio
+*** tutorials
+**** index
+https://create.roblox.com/docs/en-us/tutorials
+***** index.md
+**** contents
+***** curriculum
+****** index 
+https://create.roblox.com/docs/en-us/tutorials/curriculums/core
+https://create.roblox.com/docs/en-us/tutorials/curriculums/core
+******* curriculum-overview.md
+****** contents
+******* animator
+******** get-started.md
+******** index.md
+******** next-steps.md
+******** play-your-animation.md
+******** test-and-save.md
+******** work-with-the-animation-editor.md
+******* artist
+******** get-started.md
+******** index.md
+******** next-steps.md
+******** test-and-save.md
+******** work-with-particle-emitters.md
+******* building
+******** code-with-assistant.md
+******** get-started.md
+******** index.md
+******** next-steps.md
+******** test-and-save.md
+******** work-with-parts.md
+******* coding
+******** customize-strings.md
+******** get-started.md
+******** index.md
+******** next-steps.md
+******** test-and-save.md
+******** work-with-variables.md
+******* core
+******** index
+********* index.md
+******** contents
+********* building
+********** apply-polished-assets.md
+********** create-a-project.md
+********** create-an-environment-with-terrain.md
+********** create-basic-visual-effects.md
+********** customize-global-lighting.md
+********** greybox-a-playable-area.md
+********* scripting
+********** create-player-hazards.md
+********** record-and-display-player-data.md
+********** script-an-upgrade-button.md
+********** script-game-behavior.md
+******* environmental-art
+******** assemble-an-asset-library.md
+******** construct-your-world.md
+******** develop-polished-assets.md
+******** greybox-your-environment.md
+******** index.md
+******** optimize-your-experience.md
+******* gameplay-scripting
+******** add-rounds.md
+******** create-teams.md
+******** detect-hits.md
+******** implement-blasters.md
+******** index.md
+******** spawn-respawn.md
+******* studio
+******** create-account.md
+******** explore-ui.md
+******** index.md
+******** install-studio.md
+******** next-steps.md
+******* user-interface-design
+******** choose-an-art-style.md
+******** implement-designs-in-studio.md
+******** index.md
+******** wireframe-your-layouts.md
+***** first-experience
+***** fundamentals
+****** coding-1
+****** coding-2
+****** coding-3
+****** coding-4
+****** coding-5
+****** coding-6
+***** use-case-tutorials
+*** ui
+*** workspace
+** role based guides 
+*** developers
+**** experiences 
+***** get started 
+https://create.roblox.com/docs/en-us/experiences
+****** overview
+******* get started
+****** create
+******* overview
+******* projects
+******** overview
+******** experiences and places
+********* create and publish
+********* configure
+********* release updates
+******** cross-platform development
+******** architecture
+********* data model
+********* client-server runtime
+********* instance streaming
+********* server authority
+********* overview
+********* advanced techniques
+******** manage
+********* experience ownership transfer
+********* place files
+******** work in teams
+********* groups
+********* collaboration
+********* activity history
+********* external tools
+******* 3d workspace
+******** overview
+******** parts
+********* overview
+********* solid modeling
+********* textures and decals
+********* meshes
+********* models
+********* materials
+********* terrain
+******** physics
+********* overview
+********* assemblies
+********* network ownership
+********* mechanical constraints
+********** overview
+********** ballsocket
+********** hinge
+********** prismatic
+********** cylindrical
+********** spring
+********** torsionspring
+********** universal
+********** rope
+********** rod
+********** plane
+********** weld
+********** rigid
+********** nocollision
+********* mover constraints
+********** overview
+********** linearvelocity
+********** angularvelocity
+********** alignposition
+********** alignorientation
+********** vectorforce
+********** torque
+********** lineforce
+********** sleep system
+********** adaptive timestepping
+********** character controllers
+********** roblox units
+******** effects
+********* overview
+********* light sources
+********* particle emitters
+********* beams
+********* trails
+********* highlighting
+******** camera
+******** spatial data
+********* cframes
+********* collisions
+********* raycasting
+******* scripting
+******** overview
+******** types and locations
+******** reuse code
+******** services
+******** properties and attributes
+******** events
+********* overview
+********* deferred
+********* bindable
+********* remote
+******** advanced
+********* scheduler
+********* multi-threading
+********* native code generation
+********* script capabilities
+********* security tactics and cheat mitigation
+******** luau reference
+********* overview
+********* types
+********** nil
+********** booleans
+********** numbers
+********** strings
+********** tables
+********** enums
+********** tuples
+********** userdata
+********* data structures
+********** queues
+********** stacks
+********** metatables
+********* features
+********** comments
+********** variables
+********** scope
+********** operators
+********** control structures
+********** functions
+********** type coercion
+********** type checking
+******* environment
+******** overview
+******** global lighting
+******** atmosphere
+******** clouds
+******** global wind
+******** post-processing effects
+******** skyboxes
+******* characters
+******** overview
+******** appearance
+******** adaptive animation
+******** emotes
+******** pathfinding
+******** name and health display
+******** r6 to r15 adapter
+******* players
+******** overview
+******** teleporting
+******** teams
+******** in-experience tools
+******** leaderboards
+******** loading screens
+******** player ui
+********* avatar editor
+********* avatar inspect menu
+********* avatar context menu
+********* disable default ui
+******* input
+******** overview
+******** input action system
+******** mouse & keyboard
+******** mobile
+******** gamepad
+******* audio
+******** overview
+******** assets
+******** objects
+******** effects
+******** legacy
+********* sound
+********* objects
+********* groups
+********* dynamic effects
+******* user interface
+******** overview
+******** on-screen ui
+******** in-experience ui
+******** accessibility guidelines
+******** ui objects
+********* labels
+********* buttons
+********* frames
+********* scrolling frames
+********* viewport frames
+********* video frames
+********* text input fields
+********* 2d paths
+********* proximity prompts
+********* ui drag detectors
+********* 3d drag detectors
+******** position and size
+******** layout structure
+********* list and flex layouts
+********* grids and tables
+********* page layouts
+******** appearance modifiers
+******** size modifiers and constraints
+******** ui animation/tweens
+******** ui styling
+********* overview
+********* style editor
+********* compatibility
+********* css comparisons
+******** 9-slice design
+******** rich text markup
+******** text filtering
+******* animation
+******** overview
+******** create animations
+********* animation editor
+********* animation events
+********* animation capture
+********* curve editor
+********* inverse kinematics
+******** use animations
+******* chat
+******** voice chat
+******** text chat
+********* overview
+********* guidelines
+********* chat window
+********* bubble chat
+********* examples
+********** chat tags
+********** proximity chat
+********** custom ui
+********** custom chat commands
+******* matchmaking
+******** overview
+******** server scoring
+******** attributes and signals
+******** customize your matchmaking configuration
+******** analytics
+******** glossary
+******* performance optimization
+******** overview
+******** design for performance
+******** identify issues
+******** microprofiler
+********* overview
+********* modes
+********* task scheduler
+********* tag reference
+********* network usage
+********* walkthrough
+******** improve performance
+******** monitor performance
+******* cloud services
+******** data stores vs memory stores
+******** data stores
+********* overview
+********* data stores manager
+********* versioning, listing, and caching
+********* error codes and limits
+********* observability
+********* best practices
+********* implement player data and purchase systems
+******** memory stores
+********* overview
+********* sorted map
+********* queue
+********* hash map
+********* observability
+********* per-partition limits
+********* best practices
+******** secrets stores
+******** in-experience http requests
+******** extended services
+******** cross-server communication
+******* roblox for unity developers
+******* roblox for unreal developers
+****** scale
+******* discovery
+******** charts page
+********* genres
+********* icons
+********* thumbnails
+********* badges
+******** events
+******** player invite prompts
+******** connection referral system
+******** notifications
+******** social media links
+******** share links
+******* localization
+******** overview
+******** automatic translations
+********* enable automatic translations
+********* translate dynamic content
+******** manual translations
+********* overview
+********* add source content
+********* remove content
+********* add translations
+********* dynamic content
+******** scripting
+******** work with translators
+******** language codes
+******* game design
+********* design your experience
+********** design for roblox
+********** roblox user base
+********** core loops
+********** prototyping
+********* build your experience
+********** onboarding
+********** onboarding techniques
+********** quest design
+********** ui and ux
+********** adaptive design guidelines
+********** overview
+********** console
+********** vr
+********* monetize your experience
+********** monetization
+********** season passes
+********** starter packs
+********** subscriptions
+********** contextual purchases
+********** virtual economies
+********* support your experience
+********** liveops essentials
+********** liveops planning
+********** analytics essentials
+********** content updates
+****** monetize
+******* overview
+******* earn
+******** creator rewards
+******** private servers
+******** subscriptions
+******** passes
+******** developer products
+******** commerce products
+******** paid access in robux
+******** paid access in local currency
+******** price optimization
+******** regional pricing
+******* license
+******** tools for ip holders
+********* get started
+********* license manager
+********* rights manager
+******** ip licensing for creators
+******** faq and guidelines
+******** glossary
+******* advertise
+******** ads manager
+******** reporting and billing
+******** roblox-served ads vs. independent ads
+******** immersive ads
+******** rewarded video ads
+******** search ads
+******** advertising standards
+***** tutorials
+https://create.roblox.com/docs/tutorials
+****** get started
+******* overview
+******* create your first experience
+******* luau basics
+****** intermediate tutorials
+******* overview
+******* modeling
+******** neon signs
+******** modular environments
+******* user interfaces
+******** hud meters
+******** interactive ui
+******** proximity prompts
+******** score bars
+******* audio
+******** 2d audio
+******** 3d audio
+******** voice chat
+******** text-to-speech
+******** speech-to-text
+******* lighting
+******** indoor environments
+******** outdoor environments
+******* vfx
+******** laser beams
+******** waterfalls
+******** volcanoes
+******** explosions
+******* physics
+******** moving objects
+******** spinning objects
+******* animation
+******** in studio
+******** in blender
+******* scripting
+******** basic gameplay
+******** intermediate gameplay
+******* input and camera
+******** control the user's camera
+******** detect user input
+******* data storage
+******** save player data
+******** create a custom leaderboard
+******* avatar items
+******** create accessories from an existing model
+******** rig and cage an existing model
+******** create basic heads
+******** create face accessories
+******** publish eyebrows and eyelashes
+******** test characters
+****** advanced paths
+******* overview
+******* environmental art
+******* gameplay scripting
+******* user interface design
+******* rigid accessories
+******* clothing
+******* bodies
+***** samples
+https://create.roblox.com/docs/en-us/samples
+****** code samples
+******* overview
+****** feature packages
+******* overview
+******* bundles
+******* missions
+******* season passes
+******* engagement rewards
+******* changelog
+****** developer modules
+******* overview
+******* selfie mode
+******* merch booth
+******* friends locator
+******* profile card
+******* emote bar
+******* spawn with friends
+******* photo booth
+******* surface art
+******* scavenger hunt
+******* social interactions
+******* event sequencer
+****** scripting libraries
+******* overview
+****** projects and kits
+******* templates
+******* roblox connect project
+******* plant reference project
+****** resources
+******* the mystery of duvall drive
+********* overview
+********* construct the house
+********* materialize the world
+********* immersive narrative
+********* stream in immersion
+********* develop a moving world
+********* design dark soundscapes
+******** technical overview
+********* overview
+********* main design requirements
+********* foundational gameplay systems
+********* supporting systems
+********* the mystery of duvall drive
+******* beyond the dark
+********* overview
+********* architecture
+********* characters
+********* layered clothing
+********* sound design
+********* user interface
+******* battle royale
+********* overview
+********* installation and setup
+********* run the game
+********* core scripts
+********* pickup system
+********* building system
+********* minimap system
+********* the storm
+******* weapons kit
+******* npc kit
+***** engine api reference
+https://create.roblox.com/docs/en-us/reference/engine
+***** studio
+https://create.roblox.com/docs/en-us/studio
+****** roblox studio
+******* overview
+******* setup
+******* interface
+******* assistant
+****** building tools
+******* align
+******* pivot
+******* terrain editor
+******* material generator
+******* texture generator
+******* rig generator
+****** scripting tools
+******* script editor
+******* debugging
+****** testing tools
+******* testing modes
+******* output
+******* developer console
+****** ui reference
+******* explorer
+******* properties
+******* game settings
+******* avatar settings
+****** plugins
+******* overview
+******* studio widgets
+*** artists
+**** avatar
+https://create.roblox.com/docs/en-us/avatar
+***** overview
+****** get started
+****** resources
+***** create
+****** classic clothing
+******* overview
+******* test in studio
+******* upload and sell
+****** accessories
+******* overview
+******* specifications
+******* body scale
+******* export settings
+******* import into studio
+****** clothing
+******* overview
+******* specifications
+******* reference files
+******* caging
+******* export settings
+******* import into studio
+****** characters
+******* overview
+******* specifications
+******* reference files
+******* export settings
+******* import into studio
+******* heads
+******** overview
+******** in studio
+******** head animation
+******** moods
+******** facs poses reference
+****** emotes
+******* overview
+******* specifications
+******* export settings
+******* import and configure in studio
+****** makeup
+******* overview
+******* specifications
+******* reassign textures
+******* import into studio
+******* face cage optimizations
+****** publish
+******* overview
+******* publish to marketplace
+******* ugc homestore
+****** avatar setup
+******* overview
+******* auto-setup
+******* auto-setup requirements
+******* preview and edit tools
+****** more studio tools
+******* 3d importer
+******* accessory fitting
+******* automatic skinning transfer
+******* thumbnails
+****** validation errors
+****** 3rd party add-ons
+******* roblox blender plugin
+******* calisthenics tool
+******* clothing validation tool
+****** in-experience creation
+****** photo-to-avatar generation
+***** monetize
+****** overview
+****** fees and commissions
+****** in-experience sales
+****** in-experience creation
+****** sponsor items
+****** randomized items
+***** policies and guidelines
+****** marketplace policy
+****** intellectual property
+****** moderation
+****** faq
+**** assets
+***** get started 
+https://create.roblox.com/docs/en-us/assets
+****** overview
+******* overview
+******* assets
+******* manage
+******** asset manager
+******** toolbox
+******** external catalog queries
+******* packages
+******* asset privacy
+******* creator store
+******* monetize models and plugins
+****** creation tools
+******* studio
+******* third party software
+******** overview
+******** blender
+******** reaper
+******* in-experience
+****** 3d art
+******* overview
+******* modeling
+******** overview
+******** modeling specifications
+******** reference assets
+******** rigging and skinning
+******** blender / maya export settings
+******* texturing
+******** texture specifications
+******** blender / maya texture settings
+******** physically-based rendering (pbr)
+******** pbr material references
+******* animation
+******** export from maya
+******** head animation
+******* 3d importer
+******* reimport
+******* gltf export
+******* roblox blender plugin
+*** architects
+**** open cloud 
+***** api reference 
+https://create.roblox.com/docs/en-us/cloud
+****** overview
+******* reference
+******* guides
+******* common components
+****** authentication
+******* api keys
+******* oauth 2.0
+****** features
+******* accounts
+******* assets
+******* avatars
+******* badges
+******* bans and blocks
+******* connections
+******* creator store
+******* data and memory stores
+******* developer products
+******* game passes
+******* generative ai
+******* groups
+******* interactions
+******* inventories
+******* localization
+******* luau execution
+******* matchmaking
+******* metadata
+******* notifications
+******* places
+******* private servers
+******* sponsored campaigns
+******* team create
+******* thumbnails
+******* trades
+******* universes
+******* user profiles
+******* users
+****** domains
+******* apis.roblox.com
+******* accountinformation.roblox.com
+******* accountsettings.roblox.com
+******* adconfiguration.roblox.com
+******* assetdelivery.roblox.com
+******* auth.roblox.com
+******* avatar.roblox.com
+******* badges.roblox.com
+******* catalog.roblox.com
+******* clientsettings.roblox.com
+******* contacts.roblox.com
+******* develop.roblox.com
+******* economy.roblox.com
+******* economycreatorstats.roblox.com
+******* engagementpayouts.roblox.com
+******* followings.roblox.com
+******* friends.roblox.com
+******* gameinternationalization.roblox.com
+******* games.roblox.com
+******* groups.roblox.com
+******* inventory.roblox.com
+******* itemconfiguration.roblox.com
+******* locale.roblox.com
+******* localizationtables.roblox.com
+******* metrics.roblox.com
+******* notifications.roblox.com
+******* premiumfeatures.roblox.com
+******* presence.roblox.com
+******* privatemessages.roblox.com
+******* publish.roblox.com
+******* thumbnails.roblox.com
+******* thumbnailsresizer.roblox.com
+******* trades.roblox.com
+******* translationroles.roblox.com
+******* twostepverification.roblox.com
+******* users.roblox.com
+***** guides
+https://create.roblox.com/docs/en-us/cloud/guides
+****** guides
+******* data stores
+******* assets
+******* secrets stores
+******* user inventories
+******* engine instances
+******* user notifications
+******* messaging
+******* place publishing
+****** webhooks
+******* webhook notifications
+******* right to erasure requests
+*** marketing executives
+**** scale and monetize 
+***** platform
+****** get started
+https://create.roblox.com/docs/en-us/get-started
+****** create
+****** scale
+****** monetize
+******* earn on roblox
+****** guidelines and polices
+******* safety on roblox
+******* content maturity
+******* gdpr and ccpa
+******* dmca
+******* ai data sharing
+******* account verification
+******* group guidelines
+***** scale
+https://create.roblox.com/docs/en-us/scale
+****** discovery
+https://create.roblox.com/docs/discovery
+****** localization
+https://create.roblox.com/docs/production/localization
+****** analytics
+https://create.roblox.com/docs/production/analytics
+****** game design
+https://create.roblox.com/docs/production/game-design
+***** monetize
+https://create.roblox.com/docs/en-us/monetize
+****** experiences
+https://create.roblox.com/docs/monetize-experiences
+****** avatar
+https://create.roblox.com/docs/monetize-avatar
+****** assets
+https://create.roblox.com/docs/production/sell-on-creator-store
