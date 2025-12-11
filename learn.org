@@ -2,163 +2,356 @@
 #+AUTHOR: Aaron Liu
 #+DESCRIPTION: A master learn note for Roblox.
 
-* create
-https://create.roblox.com/docs
-** experiences
-*** tutorials
-https://create.roblox.com/docs/tutorials
-*** md 
+* creator docs 
 https://github.com/Roblox/creator-docs.git  
-**** root
-***** affiliates.md
-***** ai-data-sharing.md
-***** assets.md
-***** creation.md
-***** creator-fund.md
-***** creator-hub.md
-***** creator-programs
-***** creator-rewards.md
-***** discovery.md
-***** experiences.md
-***** get-started.md
-***** platform.md
-***** safety.md
-***** scale.md
-***** unity.md
-***** unreal.md
-***** what-is-roblox.md
-**** animation
-**** art
-**** assets
-**** assistant
-**** audio
-**** avatar
-**** avatar-setup
-**** characters
-**** chat
-**** cloud
-**** cloud-services
-**** education
-**** effects
-**** environment
-**** includes
-**** input
-**** ip-licensing
-**** luau
-**** makeup
-**** marketplace
-**** matchmaking
-**** parts
-**** performance-optimization
-**** physics
-**** players
-**** production
-**** projects
-**** reference
-**** resources
-**** scripting
-**** sound
-**** studio
-**** tutorials
-***** index
-https://create.roblox.com/docs/en-us/tutorials
-****** index.md
-***** contents
-****** curriculum
-******* index 
-https://create.roblox.com/docs/en-us/tutorials/curriculums/core
-https://create.roblox.com/docs/en-us/tutorials/curriculums/core
-******** curriculum-overview.md
-******* contents
-******** animator
-********* get-started.md
-********* index.md
-********* next-steps.md
-********* play-your-animation.md
-********* test-and-save.md
-********* work-with-the-animation-editor.md
-******** artist
-********* get-started.md
-********* index.md
-********* next-steps.md
-********* test-and-save.md
-********* work-with-particle-emitters.md
-******** building
-********* code-with-assistant.md
-********* get-started.md
-********* index.md
-********* next-steps.md
-********* test-and-save.md
-********* work-with-parts.md
-******** coding
-********* customize-strings.md
-********* get-started.md
-********* index.md
-********* next-steps.md
-********* test-and-save.md
-********* work-with-variables.md
-******** core
-********* index
-********** index.md
-********* contents
-********** building
-*********** apply-polished-assets.md
-*********** create-a-project.md
-*********** create-an-environment-with-terrain.md
-*********** create-basic-visual-effects.md
-*********** customize-global-lighting.md
-*********** greybox-a-playable-area.md
-********** scripting
-*********** create-player-hazards.md
-*********** record-and-display-player-data.md
-*********** script-an-upgrade-button.md
-*********** script-game-behavior.md
-******** environmental-art
-********* assemble-an-asset-library.md
-********* construct-your-world.md
-********* develop-polished-assets.md
-********* greybox-your-environment.md
-********* index.md
-********* optimize-your-experience.md
-******** gameplay-scripting
-********* add-rounds.md
-********* create-teams.md
-********* detect-hits.md
-********* implement-blasters.md
-********* index.md
-********* spawn-respawn.md
-******** studio
-********* create-account.md
-********* explore-ui.md
-********* index.md
-********* install-studio.md
-********* next-steps.md
-******** user-interface-design
-********* choose-an-art-style.md
-********* implement-designs-in-studio.md
-********* index.md
-********* wireframe-your-layouts.md
-****** first-experience
-****** fundamentals
-******* coding-1
-******* coding-2
-******* coding-3
-******* coding-4
-******* coding-5
-******* coding-6
-****** use-case-tutorials
-**** ui
-**** workspace
-********** 
-********** 
-********** 
-********** 
-********** 
-******** 
-******** 
-** avatar
+** root
+*** affiliates.md
+*** ai-data-sharing.md
+*** assets.md
+*** creation.md
+*** creator-fund.md
+*** creator-hub.md
+*** creator-programs
+*** creator-rewards.md
+*** discovery.md
+*** experiences.md
+*** get-started.md
+*** platform.md
+*** safety.md
+*** scale.md
+*** unity.md
+*** unreal.md
+*** what-is-roblox.md
+** animation
+** art
 ** assets
+** assistant
+** audio
+** avatar
+** avatar-setup
+** characters
+** chat
+** cloud
+** cloud-services
+** education
+** effects
+** environment
+** includes
+** input
+** ip-licensing
+** luau
+** makeup
+** marketplace
+** matchmaking
+** parts
+** performance-optimization
+** physics
+** players
+** production
+** projects
+** reference
+** resources
+** scripting
+** sound
+** studio
+** tutorials
+*** index
+https://create.roblox.com/docs/en-us/tutorials
+**** index.md
+*** contents
+**** curriculum
+***** index 
+https://create.roblox.com/docs/en-us/tutorials/curriculums/core
+https://create.roblox.com/docs/en-us/tutorials/curriculums/core
+****** curriculum-overview.md
+***** contents
+****** animator
+******* get-started.md
+******* index.md
+******* next-steps.md
+******* play-your-animation.md
+******* test-and-save.md
+******* work-with-the-animation-editor.md
+****** artist
+******* get-started.md
+******* index.md
+******* next-steps.md
+******* test-and-save.md
+******* work-with-particle-emitters.md
+****** building
+******* code-with-assistant.md
+******* get-started.md
+******* index.md
+******* next-steps.md
+******* test-and-save.md
+******* work-with-parts.md
+****** coding
+******* customize-strings.md
+******* get-started.md
+******* index.md
+******* next-steps.md
+******* test-and-save.md
+******* work-with-variables.md
+****** core
+******* index
+******** index.md
+******* contents
+******** building
+********* apply-polished-assets.md
+********* create-a-project.md
+********* create-an-environment-with-terrain.md
+********* create-basic-visual-effects.md
+********* customize-global-lighting.md
+********* greybox-a-playable-area.md
+******** scripting
+********* create-player-hazards.md
+********* record-and-display-player-data.md
+********* script-an-upgrade-button.md
+********* script-game-behavior.md
+****** environmental-art
+******* assemble-an-asset-library.md
+******* construct-your-world.md
+******* develop-polished-assets.md
+******* greybox-your-environment.md
+******* index.md
+******* optimize-your-experience.md
+****** gameplay-scripting
+******* add-rounds.md
+******* create-teams.md
+******* detect-hits.md
+******* implement-blasters.md
+******* index.md
+******* spawn-respawn.md
+****** studio
+******* create-account.md
+******* explore-ui.md
+******* index.md
+******* install-studio.md
+******* next-steps.md
+****** user-interface-design
+******* choose-an-art-style.md
+******* implement-designs-in-studio.md
+******* index.md
+******* wireframe-your-layouts.md
+**** first-experience
+**** fundamentals
+***** coding-1
+***** coding-2
+***** coding-3
+***** coding-4
+***** coding-5
+***** coding-6
+**** use-case-tutorials
+** ui
+** workspace
+* create
+** experiences
+*** guides 
+https://create.roblox.com/docs/en-us/experiences
+**** tutorials
+https://create.roblox.com/docs/tutorials
+**** samples
+https://create.roblox.com/docs/en-us/samples
+**** engine api reference
+https://create.roblox.com/docs/en-us/reference/engine
+**** studio
+https://create.roblox.com/docs/en-us/studio
+*** contents
+**** overview
+******** get started
+**** create
+******** overview
+******** projects
+******** 3d workspace
+******** scripting
+******** environment
+******** characters
+******** players
+******** input
+******** audio
+******** user interface
+******** animation
+******** chat
+******** matchmaking
+******** performance optimization
+******** cloud services
+******** roblox for unity developers
+******** roblox for unreal developers
+**** Scale
+******** Discovery
+******** Localization
+******** Game design
+**** Monetize
+******** Overview
+******** Earn
+******** License
+******** Advertise
+** avatar
+*** guides 
+https://create.roblox.com/docs/en-us/avatar
+**** accessories
+https://create.roblox.com/docs/en-us/art/accessories
+**** clothing
+https://create.roblox.com/docs/en-us/art/accessories
+https://create.roblox.com/docs/en-us/art/accessories/layered-clothing
+**** characters
+https://create.roblox.com/docs/en-us/art/characters
+**** publishing and selling
+https://create.roblox.com/docs/en-us/marketplace/publish-to-marketplace
+*** contents
+**** overview
+***** get started
+***** resources
+**** create
+***** validation errors
+***** in-experience creation
+***** photo-to-avatar generation
+**** monetize
+***** overview
+***** fees and commissions
+***** in-experience sales
+***** in-experience creation
+***** sponsor items
+***** randomized items
+**** policies and guidelines
+***** marketplace policy
+***** intellectual property
+***** moderation
+***** faq
+** assets
+*** guides 
+https://create.roblox.com/docs/en-us/assets
+**** 3d art
+https://create.roblox.com/docs/en-us/art
+*** contents
+**** overview
+***** overview
+***** assets
+***** manage
+***** packages
+***** asset privacy
+***** creator store
+***** monetize models and plugins
+**** creation tools
+***** studio
+***** in-experience
+**** 3d art
+***** overview
+***** 3d importer
+***** reimport
+***** gltf export
+***** roblox blender plugin
 ** open cloud
-https://create.roblox.com/docs/cloud
-** scale
-** monetize
+*** guides 
+https://create.roblox.com/docs/en-us/cloud
+**** guide
+https://create.roblox.com/docs/en-us/cloud/guides
+*** contents
+**** overview
+***** reference
+***** guides
+***** common components
+**** authentication
+***** api keys
+***** oauth 2.0
+**** features
+***** accounts
+***** assets
+***** avatars
+***** badges
+***** bans and blocks
+***** connections
+***** creator store
+***** data and memory stores
+***** developer products
+***** game passes
+***** generative ai
+***** groups
+***** interactions
+***** inventories
+***** localization
+***** luau execution
+***** matchmaking
+***** metadata
+***** notifications
+***** places
+***** private servers
+***** sponsored campaigns
+***** team create
+***** thumbnails
+***** trades
+***** universes
+***** user profiles
+***** users
+**** domains
+***** apis.roblox.com
+***** accountinformation.roblox.com
+***** accountsettings.roblox.com
+***** adconfiguration.roblox.com
+***** assetdelivery.roblox.com
+***** auth.roblox.com
+***** avatar.roblox.com
+***** badges.roblox.com
+***** catalog.roblox.com
+***** clientsettings.roblox.com
+***** contacts.roblox.com
+***** develop.roblox.com
+***** economy.roblox.com
+***** economycreatorstats.roblox.com
+***** engagementpayouts.roblox.com
+***** followings.roblox.com
+***** friends.roblox.com
+***** gameinternationalization.roblox.com
+***** games.roblox.com
+***** groups.roblox.com
+***** inventory.roblox.com
+***** itemconfiguration.roblox.com
+***** locale.roblox.com
+***** localizationtables.roblox.com
+***** metrics.roblox.com
+***** notifications.roblox.com
+***** premiumfeatures.roblox.com
+***** presence.roblox.com
+***** privatemessages.roblox.com
+***** publish.roblox.com
+***** thumbnails.roblox.com
+***** thumbnailsresizer.roblox.com
+***** trades.roblox.com
+***** translationroles.roblox.com
+***** twostepverification.roblox.com
+***** users.roblox.com
+** scale and monetize
+*** guides 
+**** scale
+https://create.roblox.com/docs/en-us/scale
+***** discovery
+https://create.roblox.com/docs/discovery
+***** localization
+https://create.roblox.com/docs/production/localization
+***** analytics
+https://create.roblox.com/docs/production/analytics
+***** game design
+https://create.roblox.com/docs/production/game-design
+**** monetize
+https://create.roblox.com/docs/en-us/monetize
+***** experiences
+https://create.roblox.com/docs/monetize-experiences
+***** avatar
+https://create.roblox.com/docs/monetize-avatar
+***** assets
+https://create.roblox.com/docs/production/sell-on-creator-store
+*** contents
+**** platform
+***** get started
+***** create
+***** scale
+***** monetize
+****** earn on roblox
+***** guidelines and polices
+****** safety on roblox
+****** content maturity
+****** gdpr and ccpa
+****** dmca
+****** ai data sharing
+****** account verification
+****** group guidelines
