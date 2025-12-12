@@ -12,7 +12,8 @@ local function handleObstacle(rigRootPart, targetPosition)
 --   local jumpPosition = rigRootPart.Position - (rigRootPart.CFrame.LookVector * 300)
   if humanoid then
     --   humanoid:MoveTo(jumpPosition)
-      rigRootPart.CFrame = rigRootPart.CFrame * CFrame.new(0,0,3)
+      --rigRootPart.CFrame = rigRootPart.CFrame * CFrame.new(0,0,3)
+      humanoid.Jump = true
       humanoid:MoveTo(targetPosition)
   end
 end
@@ -22,7 +23,7 @@ local function checkForObstacles(targetPosition,rigRootPart)
   local rayParams = RaycastParams.new()
   rayParams.FilterDescendantsInstances = {rigRootPart.Parent} -- Ignore self
   rayParams.FilterType = Enum.RaycastFilterType.Exclude
-  local direction = (targetPosition - rigRootPart.Position).Unit
+  local direction = (targetPosition - rigRootPart.Position).Unit * 3
   local rayResult = workspace:Raycast(origin, direction, rayParams)
   if rayResult and rayResult.Instance then
       if rayResult.Instance.CanCollide then
