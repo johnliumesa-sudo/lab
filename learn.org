@@ -1630,6 +1630,8 @@ https://create.roblox.com/docs/en-us/avatar
 https://create.roblox.com/docs/en-us/assets
 ****** overview
 ******* overview
+******** <2025-12-11 Thu> 
+********* TODO Packages are reusable sets of assets that have models, scripts, and other media.
 ******* assets
 ******* manage
 ******** asset manager
@@ -1648,9 +1650,14 @@ https://create.roblox.com/docs/en-us/assets
 ******* in-experience
 ****** 3d art
 ******* overview
+******** <2025-12-11 Thu>
+********* TODO PBR(Physically-Based rendering), Textures allow more realistic assets, such as roughness and lighting.
 ******* modeling
 ******** overview
 ******** modeling specifications
+********** <2025-12-11 Thu>
+*********** TODO Root joints should always be set to (0, 0, 0) 
+*********** TODO Animations can be uploaded with fbx files, but only one may import at any singe upload.
 ******** reference assets
 ******** rigging and skinning
 ******** blender / maya export settings
