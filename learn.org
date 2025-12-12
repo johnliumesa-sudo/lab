@@ -2,7 +2,7 @@
 #+AUTHOR: Aaron Liu
 #+DESCRIPTION: A master learn note for Roblox.
 
-* toc 
+* doc
 ** complete docs 
 https://github.com/Roblox/creator-docs.git  
 *** root
@@ -50,8 +50,608 @@ https://github.com/Roblox/creator-docs.git
 *** players
 *** production
 *** projects
+https://github.com/Roblox/creator-docs/tree/main/content/en-us/projects
+**** overview
+https://github.com/Roblox/creator-docs/blob/main/content/en-us/projects/index.md
+A *Roblox project* is a collection of places, assets, settings, and other resources that together represent an experience. Roblox stores your projects in the cloud for convenient collaboration, editing, and version control.
+You create and manage projects with *Roblox Studio*, an all‑in‑one IDE that provides building, scripting, testing, and publishing tools.
+***** Places
+Experiences on Roblox are made up of individual *places*, comparable to scenes in Unity or maps in Unreal Engine. Each place contains all components for that portion of the experience, including its specific environment, parts, meshes, scripts, and user interface.
+/See the pages for creating and publishing, configuring, and updating experiences and places for details./
+****** Data Model
+Every place is represented by a *data model*, a hierarchy of objects that describe everything about the place. The Roblox Engine uses the data model as a source of truth for a place's state, so it can simulate and render it on client devices.
+Proper, intentional object organization within the data model is essential for functionality and maintenance of your project.
+***** Assets
+In Roblox, assets such as images, meshes, and audio are stored as *cloud-based assets*, so you don't need to bundle local copies into a saved Studio experience. Each asset in the cloud is assigned a unique asset ID from which multiple experiences can utilize them.
+You can create assets directly in Studio, such as models, or import assets like images, audio, and meshes from other tools.
+#+begin_example
+rbxassetid://7229442422
+rbxassetid://6768917255
+rbxassetid://9125402735
+#+end_example
+By default, assets are private to your experience and you can use an asset in any place by referencing its ID. You can also distribute them to the community in the *Creator Store*, so others can use them as well.
+***** Packages
+*Packages* are reusable object hierarchies that you can define and reuse in multiple places across multiple experiences. For any large project, packages offer the following benefits:
+******  *Asset Kits:*
+Packages can be used as asset kits, allowing you to duplicate a set of objects as needed.
+******  *Easier Updates:*
+For instance, a package can include a tree that's duplicated many times in an environment. If you need to make a change, such as swap textures for the tree, it can be updated once in the package instead of for each individual instance.
+******  *Workflow:*
+A package can start with "graybox" assets, and eventually be replaced with final art assets. When assets are replaced, they retain all original positions and orientations.
+***** Settings
+Experience settings are managed from the *Creator Dashboard* or within Studio, including:
+****** Basic Info ::
+Basic inforation about the experience, such as its name, description, and genre. Much of the information here is used in your experience's listing.
+****** Communication ::
+Settings whch enable eligible users to use voice chat or animate their avatar via their camera within your experience.
+****** Permissions ::
+Configures ho can access your experience. New experiences begin as *private* and can only be edited and joined by you and members of your group with the correct permissions. When appropriate, you can release the experience to the public.
+****** Monetization ::
+Options forearning revenue from your experience.
+****** Localization ::
+Configuratin for different languages and regions.
+****** Avatar ::
+Settings related to avatars, such as avatar scaling and clothing overrides.
+***** Collaboration
+With Studio's built-in collaboration tools, team members can contribute to experiences independently on their own time, or alongside others. Key features include:
+****** Group admins can manage which members have access to collaborate and which do not, effectively maintaining proper roles within a large team.
+****** Collaborators can build alongside other team members in real time and automatically see changes made by others.
+****** Collaborators can independently edit the same scripts that others may be editing, test locally, and commit their changes to the cloud-based project when ready.
+***** Testing
+Your team can instantly test an experience on PC, mobile, VR, and other devices you wish to support through the Roblox app; no need to compile builds, deploy to app stores, or await app store approval.
+Studio offers a suite of options for testing an experience before releasing it to the public:
+****** *Rapid playtesting:*
+Provides a close simulation of the experience running on the Roblox application.
+****** *Multi-client simulation:*
+For comparing how each client "sees" other clients within the experience.
+****** *Device emulation:*
+Provides insight on how controls operate on a mobile device or how on-screen UI displays on different screens and aspect ratios.
+****** *Collaborative playtesting:*
+With members of your team.
+**** experiences and places
+https://create.roblox.com/docs/en-us/production/publishing/publish-experiences-and-places
+***** create and publish
+https://create.roblox.com/docs/en-us/production/publishing/publish-experiences-and-places
+****** Create and publish experiences and places
+******* When you open Studio and create a new *experience*, your project starts with a single *place* that players load into when they first join the experience. Experiences can have one or multiple places that each contain all components for that portion of the experience, including its specific environment, 3D objects, and scripts.
+******* Places are comparable to scenes in Unity or maps in Unreal Engine.
+[[https://www.youtube-nocookie.com/embed/_RxK6l2y7Ac][Watch Video Tutorial]]
+******* Many creators create additional places within an experience to organize assets for different gameplay areas. For example, if you want players to join a dungeon before [[../../projects/teleport.md][teleporting]] to either a vast desert or spooky island, you can organize the assets for each area into their own place.
+[[file:../../assets/publishing/experiences-places-assets/Experience-Hierarchy.png]]
+******* Every place is represented by a data model that stores and organizes:
+- All objects that make up the 3D world of a place, such as its parts, meshes, terrain, and lighting.
+- All objects that can control runtime behavior, such as scripts.
+******* Understanding both the general structure of a place's data model, and how the Roblox engine uses it as the source of truth for a place's state is important for understanding where to store and configure different types of objects. For more information, see [[../../projects/data-model.md][data model]].
+****** Create experiences
+******* When you create a new experience, it opens a start place that all players will load into when they join the experiences. The start place represents the overall experience until you add additional places for different gameplay areas.
+******* To create an experience:
+1. Open Studio.
+2. In the *Open a Template* section, select a template with the objects you want to start working with for your experience, such as:
+   - *Baseplate* — Starts with a ~Class.SpawnLocation~ and a baseplate.
+   - *Platformer* — Starts with customizable platforms, coin pickups, and double-jump, dashing, rolling, and long jump character mechanics!
+   - *Racing* — Starts with a working racecar and customizable track objects.
+******* When Studio opens up the template, you now have ~Place1~ that represents your overall experience.
+****** Publish experiences
+******* When you publish an experience, Roblox stores the data model of your start place as a ~.rblx~ file in the cloud. This is an important process because it connects the experience to your account, allowing you to access and work on it from any computer.
+******* By default, new experiences are set to *private*, meaning that they are only accessible to you as the creator, to users with *Edit* or *Playtest* access, and to group members with the appropriate [[../../projects/groups.md#roles-and-permissions][roles and permissions]]. When you are ready to go live to everyone, you can [[*Make experience public][release your experience to the public]] and optionally mark it as a beta.
+******* When creating and collaborating on experiences as part of a [[../../projects/groups.md][group]], the ability for group members to playtest/edit/publish experiences is, by default, dependent on their role permissions. However, group owners or members with sufficient permissions can adjust access on a per‑experience level. For more info, see [[../../projects/configure-experiences.md][configure experiences]].
+******* To publish an experience:
+1. In the top-left corner of your computer, click *File* ⟩ *Publish to Roblox*.
+2. In the *Publish Game* window, fill in the following fields:
+   - *Name / Description* — The experience name and a description that describes what a potential player should expect. See the metadata best practices dropdown at the bottom of this section for guidelines.
+   - *Creator* — The creator you'd like to attribute as the creator of the experience.
+     #+begin_quote
+     *Success:* It's highly recommended that you [[../../projects/groups.md][create a group]] and publish a new experience under the group's account, not your personal account. Even if you're a solo creator, this allows you to expand your team over time, recruit playtesters, and operate as an independent studio.
+     #+end_quote
+   - *Devices* — Each applicable device type that you want to support. The default options are practical for most new creators.
+3. Click *Create*.
+******* Metadata best practices
+Your experience's name and description create an important first impression and contribute to how easily players find your experience through Roblox's dynamic [[../../discovery.md][discovery]] systems.
+******** Experience name
+All experiences should adhere to the following best practices for naming:
+- *Keep the name consistent* – Renaming an experience too often reduces the chances that players can find it using a previous name.
+- *Avoid spamming* – Frequent repetition of words or phrases may result in demotion of your experience.
+  - ✅ *Obby Madness*
+  - ❌ *Obby Madness OBBY OBBY OBBY OBBY OBBY*
+- *Use decorations cautiously* – Decorating the name with one or two well-placed emojis isn't harmful, but misplaced or excessive decorations can confuse players who quickly want to identify the experience.
+  - ✅ 🌍 *Evolution Simulator* 🌍
+  - ❌ 🐒🐬🐊 *Ev*🌍*luti*🌍*n Simulator* 🌷🍀🌿
+******** Experience description
+A well-written description promotes the genre and unique qualities of your experience while also providing the best context for both players and Roblox's dynamic discovery systems.
+- *Summarize your experience* – Summarize what your experience is about in the first sentence, as this is your opportunity to present the most accurate impression of its genre and content.
+  - ✅ Compete with racers around the world in some of the craziest courses you've ever seen!
+  - ✅ Fight off hordes of zombies with bats, guns, swords, and a bunch of weapons hidden throughout challenging mazes.
+- *Provide keywords* – Include all keywords that may be relevant to your experience. This makes it easier for players and Roblox to understand the themes and genres presented in your experience.
+  - ✅ Do you enjoy being a /sheriff/? Join and rid our town of /robbers/ and /crooks/! /Arrest/ the bad guys, throw them in /jail/, and even have a /guns/-blazing /shoot/-out outside the saloon.
+  - ✅ Open your own /restaurant/, make delicious /food/, get lots of /customers/, and expand! Earn experience along the way and learn more /recipes/. If you love /cooking/ and starting your own /business/, this is your chance to become a /tycoon/!
+- *Avoid spamming* – Avoid repeating keywords or adding irrelevant keywords. This may result in demotion of your experience.
+  - ❌ Play our fun granny obby game. Obby obby obby obby obby obby obby adopt me bloxburg arsenal ninja legends parkour tycoon battle disaster survival super hero simulator run jump gun rpg pokemon wild west space alien piggy baldi granny murder mystery prison life jail break mario zelda dungeon quest.
+******* Create additional places
+******** After you have published your experience, you can add additional places for different gameplay areas. To create a new place within an existing experience:
+1. Open an existing place file or create a new place from any Studio template.
+2. Select *File* ⟩ *Publish to Roblox As…*.
+3. In the *Publish Game* window, click the tile for the experience you'd like to add the place to.
+4. Select *Add as a new place*, then click *Create*.
+******** Whether you choose to have a single, large place or many smaller places is mostly personal preference. For more information, see [[../../performance-optimization/design.md#streaming-and-teleportation][design for performance]].
+******* Change start place
+******** The start place of an experience cannot be instantly swapped with another place, but you can overwrite the current start place.
+******** To change the start place:
+1. [OPTIONAL] Save your *current* start place to a ~.rbxl~ file or to a new place within the experience.
+2. Go to the [[https://create.roblox.com/dashboard/creations][Creator Dashboard]] and select the experience with the start place that you want to change.
+3. Go to *Configure* ⟩ *Places*.
+4. Click *Edit in Studio* for the intended *new* start place. Studio opens and loads that specific place.
+   [[file:../../assets/creator-dashboard/Experience-Change-Start-Place.png]]
+5. In the top-left corner of Studio, go to *File* ⟩ *Publish to Roblox As…*.
+   #+begin_quote
+   *Error:* Do not select *Publish to Roblox* as this would publish the place over itself.
+   #+end_quote
+6. Click the tile for the same experience, then choose the *current* start place. Click *Overwrite*.
+   [[file:../../assets/publishing/experiences-places-assets/Publish-Window-Select-Start-Place.png]]
+7. [OPTIONAL] If the experience is live, it's recommended that you [[../../projects/update-experiences.md#restart-servers][restart its servers]].
+******* Make experience public
+******** Before making a new experience public—or updating an existing public experience—you must meet *at least one* of the following requirements:
+- Have an account that is [[./account-verification.md#verify-through-government-id][ID-verified]] *or*
+- Have made a purchase using real currency or a gift card since January 1, 2025
+******** You must also complete the [[../promotion/content-maturity.md][content maturity & compliance]] questionnaire for this specific experience.
+******** These requirements apply to both *publishing a new experience* and *making updates to an existing public experience*, such as:
+- Using *Publish to* or *Publish as* in Studio
+- Publishing a new version of a place within an existing experience
+******** You must meet the public experience requirements if your audience is set to *Public* or *Community members*.
+******** You do *not* need to meet these requirements if you keep your experience private or set the audience to *Connections*.
+******** By default, new experiences are set to *private*, meaning that they are only accessible to you as the creator, to users with *Edit* or *Playtest* access, and to group members with the appropriate [[../../projects/groups.md#roles-and-permissions][roles and permissions]]. To make your experience available to everyone on Roblox, you have to update its privacy settings.
+******** To update your experience's privacy settings:
+1. In the [[https://create.roblox.com/dashboard/creations][Creator Dashboard]], select the experience you want to make public.
+2. Go to *Configure* ⟩ *Settings*.
+3. Under *Privacy*, select *Public*.
+4. [OPTIONAL] Choose *Enable Beta mode* to omit the experience from *Recommended For You* in the Roblox client. Beta experiences are still public, but have more limited reach and exposure.
+   #+begin_quote
+   *Success:* To widen your audience while still remaining in beta, click *Create campaign* to set up a sponsored ad. To learn more, see [[../../production/promotion/ads-manager.md][Ads Manager]]. If you enable sponsored ads, the experience analytics charts might show some users from *Recommended For You*.
+   #+end_quote
+5. Click *Save Changes*.
+******** After you make your experience public, you can choose the scope of your audience:
+1. In the [[https://create.roblox.com/dashboard/creations][Creator Dashboard]], select the experience you want to specify the audience for.
+2. Go to *Audience* ⟩ *Access Settings*.
+3. Under *Join*, select one of the following options:
+   - *Public* — available to all users on Roblox.
+   - *Connections* — available only to the experience owner's connections. This option only appears for non–group-owned experiences.
+   - *Community members* — available only to group members. This option only appears for group-owned experiences.
+4. Click *Save Changes*.
+***** configure
+https://github.com/Roblox/creator-docs/blob/main/content/en-us/projects/configure-experiences.md
+You can configure most experience and place-level settings from the [[https://create.roblox.com/dashboard/creations][Creator Dashboard]], a hub that lets you manage and access all of your Roblox creations in one place. It's useful to explore the left-hand navigation to see every configuration possible, such as those for [[../production/localization/index.md][localization]], [[../production/analytics/index.md][analytics]], and [[../production/monetization/index.md][monetization]], but the following sections highlight notable workflows for most experiences.
+****** Generate content descriptors
+******* The *Maturity & Compliance Questionnaire* contains a set of questions about the type of content players can possibly encounter within your experience, as well as how frequently it occurs. Your answers give Roblox an understanding of the content in your experience and ensure that the experience is available to the appropriate audience on the [[https://www.roblox.com/home][Home]] and [[https://www.roblox.com/discover][Discover]] pages according to each player's age group and regional content policies.
+******* For step-by-step instructions on how to fill out the questionnaire, see [[../production/promotion/content-maturity.md][content maturity & compliance]].
+****** Set age and geography restrictions
+******* You can set restrictions so that only players over a certain age or from specific regions can play and discover your experiences. This is particularly helpful when you want to age up your audience without including mature content to age gate through content maturity labels.
+******* To set age and geography restrictions:
+1. Navigate to the [[https://create.roblox.com/dashboard/creations][Creator Dashboard]].
+2. Click on the thumbnail of the experience for which you want to set age and geography restriction. The experience's *Overview* page displays.
+3. In the left-hand navigation, navigate to *Audience* ⟩ *Access Settings*.
+4. In the *Age* section, set *Minimum age* to the youngest age a player can have to access your experience.
+5. In the *Region* section, enable every region that can access your experience.
+6. At the bottom of the page, click the *Save Changes* button.
+****** Copy landing page link
+After you publish your experience, Roblox generates a landing page for the experience referred to as the experience's *main details page*. You can access and copy this link from either the [[https://create.roblox.com/dashboard/creations][Creator Dashboard]] or the Roblox app, then share it with others so they can play your experience.
+******* Creator Dashboard
+1. Hover over an experience's thumbnail, click the *...* button, and select *Copy URL*.
+   [[file:../assets/creator-dashboard/Options-Button-Experience-Public.png]]
+2. Share the copied URL with others as a direct link to the experience's landing page featuring a *play* button.
+   [[file:../assets/publishing/experiences-places-assets/Experience-Page-Example.jpg]]
+******* Roblox app
+1. Open the Roblox app on your mobile device.
+2. Locate the experience, typically under the *Continue* header on the home screen, and tap its tile to open the info screen.
+3. In the lower-left corner of the screen, click the *...* button and select *Share* to open your device's sharing options.
+   [[file:../assets/promotion/misc/Experience-Mobile-Share.png]]
+****** Edit collaborator permissions
+******* When creating and collaborating on experiences as part of a [[./groups.md][group]], abilities granted to group members are dependent on their *role permissions*. Owners or other group members with sufficient permissions can adjust play/edit/publish access and more on a per‑experience level, such as allowing a limited group role the ability to edit a specific experience even if that role cannot edit all experiences.
+******* For step-by-step instructions on how to edit collaborator permissions, see [[./groups.md#roles-and-permissions][roles and permissions]].
+****** Access version history
+******* Roblox automatically retains saved versions of each place for version control and backup purposes. To access and revert to a previously saved version of any place within an experience:
+1. Navigate to the [[https://create.roblox.com/dashboard/creations][Creator Dashboard]] and click on the thumbnail of the experience. The experience's *Overview* page displays.
+2. In the left-hand navigation, navigate to *Configure* ⟩ *Places*.
+3. On the *Places* page, click the thumbnail of the place you'd like to revert to a previous version.
+4. In the left-hand navigation, click *Version History*.
+5. Locate and select the version to revert to, then click the *Restore* button. Confirm the action to restore to that version.
+******* *Warning:*
+Note that restoring a place to a previous version does *not* automatically publish the changes. If the place has been [[../production/publishing/publish-experiences-and-places.md#make-experience-public][released to the public]] and you want to overwrite its live/public version with the reverted version, open the place in Studio, publish it, and then [[./update-experiences.md#restart-servers][restart your servers]] for updates.
+****** Allow copying
+******* By default, all private and public experiences are locked so that you or your [[./groups.md][group]] are the only creators who have permission to edit its place files. 
+******* However, if you want to allow other creators to be able to access an editable copy of your experience for their own creation process, you can *uncopylock* the experience. This is particularly helpful when you create templates or reference files for open use.
+******* To allow the community to access an editable copy of your experience:
+1. Navigate to the [[https://create.roblox.com/dashboard/creations][Creator Dashboard]].
+2. Click on the thumbnail of the experience you want to allow players to copy. The experience's *Overview* page displays.
+3. In the left-hand navigation, navigate to *Configure* ⟩ *Places*.
+4. Click the *start place* marked with a star icon. The place's *Basic Settings* page displays.
+   [[file:../assets/creator-dashboard/Places-Start-Place-Icon.png]]
+5. In the place's left-hand navigation menu, select *Permissions*.
+6. Enable *Allow users to download a copy of this Place*.
+7. Click the *Save Changes* button. Your experience is now uncopylocked and creators can access an editable copy of it from the experience's main page by clicking the *...* button and selecting *Edit in Studio*.
+   [[file:../assets/publishing/experiences-places-assets/Edit-Place-In-Studio.jpg]]
+****** Allow strong language
+******* You can enable strong language and relax the text chat filter in your experiences for older players audiences. Doing so also adds a tag above your experience page to warn other players that your experience may include strong language:
+[[file:../assets/publishing/experiences-places-assets/Maturity-Label-Strong-Language.jpg]]
+******* Regardless of whether or not you activate the toggle, players do not face moderation consequences just for using strong language in chat or voice in experiences with Restricted content maturity labels, but they cannot violate [[https://en.help.roblox.com/hc/en-us/articles/203313410#safety][Community Standards]] and [[https://www.roblox.com/info/terms][Terms of Use]]. For example, players can type an expletive if they are scared by a monster, but they cannot abuse another player using strong language or otherwise.
+******* *Warning:*
+In-experience assets and experience metadata cannot contain strong language, even if the toggle is on and your experience has a Restricted content maturity label. If you include strong language in your assets or experience page, your experience will be moderated.
+******* To allow strong language between players in text chat within your experience:
+1. Navigate to the [[https://create.roblox.com/dashboard/creations][Creator Dashboard]] and click on the thumbnail of the experience in which you want to allow strong language. The experience's *Overview* page displays.
+2. In the left-hand navigation, navigate to *Audience* ⟩ *Communication Settings*.
+3. Enable the *Allow Strong Language* toggle, then press the *Save Changes* button. Players within your experience can now use strong language in text chat.
+***** release updates
+https://create.roblox.com/docs/en-us/projects/update-experiences
+**** cross-platform development
+**** architecture
+***** data model
+***** client-server runtime
+***** instance streaming
+***** server authority
+***** overview
+***** advanced techniques
+**** manage
+***** experience ownership transfer
+***** place files
+**** work in teams
+***** groups
+***** collaboration
+***** activity history
+***** external tools
 *** reference
 *** resources
+**** battle-royale
+**** beyond-the-dark
+**** feature-packages
+https://create.roblox.com/docs/en-us/resources/feature-packages
+***** overview
+https://create.roblox.com/docs/en-us/resources/feature-packages
+***** bundles
+https://create.roblox.com/docs/en-us/resources/feature-packages/bundles
+****** The *Bundles* feature package offers out-of-the-box functionality to sell collections of items to players at a discount. You can choose whether to allow players to purchase bundles using a custom in-experience currency or Robux, which bundle type you want to use, what set of items you want to sell, and how you want to prompt players during their gameplay.
+****** Using the package's customization options, you can tailor your bundles to meet the design and monetization goals of your experiences, such as:
+- Targetting a low [[../../production/game-design/analytics-essentials.md#monetization-metrics][conversion rate]] metric by offering discounted [[../../production/game-design/starter-pack-design.md][starter packs]] that provide value to new players and encourage early spend.
+- Increasing [[../../production/game-design/analytics-essentials.md#monetization-metrics][spend depth]] by bundling items at various price points to appeal to a range of players.
+- Monetizing live operations (LiveOps) [[../../production/game-design/liveops-essentials.md#content-cadence][events]] by offering limited-time bundles of exclusive items.
+[[file:../../assets/resources/feature-packages/Bundles/Bundles-Intro.png]]
+#+begin_quote
+*Info:* For information on how to strategically provide purchase opportunities to meet player needs at key stages of your experience, see [[../../production/game-design/contextual-purchases.md][Contextual Purchases]]. For industry best practices on how implement starter pack bundles, see [[../../production/game-design/starter-pack-design.md][Starter Pack Design]].
+#+end_quote
+****** Get package
+******* The *Creator Store* is a tab of the *Toolbox* that you can use to find all assets that are made by Roblox and the Roblox community for use within your projects, including model, image, mesh, audio, plugin, video, and font assets. You can use the Creator Store to add one or more assets directly into an open experience, including feature packages!
+******* Every feature package requires the *Core* feature package to function properly. Once the *Core* and *Bundles* feature package assets are within your inventory, you can reuse them in any project on the platform.
+******* To get the packages from your inventory into your experience:
+1. Add the *Core* and *Bundles* feature package to your inventory within Studio using the links below:
+   - [[https://create.roblox.com/store/asset/94918533221001][Core Feature Package]] (The Core feature package offers shared data store logic for all feature packages.)
+   - [[https://create.roblox.com/store/asset/72975253516300][Bundles Feature Package]] (The Bundles Feature Package offers functionality to sell collections of items to players at a discount.)
+2. From Studio's *Window* menu or *Home* tab toolbar, open the [[../../projects/assets/toolbox.md][Toolbox]].
+3. In the *Toolbox* window, click the *Inventory* tab. The *My Models* sort displays.
+   [[file:../../assets/studio/toolbox/Inventory-Tab.png]]
+4. Click the *Feature Package Core* tile, then the *Bundle Feature Package* tile. Both package folders display in the *Explorer* window.
+5. Drag the package folders into ReplicatedStorage
+6. Allow data store calls to track player purchases with the packages.
+   1. Open Studio's *File* ⟩ *Game Settings* window.
+   2. Navigate to the *Security* tab, then enable *Enable Studio Access to API Services*.
+****** Define currencies
+******* *Info:* If you do not plan on charging in-experience currencies for any bundles, you can skip this section and configure bundles through ~devProductId~.
+******* If your experience has its own currency system, you can register those with the *Core* feature package by defining them in ~ReplicatedStorage.FeaturePackagesCore.Configs.Currencies~. There is a commented out example of a Gems currency already in this file; replace it with your own.
+#+begin_src lua
+  -- Title: Currencies
+      Gems = {
+          displayName = "Gems",
+          symbol = "💎",
+          icon = nil,
+      },
+#+end_src
+******* The ~Currencies~ script tells the *Core* feature package some metadata about your currency:
+- (required) ~displayName~ - The name of your currency. If you do not specify a symbol or icon, this name is used in purchase buttons (i.e. "100 Gems").
+- (optional) ~symbol~ - If you have a text character to use as the icon for your currency, this is used instead of the ~displayName~ in purchase buttons (i.e. "💎100").
+- (optional) ~icon~ - If you have an ~AssetId~ image icon for your currency, this is used instead of the ~displayName~ in purchase buttons (i.e. image will be placed to the left of the price "🖼️100")
+******* *Info:* If you specify both a symbol and an icon for your currency, the package uses the icon instead of the symbol.
+******* Once your currency is set up, you need to manually specify the bundle's price, currency, and icon for the heads up display instead of that information being fetched from the bundle's associated developer product.
+#+begin_src lua
+  -- Title: Bundles
+      -- If you want to use a dev product, you must provide a unique devProductId, only used by one bundle.
+      -- We will fetch bundle price and icon from the developer product
+      pricing = {
+          priceType = CurrencyTypes.PriceType.Marketplace,
+          devProductId = 1795621566,
+      },
+      -- Otherwise, if you want to use in-experience currency instead of a dev product, you can use the following instead:
+      -- Price here is in the in-experience currency, not Robux
+      pricing = {
+          priceType = CurrencyTypes.PriceType.InExperience,
+          price = 79,
+          currencyId = "Gems",
+          icon = 18712203759,
+      },
+#+end_src
+******* You also need to reference the ~BundlesExample~ script to call ~setInExperiencePurchaseHandler~.
+#+begin_src lua
+  -- Title: BundlesExample
+  local function awardInExperiencePurchase(
+      _player: Player,
+      _bundleId: Types.BundleId,
+      _currencyId: CurrencyTypes.CurrencyId,
+      _price: number
+  )
+      -- Check if the player has enough currency to purchase the bundle
+      -- Update player data, give items, etc.
+      -- Deduct the currency from the player
+      task.wait(2)
+      return true
+  end
+  local function initializePurchaseHandlers()
+      local bundles = Bundles.getBundles()
+      for bundleId, bundle in bundles do
+          -- Bundle is not associated with a developer product if it does not have marketplace price type
+          if not bundle or bundle.pricing.priceType ~= "Marketplace" then
+              continue
+          end
+          Bundles.setPurchaseHandler(bundleId, awardMarketplacePurchase)
+          receiptHandlers[bundle.pricing.devProductId] = receiptHandler
+      end
+      -- If you have any in-experience currencies that you are using for bundles, set the handler here
+      for currencyId, _ in Currencies do
+          Bundles.setInExperiencePurchaseHandler(currencyId, awardInExperiencePurchase)
+      end
+  end
+#+end_src
+******* Specifically, you need to fill out ~awardInExperiencePurchase~, which is called by a loop through ~Currencies~ inside of the example ~initializePurchaseHandlers~ (i.e. each currencyId is connected to the handler through ~Bundles.setInExperiencePurchaseHandler(currencyId, awardInExperiencePurchase)~).
+****** Define bundles
+******* All bundles offerable in your experience can be defined within ~ReplicatedStorage.Bundles.Configs.Bundles~, with types exported from the ~Types~ script in the same folder.
+******* If you're using a ~devProductId~, you need to update the bundle's main ~devProductId~ to match the one in your experience. This is what will be prompted through ~Class.MarketplaceService~ to purchase the bundle itself. **It's strongly recommended to use a new developer product for the bundle to make it easier to track separate sales.**
+******* If you want a bundle with multiple items, and if these are already represented by developer products in your experience, you don't need to explicitly set item price/assetId/name, which will be fetched via product info:
+#+begin_src lua
+-- Title: README
+    {
+        itemType = ItemTypes.ItemType.DevProduct,
+        devProductId = <DEV_PRODUCT_ID>,
+        metadata = {
+            caption = {
+                text = "x1",
+                color = Color3.fromRGB(236, 201, 74),
+            } -- Caption is optional! You can also omit this field
+        }
+    },
+#+end_src
+******* Otherwise, you can manually configure those item details:
+#+begin_src lua
+-- Title: README
+    {
+        itemType = ItemTypes.ItemType.Robux,
+        priceInRobux = 49,
+        icon = <IMAGE_ASSET_ID>,
+        metadata = {
+            caption = {
+                text = "x1",
+                color = Color3.fromRGB(236, 201, 74),
+            } -- Caption is optional! You can also leave omit this field
+        }
+    },
+#+end_src
+******* For example, your entire bundle will likely look like this:
+#+begin_src lua
+-- Title: README
+    local starterBundle: Types.RelativeTimeBundle = {
+        bundleType = Types.BundleType.RelativeTime,
+        -- If you want to use a dev product, you must provide a unique devProductId, only used by one bundle.
+        -- We will fetch bundle price and icon from the developer product
+        pricing = {
+            priceType = CurrencyTypes.PriceType.Marketplace,
+            devProductId = <DEV_PRODUCT_ID>,
+        },
+        -- Otherwise, if you want to use in-experience currency instead of a dev product, you can use the following instead:
+        -- Price here is in the in-experience currency, not Robux
+        -- pricing = {
+        --  priceType = CurrencyTypes.PriceType.InExperience,
+        --  price = 79,
+        --  currencyId = <CURRENCY_ID>,
+        --  icon = <IMAGE_ASSET_ID>,
+        -- },
+        includedItems = {
+            [1] = {
+                -- The item itself is not sold via a developer product, so indicate how much it is worth in Robux and give an icon
+                -- The priceInRobux helps Bundles show relative value of the bundle price vs. the sum of its contents
+                itemType = ItemTypes.ItemType.Robux,
+                priceInRobux = 49,
+                icon = <IMAGE_ASSET_ID>,
+                -- Alternatively, if this has a dev product leave off price and icon above and just set the devProductId
+                -- The price and icon will be fetched from the developer product
+                -- devProductId = <ITEM_DEV_PRODUCT_ID>
+                -- There are more optional metadata fields that are UI-specific if needed
+                metadata = {
+                    caption = {
+                        text = "x1",
+                        color = Color3.fromRGB(236, 201, 74),
+                    },
+                },
+            },
+            [2] = {
+                itemType = ItemTypes.ItemType.Robux,
+                priceInRobux = 99,
+                icon = <IMAGE_ASSET_ID>,
+                metadata = {
+                    caption = {
+                        text = "x1",
+                        color = Color3.fromRGB(236, 201, 74),
+                    },
+                },
+            },
+            [3] = {
+                itemType = ItemTypes.ItemType.Robux,
+                priceInRobux = 149,
+                icon = <IMAGE_ASSET_ID>,
+                metadata = {
+                    caption = {
+                        text = "x1",
+                        color = Color3.fromRGB(236, 201, 74),
+                    },
+                },
+            },
+        },
+        singleUse = true, -- Once purchased or expired, no longer valid even if your experience tries to prompt (onPlayerAdded). You can make this false while testing in studio.
+        durationInSeconds = 900, -- 15 minutes
+        includesOfflineTime = false, -- Only count time elapsed in the experience
+        metadata = {
+            displayName = "STARTER BUNDLE",
+            description = "Save 75% and get a head start!",
+        },
+    }
+#+end_src
+****** Integrate server logic
+******* Take a look at ~ReplicatedStorage.Bundles.Server.Examples.BundlesExample~, which shows how your server will interact with the *Bundles* feature package and the above methods on the ~Class.ModuleScript~. The snippets below are from that script.
+******* You mainly need to hook up four things once dragging the *Bundles* feature package into your experience:
+1. Connect purchase handlers through ~Bundles.setPurchaseHandler~ to specify the functions to call to award items when a purchase is being processed.
+   #+begin_src lua
+   -- Title: BundlesExample
+    local function awardMarketplacePurchase(_player: Player, _bundleId: Types.BundleId, _receiptInfo: { [string]: any })
+        -- Update player data, give items, etc.
+        -- ... AND record receiptInfo.PurchaseId so we can check if user already has this bundle
+        task.wait(2)
+        return Enum.ProductPurchaseDecision.PurchaseGranted
+    end
+    local function awardInExperiencePurchase(
+        _player: Player,
+        _bundleId: Types.BundleId,
+        _currencyId: CurrencyTypes.CurrencyId,
+        _price: number
+    )
+        -- Check if the player has enough currency to purchase the bundle
+        -- Update player data, give items, etc.
+        -- Deduct the currency from the player
+        task.wait(2)
+        return true
+    end
+    local function initializePurchaseHandlers()
+        local bundles = Bundles.getBundles()
+        for bundleId, bundle in bundles do
+            -- Bundle is not associated with a developer product if it does not have marketplace price type
+            if not bundle or bundle.pricing.priceType ~= "Marketplace" then
+                continue
+            end
+            Bundles.setPurchaseHandler(bundleId, awardMarketplacePurchase)
+            receiptHandlers[bundle.pricing.devProductId] = receiptHandler
+        end
+        -- If you have any in-experience currencies that you are using for bundles, set the handler here
+        for currencyId, _ in Currencies do
+            Bundles.setInExperiencePurchaseHandler(currencyId, awardInExperiencePurchase)
+        end
+    end
+   #+end_src
+2. Connect your logic for ~Class.MarketplaceService.ProcessReceipt~, but this might be done elsewhere if your experience already has developer products for sale. Essentially, when a developer product receipt is being processed, they will now call ~Bundles.getBundleByDevProduct~ to check if the product belongs to a bundle. If it does, the script then calls ~Bundles.processReceipt~.
+   #+begin_src lua
+   -- Title: BundlesExample
+   -- Process receipt from marketplace to determine if player needs to be charged or not
+   local function processReceipt(receiptInfo): Enum.ProductPurchaseDecision
+       local userId, productId = receiptInfo.PlayerId, receiptInfo.ProductId
+       local player = Players:GetPlayerByUserId(userId)
+       if not player then
+           return Enum.ProductPurchaseDecision.NotProcessedYet
+       end
+       local handler = receiptHandlers[productId] -- Get the handler for the product
+       local success, result = pcall(handler, receiptInfo, player) -- Call the handler to check if purchase logic is successful
+       if not success or not result then
+           warn("Failed to process receipt:", receiptInfo, result)
+           return Enum.ProductPurchaseDecision.NotProcessedYet
+       end
+       return Enum.ProductPurchaseDecision.PurchaseGranted
+   end
+   local function receiptHandler(receiptInfo: { [string]: any }, player: Player)
+       local bundleId, _bundle = Bundles.getBundleByProductId(receiptInfo.ProductId)
+       if bundleId then
+           -- This purchase belongs to a bundle, let Bundles handle it
+           local purchaseDecision = Bundles.processReceiptAsync(player, bundleId, receiptInfo)
+           return purchaseDecision == Enum.ProductPurchaseDecision.PurchaseGranted
+       end
+       -- This purchase does not belong to a bundle,
+       -- ... Handle all your existing logic here if you have any
+       return false
+    end
+   #+end_src
+3. Connect ~Players.PlayerAdded:Connect(Bundles.OnPlayerAdded)~ so that the *Bundles* feature package re-prompts any active bundles that have not yet expired for a player.
+   #+begin_src lua
+   -- Title: README
+   local function onPlayerAdded(player: Player)
+       -- Tell Bundles when player joins so it can reload their data
+       Bundles.onPlayerAdded(player)
+       -- If you had some starter bundle that you wanted to offer to all new users, you could prompt that here
+       -- ... Bundles will handle if player already has purchased it or if it's expired since it's not repeatable
+       -- Bundles.promptIfValidAsync(player, "StarterBundle")
+       -- Calling this here just for example, you can call this whenever or wherever you want
+       onPromptBundleXYZEvent(player)
+   end
+   #+end_src
+4. Prompt bundles. While this depends on gameplay, the example prompt players with a StarterBundle ~onPlayerAdded~.
+   - The *Bundles* feature package logic ensures each player doesn't get a repeat offer if they have already purchased the bundle, or if they let the offer already expire (based on bundle config).
+   - Whenever you want to prompt a bundle to a player, call ~Bundles.promptIfValidAsync(player, bundleId)~.
+   #+begin_src lua
+   -- Title: README
+   local function onPromptBundleXYZEvent(player: Player)
+       -- Connect whatever experience event you want to use to determine when a player gets prompted the bundle
+       -- ... This will be whenever you've met your elligibility criteria to prompt a player the bundle
+       -- ... For example, if you want to prompt a bundle when a player joins, or when a player levels up
+       task.spawn(Bundles.promptIfValidAsync, player, <Some_Bundle_Id>)
+       -- ... If creating multiple bundles, using task.spawn() to wrap the above function call will minimize discrepancies between countdowns
+   end
+   #+end_src
+#+begin_quote
+*Warning:* When awarding purchases, ensure that you also check and record ~receiptInfo.PurchaseId~ in your data stores.
+#+end_quote
+******* Consider the following best practice guidance on redundant recordings of ReceiptIds:
+- While the *Bundles* feature package does record ReceiptIds to avoid processing the same receipt twice, you should also be recording ReceiptIds inside of your tables so that if the purchase flow fails after their purchase handler has already finished, you know on subsequent retry not to award items again.
+- The *Bundles* feature package will not record the ReceiptId if the purchase fails at any step, so you should ensure that you are recording the ReceiptId in your tables before processing the receipt as part of your purchaseHandler.
+- This redundancy helps ensure that all purchase logic has been appropriately handled and that your data store and the *Bundles* feature package's data store reach eventual consistency, with your data store being the source of truth.
+****** Configure constants
+Constants for the *Core* feature package live in two spots:
+- Shared constants live in ~ReplicatedStorage.FeaturePackagesCore.Configs.SharedConstants~.
+- Package-specific constants, in this case the *Bundles* feature package, live in ~ReplicatedStorage.Bundles.Configs.Constants~.
+The main things you might want to adjust to meet the design requirements of your experience:
+- Sound asset IDs
+- Purchase effect duration and particle colors
+- Heads up display collapsibility
+Additionally, you can find strings for translation broken out into one location: ~ReplicatedStorage.FeaturePackagesCore.Configs.TranslationStrings~.
+****** Customize UI components
+By modifying the package objects, such as colors, font, and transparency, you can adjust the visual presentation of your bundle prompts. However, keep in mind that if you move any of the objects around hierarchically, the code will not be able to find them, and you'll need to make adjustments to your code.
+A prompt is made up of two high-level components:
+- ~PromptItem~ – The individual component repeated out for each item within a bundle (item image, caption, name, price).
+- ~Prompt~ – The prompt window itself.
+The heads up display is also made up of two components:
+- ~HudItem~ – An individual component that represents each menu option in the heads up display.
+- ~Hud~ – To be filled with programmatically with ~HudItems~.
+If you want to have greater control over the heads up display, instead of just using the existing HUD UI within ~ReplicatedStorage.Bundles.Objects.BundlesGui~, you can move things around to meet your own design requirements. Just be sure to update client script behavior in the ~ReplicatedStorage.Bundles.Client.UIController~ script.
+****** API reference
+******* Types
+******** RelativeTime
+Once the ~RelativeTime~ bundle is offered to a player, it remains available until the time duration runs out. This type displays on the player's heads up display, and automatically prompts on future sessions until the bundle expires or the player purchases it.
+A common example of this bundle type is a single-use starter pack offer that displays to all new players for 24 hours. For industry best practices on how implement starter pack bundles, see [[../../production/game-design/starter-pack-design.md][Starter Pack Design]].
+| Name                 | Type   | Description                                                                                                                                                                                                                                                 |
+| :---                 | :---   | :---                                                                                                                                                                                                                                                        |
+| ~includeOfflineTime~ | ~bool~ | *(Optional)* If not set, only time spent in experience will count towards the remaining offer duration.                                                                                                                                                     |
+| ~singleUse~          | ~bool~ | *(Optional)* If not set, the purchase can be reactivated after it's purchased or expired. <br><br> If set, once purchased or expired the first time, it will not be promptable ever again, even if you call ~Bundles.promptIfValidAsync~ with the bundleId. |
+******** FixedTime
+Once the ~FixedTime~ bundle is offered to a player, it remains available until the end of the set coordinated universal time (UTC). This type displays on the player's heads up display, and automatically prompts on future sessions until the bundle expires or the player purchases it.
+A common example of this bundle type is a holiday offer that's only available for a given month.
+******** OneTime
+A ~OneTime~ bundle is only available in the moment that it's offered to a player. It does not display on the player's heads up display, and once a player closes the prompt, it cannot be reopened until it's prompted by the server again.
+A common example of this bundle type is an offer to purchase more in-experience currency the moment a player runs out.
+***** missions
+https://create.roblox.com/docs/en-us/resources/feature-packages/missions
+***** season passes
+https://create.roblox.com/docs/en-us/resources/feature-packages/season-passes
+***** engagement rewards
+https://create.roblox.com/docs/en-us/resources/feature-packages/engagement-rewards
+***** changelog
+https://create.roblox.com/docs/en-us/resources/feature-packages/changelog
+**** modules
+**** the-mystery-of-duvall-drive
+**** builder-font-license.md
+**** city-people-cars.md
+**** feedback-guidelines.md
+**** limited-use-license.md
+**** npc-kit.md
+**** plant-reference-project.md
+**** roblox-connect.md
+**** templates.md
+**** weapons-kit.md
 *** scripting
 *** sound
 *** studio
@@ -898,149 +1498,770 @@ https://create.roblox.com/docs/monetize-avatar
 ****** assets
 https://create.roblox.com/docs/production/sell-on-creator-store
 * notes
-** complete docs 
-https://github.com/Roblox/creator-docs.git  
-*** root
-**** affiliates.md
-**** ai-data-sharing.md
-**** assets.md
-**** creation.md
-**** creator-fund.md
-**** creator-hub.md
-**** creator-programs
-**** creator-rewards.md
-**** discovery.md
-**** experiences.md
-**** get-started.md
-**** platform.md
-**** safety.md
-**** scale.md
-**** unity.md
-**** unreal.md
-**** what-is-roblox.md
-*** animation
-*** art
-*** assets
-*** assistant
-*** audio
-*** avatar
-*** avatar-setup
-*** characters
-*** chat
-*** cloud
-*** cloud-services
-*** education
-*** effects
-*** environment
-*** includes
-*** input
-*** ip-licensing
-*** luau
-*** makeup
-*** marketplace
-*** matchmaking
-*** parts
-*** performance-optimization
-*** physics
-*** players
-*** production
-*** projects
-*** reference
-*** resources
-*** scripting
-*** sound
-*** studio
-*** tutorials
-**** index
-https://create.roblox.com/docs/en-us/tutorials
-***** index.md
-**** contents
-***** curriculum
-****** index 
-https://create.roblox.com/docs/en-us/tutorials/curriculums/core
-https://create.roblox.com/docs/en-us/tutorials/curriculums/core
-******* curriculum-overview.md
-****** contents
-******* animator
-******** get-started.md
-******** index.md
-******** next-steps.md
-******** play-your-animation.md
-******** test-and-save.md
-******** work-with-the-animation-editor.md
-******* artist
-******** get-started.md
-******** index.md
-******** next-steps.md
-******** test-and-save.md
-******** work-with-particle-emitters.md
-******* building
-******** code-with-assistant.md
-******** get-started.md
-******** index.md
-******** next-steps.md
-******** test-and-save.md
-******** work-with-parts.md
-******* coding
-******** customize-strings.md
-******** get-started.md
-******** index.md
-******** next-steps.md
-******** test-and-save.md
-******** work-with-variables.md
-******* core
-******** index
-********* index.md
-******** contents
-********* building
-********** apply-polished-assets.md
-********** create-a-project.md
-********** create-an-environment-with-terrain.md
-********** create-basic-visual-effects.md
-********** customize-global-lighting.md
-********** greybox-a-playable-area.md
-********* scripting
-********** create-player-hazards.md
-********** record-and-display-player-data.md
-********** script-an-upgrade-button.md
-********** script-game-behavior.md
-******* environmental-art
-******** assemble-an-asset-library.md
-******** construct-your-world.md
-******** develop-polished-assets.md
-******** greybox-your-environment.md
-******** index.md
-******** optimize-your-experience.md
-******* gameplay-scripting
-******** add-rounds.md
-******** create-teams.md
-******** detect-hits.md
-******** implement-blasters.md
-******** index.md
-******** spawn-respawn.md
+** dad
+*** developers
+**** experiences 
+***** get started 
+https://create.roblox.com/docs/en-us/experiences
+****** overview
+******* get started
+****** create
+******* overview
+******* projects
+******** overview
+******** experiences and places
+********* create and publish
+********* configure
+********* release updates
+******** cross-platform development
+******** architecture
+********* data model
+********* client-server runtime
+********* instance streaming
+********* server authority
+********* overview
+********* advanced techniques
+******** manage
+********* experience ownership transfer
+********* place files
+******** work in teams
+********* groups
+********* collaboration
+********* activity history
+********* external tools
+******* 3d workspace
+******** overview
+******** parts
+********* overview
+********* solid modeling
+********* textures and decals
+********* meshes
+********* models
+********* materials
+********* terrain
+******** physics
+********* overview
+********* assemblies
+********* network ownership
+********* mechanical constraints
+********** overview
+********** ballsocket
+********** hinge
+********** prismatic
+********** cylindrical
+********** spring
+********** torsionspring
+********** universal
+********** rope
+********** rod
+********** plane
+********** weld
+********** rigid
+********** nocollision
+********* mover constraints
+********** overview
+********** linearvelocity
+********** angularvelocity
+********** alignposition
+********** alignorientation
+********** vectorforce
+********** torque
+********** lineforce
+********** sleep system
+********** adaptive timestepping
+********** character controllers
+********** roblox units
+******** effects
+********* overview
+********* light sources
+********* particle emitters
+********* beams
+********* trails
+********* highlighting
+******** camera
+******** spatial data
+********* cframes
+********* collisions
+********* raycasting
+******* scripting
+******** overview
+******** types and locations
+******** reuse code
+******** services
+******** properties and attributes
+******** events
+********* overview
+********* deferred
+********* bindable
+********* remote
+******** advanced
+********* scheduler
+********* multi-threading
+********* native code generation
+********* script capabilities
+********* security tactics and cheat mitigation
+******** luau reference
+********* overview
+********* types
+********** nil
+********** booleans
+********** numbers
+********** strings
+********** tables
+********** enums
+********** tuples
+********** userdata
+********* data structures
+********** queues
+********** stacks
+********** metatables
+********* features
+********** comments
+********** variables
+********** scope
+********** operators
+********** control structures
+********** functions
+********** type coercion
+********** type checking
+******* environment
+******** overview
+******** global lighting
+******** atmosphere
+******** clouds
+******** global wind
+******** post-processing effects
+******** skyboxes
+******* characters
+******** overview
+******** appearance
+******** adaptive animation
+******** emotes
+******** pathfinding
+******** name and health display
+******** r6 to r15 adapter
+******* players
+******** overview
+******** teleporting
+******** teams
+******** in-experience tools
+******** leaderboards
+******** loading screens
+******** player ui
+********* avatar editor
+********* avatar inspect menu
+********* avatar context menu
+********* disable default ui
+******* input
+******** overview
+******** input action system
+******** mouse & keyboard
+******** mobile
+******** gamepad
+******* audio
+******** overview
+******** assets
+******** objects
+******** effects
+******** legacy
+********* sound
+********* objects
+********* groups
+********* dynamic effects
+******* user interface
+******** overview
+******** on-screen ui
+******** in-experience ui
+******** accessibility guidelines
+******** ui objects
+********* labels
+********* buttons
+********* frames
+********* scrolling frames
+********* viewport frames
+********* video frames
+********* text input fields
+********* 2d paths
+********* proximity prompts
+********* ui drag detectors
+********* 3d drag detectors
+******** position and size
+******** layout structure
+********* list and flex layouts
+********* grids and tables
+********* page layouts
+******** appearance modifiers
+******** size modifiers and constraints
+******** ui animation/tweens
+******** ui styling
+********* overview
+********* style editor
+********* compatibility
+********* css comparisons
+******** 9-slice design
+******** rich text markup
+******** text filtering
+******* animation
+******** overview
+******** create animations
+********* animation editor
+********* animation events
+********* animation capture
+********* curve editor
+********* inverse kinematics
+******** use animations
+******* chat
+******** voice chat
+******** text chat
+********* overview
+********* guidelines
+********* chat window
+********* bubble chat
+********* examples
+********** chat tags
+********** proximity chat
+********** custom ui
+********** custom chat commands
+******* matchmaking
+******** overview
+******** server scoring
+******** attributes and signals
+******** customize your matchmaking configuration
+******** analytics
+******** glossary
+******* performance optimization
+******** overview
+******** design for performance
+******** identify issues
+******** microprofiler
+********* overview
+********* modes
+********* task scheduler
+********* tag reference
+********* network usage
+********* walkthrough
+******** improve performance
+******** monitor performance
+******* cloud services
+******** data stores vs memory stores
+******** data stores
+********* overview
+********* data stores manager
+********* versioning, listing, and caching
+********* error codes and limits
+********* observability
+********* best practices
+********* implement player data and purchase systems
+******** memory stores
+********* overview
+********* sorted map
+********* queue
+********* hash map
+********* observability
+********* per-partition limits
+********* best practices
+******** secrets stores
+******** in-experience http requests
+******** extended services
+******** cross-server communication
+******* roblox for unity developers
+******* roblox for unreal developers
+****** scale
+******* discovery
+******** charts page
+********* genres
+********* icons
+********* thumbnails
+********* badges
+******** events
+******** player invite prompts
+******** connection referral system
+******** notifications
+******** social media links
+******** share links
+******* localization
+******** overview
+******** automatic translations
+********* enable automatic translations
+********* translate dynamic content
+******** manual translations
+********* overview
+********* add source content
+********* remove content
+********* add translations
+********* dynamic content
+******** scripting
+******** work with translators
+******** language codes
+******* game design
+********* design your experience
+********** design for roblox
+********** roblox user base
+********** core loops
+********** prototyping
+********* build your experience
+********** onboarding
+********** onboarding techniques
+********** quest design
+********** ui and ux
+********** adaptive design guidelines
+********** overview
+********** console
+********** vr
+********* monetize your experience
+********** monetization
+********** season passes
+********** starter packs
+********** subscriptions
+********** contextual purchases
+********** virtual economies
+********* support your experience
+********** liveops essentials
+********** liveops planning
+********** analytics essentials
+********** content updates
+****** monetize
+******* overview
+******* earn
+******** creator rewards
+******** private servers
+******** subscriptions
+******** passes
+******** developer products
+******** commerce products
+******** paid access in robux
+******** paid access in local currency
+******** price optimization
+******** regional pricing
+******* license
+******** tools for ip holders
+********* get started
+********* license manager
+********* rights manager
+******** ip licensing for creators
+******** faq and guidelines
+******** glossary
+******* advertise
+******** ads manager
+******** reporting and billing
+******** roblox-served ads vs. independent ads
+******** immersive ads
+******** rewarded video ads
+******** search ads
+******** advertising standards
+***** tutorials
+https://create.roblox.com/docs/tutorials
+****** get started
+******* overview
+******* create your first experience
+******* luau basics
+****** intermediate tutorials
+******* overview
+******* modeling
+******** neon signs
+******** modular environments
+******* user interfaces
+******** hud meters
+******** interactive ui
+******** proximity prompts
+******** score bars
+******* audio
+******** 2d audio
+******** 3d audio
+******** voice chat
+******** text-to-speech
+******** speech-to-text
+******* lighting
+******** indoor environments
+******** outdoor environments
+******* vfx
+******** laser beams
+******** waterfalls
+******** volcanoes
+******** explosions
+******* physics
+******** moving objects
+******** spinning objects
+******* animation
+******** in studio
+******** in blender
+******* scripting
+******** basic gameplay
+******** intermediate gameplay
+******* input and camera
+******** control the user's camera
+******** detect user input
+******* data storage
+******** save player data
+******** create a custom leaderboard
+******* avatar items
+******** create accessories from an existing model
+******** rig and cage an existing model
+******** create basic heads
+******** create face accessories
+******** publish eyebrows and eyelashes
+******** test characters
+****** advanced paths
+******* overview
+******* environmental art
+******* gameplay scripting
+******* user interface design
+******* rigid accessories
+******* clothing
+******* bodies
+***** samples
+https://create.roblox.com/docs/en-us/samples
+****** code samples
+******* overview
+******** Code samples
+https://create.roblox.com/docs/en-us/samples
+****** feature packages
+******* overview
+https://create.roblox.com/docs/en-us/resources/feature-packages
+******* bundles
+https://create.roblox.com/docs/en-us/resources/feature-packages/bundles
+******* missions
+******* season passes
+******* engagement rewards
+******* changelog
+****** developer modules
+******* overview
+******* selfie mode
+******* merch booth
+******* friends locator
+******* profile card
+******* emote bar
+******* spawn with friends
+******* photo booth
+******* surface art
+******* scavenger hunt
+******* social interactions
+******* event sequencer
+****** scripting libraries
+******* overview
+****** projects and kits
+******* templates
+******* roblox connect project
+******* plant reference project
+****** resources
+******* the mystery of duvall drive
+********* overview
+********* construct the house
+********* materialize the world
+********* immersive narrative
+********* stream in immersion
+********* develop a moving world
+********* design dark soundscapes
+******** technical overview
+********* overview
+********* main design requirements
+********* foundational gameplay systems
+********* supporting systems
+********* the mystery of duvall drive
+******* beyond the dark
+********* overview
+********* architecture
+********* characters
+********* layered clothing
+********* sound design
+********* user interface
+******* battle royale
+********* overview
+********* installation and setup
+********* run the game
+********* core scripts
+********* pickup system
+********* building system
+********* minimap system
+********* the storm
+******* weapons kit
+******* npc kit
+***** engine api reference
+https://create.roblox.com/docs/en-us/reference/engine
+***** studio
+https://create.roblox.com/docs/en-us/studio
+****** roblox studio
+******* overview
+******* setup
+******* interface
+******* assistant
+****** building tools
+******* align
+******* pivot
+******* terrain editor
+******* material generator
+******* texture generator
+******* rig generator
+****** scripting tools
+******* script editor
+******* debugging
+****** testing tools
+******* testing modes
+******* output
+******* developer console
+****** ui reference
+******* explorer
+******* properties
+******* game settings
+******* avatar settings
+****** plugins
+******* overview
+******* studio widgets
+*** artists
+**** avatar
+https://create.roblox.com/docs/en-us/avatar
+***** overview
+****** get started
+****** resources
+***** create
+****** classic clothing
+******* overview
+******* test in studio
+******* upload and sell
+****** accessories
+******* overview
+******* specifications
+******* body scale
+******* export settings
+******* import into studio
+****** clothing
+******* overview
+******* specifications
+******* reference files
+******* caging
+******* export settings
+******* import into studio
+****** characters
+******* overview
+******* specifications
+******* reference files
+******* export settings
+******* import into studio
+******* heads
+******** overview
+******** in studio
+******** head animation
+******** moods
+******** facs poses reference
+****** emotes
+******* overview
+******* specifications
+******* export settings
+******* import and configure in studio
+****** makeup
+******* overview
+******* specifications
+******* reassign textures
+******* import into studio
+******* face cage optimizations
+****** publish
+******* overview
+******* publish to marketplace
+******* ugc homestore
+****** avatar setup
+******* overview
+******* auto-setup
+******* auto-setup requirements
+******* preview and edit tools
+****** more studio tools
+******* 3d importer
+******* accessory fitting
+******* automatic skinning transfer
+******* thumbnails
+****** validation errors
+****** 3rd party add-ons
+******* roblox blender plugin
+******* calisthenics tool
+******* clothing validation tool
+****** in-experience creation
+****** photo-to-avatar generation
+***** monetize
+****** overview
+****** fees and commissions
+****** in-experience sales
+****** in-experience creation
+****** sponsor items
+****** randomized items
+***** policies and guidelines
+****** marketplace policy
+****** intellectual property
+****** moderation
+****** faq
+**** assets
+***** get started 
+https://create.roblox.com/docs/en-us/assets
+****** overview
+******* overview
+******** <2025-12-11 Thu> 
+********* TODO Packages are reusable sets of assets that have models, scripts, and other media.
+******* assets
+******* manage
+******** asset manager
+******** toolbox
+******** external catalog queries
+******* packages
+******* asset privacy
+******* creator store
+******* monetize models and plugins
+****** creation tools
 ******* studio
-******** create-account.md
-******** explore-ui.md
-******** index.md
-******** install-studio.md
-******** next-steps.md
-******* user-interface-design
-******** choose-an-art-style.md
-******** implement-designs-in-studio.md
-******** index.md
-******** wireframe-your-layouts.md
-***** first-experience
-***** fundamentals
-****** coding-1
-****** coding-2
-****** coding-3
-****** coding-4
-****** coding-5
-****** coding-6
-***** use-case-tutorials
-*** ui
-*** workspace
-** role based guides 
+******* third party software
+******** overview
+******** blender
+******** reaper
+******* in-experience
+****** 3d art
+******* overview
+******** <2025-12-11 Thu>
+********* TODO PBR(Physically-Based rendering), Textures allow more realistic assets, such as roughness and lighting.
+******* modeling
+******** overview
+******** modeling specifications
+********** <2025-12-11 Thu>
+*********** TODO Root joints should always be set to (0, 0, 0) 
+*********** TODO Animations can be uploaded with fbx files, but only one may import at any singe upload.
+******** reference assets
+******** rigging and skinning
+******** blender / maya export settings
+******* texturing
+******** texture specifications
+******** blender / maya texture settings
+******** physically-based rendering (pbr)
+******** pbr material references
+******* animation
+******** export from maya
+******** head animation
+******* 3d importer
+******* reimport
+******* gltf export
+******* roblox blender plugin
+*** architects
+**** open cloud 
+***** api reference 
+https://create.roblox.com/docs/en-us/cloud
+****** overview
+******* reference
+******* guides
+******* common components
+****** authentication
+******* api keys
+******* oauth 2.0
+****** features
+******* accounts
+******* assets
+******* avatars
+******* badges
+******* bans and blocks
+******* connections
+******* creator store
+******* data and memory stores
+******* developer products
+******* game passes
+******* generative ai
+******* groups
+******* interactions
+******* inventories
+******* localization
+******* luau execution
+******* matchmaking
+******* metadata
+******* notifications
+******* places
+******* private servers
+******* sponsored campaigns
+******* team create
+******* thumbnails
+******* trades
+******* universes
+******* user profiles
+******* users
+****** domains
+******* apis.roblox.com
+******* accountinformation.roblox.com
+******* accountsettings.roblox.com
+******* adconfiguration.roblox.com
+******* assetdelivery.roblox.com
+******* auth.roblox.com
+******* avatar.roblox.com
+******* badges.roblox.com
+******* catalog.roblox.com
+******* clientsettings.roblox.com
+******* contacts.roblox.com
+******* develop.roblox.com
+******* economy.roblox.com
+******* economycreatorstats.roblox.com
+******* engagementpayouts.roblox.com
+******* followings.roblox.com
+******* friends.roblox.com
+******* gameinternationalization.roblox.com
+******* games.roblox.com
+******* groups.roblox.com
+******* inventory.roblox.com
+******* itemconfiguration.roblox.com
+******* locale.roblox.com
+******* localizationtables.roblox.com
+******* metrics.roblox.com
+******* notifications.roblox.com
+******* premiumfeatures.roblox.com
+******* presence.roblox.com
+******* privatemessages.roblox.com
+******* publish.roblox.com
+******* thumbnails.roblox.com
+******* thumbnailsresizer.roblox.com
+******* trades.roblox.com
+******* translationroles.roblox.com
+******* twostepverification.roblox.com
+******* users.roblox.com
+***** guides
+https://create.roblox.com/docs/en-us/cloud/guides
+****** guides
+******* data stores
+******* assets
+******* secrets stores
+******* user inventories
+******* engine instances
+******* user notifications
+******* messaging
+******* place publishing
+****** webhooks
+******* webhook notifications
+******* right to erasure requests
+*** marketing executives
+**** scale and monetize 
+***** platform
+****** get started
+https://create.roblox.com/docs/en-us/get-started
+****** create
+****** scale
+****** monetize
+******* earn on roblox
+****** guidelines and polices
+******* safety on roblox
+******* content maturity
+******* gdpr and ccpa
+******* dmca
+******* ai data sharing
+******* account verification
+******* group guidelines
+***** scale
+https://create.roblox.com/docs/en-us/scale
+****** discovery
+https://create.roblox.com/docs/discovery
+****** localization
+https://create.roblox.com/docs/production/localization
+****** analytics
+https://create.roblox.com/docs/production/analytics
+****** game design
+https://create.roblox.com/docs/production/game-design
+***** monetize
+https://create.roblox.com/docs/en-us/monetize
+****** experiences
+https://create.roblox.com/docs/monetize-experiences
+****** avatar
+https://create.roblox.com/docs/monetize-avatar
+****** assets
+https://create.roblox.com/docs/production/sell-on-creator-store
+** son
 *** developers
 **** experiences 
 ***** get started 
@@ -1799,3 +3020,4 @@ https://create.roblox.com/docs/monetize-experiences
 https://create.roblox.com/docs/monetize-avatar
 ****** assets
 https://create.roblox.com/docs/production/sell-on-creator-store
+
