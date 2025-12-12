@@ -1567,6 +1567,115 @@ Defines individual gravity coil behavior. Handle is a mesh part but it has to ha
     script.Parent.Equipped:Connect(onEquipped)
   end
 #+end_src
+**** speed coil
+***** SpeedCoilManager
+:properties:
+:header-args:lua: :tangle ./src/server/Tools/SpeedCoilManager.server.luau
+:END:
+****** notes
+Spawns speed coils into the world.
+****** code
+******* variables 
+******** speed coil variables
+#+begin_src lua
+  local speedCoil = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("SpeedCoils"):WaitForChild("Tool")
+  local speedCoilScript = script.Parent:FindFirstChild("SpeedCoilScript")
+  speedCoilScript.Parent = speedCoil
+  local speedCoilsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("SpeedCoils")
+  local spawnRange = 48
+  local speedCoilCount = 3
+#+end_src
+******** tool spawner variables
+#+begin_src lua
+  local spawner = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners"):WaitForChild("Part")
+  local spawnerScript = script.Parent:FindFirstChild("ToolSpawnerScript")
+  spawnerScript.Parent = spawner
+  local spawnersFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners")
+  local spawnRange = 48
+  local spawnerCount = 3
+#+end_src
+******* functions
+******** randomSpawn
+#+begin_src lua
+  local function randomSpawn()
+    local xpos = math.random (-spawnRange, spawnRange)
+    local zpos = math.random (-spawnRange, spawnRange)
+    local speedCoilClone = speedCoil:Clone()
+    local speedCoilHandleClone = speedCoilClone:FindFirstChild("Handle")
+    local spawnerClone = spawner:Clone()
+    local spawnerScriptClone = spawnerClone:WaitForChild("ToolSpawnerScript")
+    spawnerClone.Parent = spawnersFolder
+    spawnerClone.Position = Vector3.new(xpos,1,zpos)
+    spawnerClone.Anchored = true
+    spawnerScriptClone.Parent = spawnerClone
+    speedCoilClone.Parent = speedCoilsFolder
+    speedCoilHandleClone.Position = Vector3.new(xpos,4,zpos)
+    speedCoilHandleClone.Anchored = true
+    local speedCoilScriptClone = speedCoilClone:WaitForChild("SpeedCoilScript")
+    speedCoilScriptClone.Parent = speedCoilClone
+    return
+  end
+#+end_src
+******** movements
+#+begin_src lua
+  local function movements(ToolsClone)
+    local spinRate = math.rad
+    while true do
+	-- Movement logic placeholder
+    end
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  for i = 1, speedCoilCount do
+     randomSpawn()
+  end
+#+end_src
+***** SpeedCoilScript
+:properties:
+:header-args:lua: :tangle ./src/server/Tools/SpeedCoilScript.server.luau
+:END:
+****** notes
+Defines individual speed coil behavior. Handle is a mesh part but it has to have the name "Handle" for it to have the TouchInterest, to support the onEquipped event.
+****** code
+******* variables
+#+begin_src lua
+  local speedCoilBase = Instance.new("Tool")
+  speedCoilBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("SpeedCoils")
+  local speedCoilHandle = Instance.new("MeshPart")
+  speedCoilHandle.Parent =  speedCoilBase
+  speedCoilHandle.Name = "Handle"
+  local speedCoil = Instance.new ("SpecialMesh")
+  speedCoil.Parent = speedCoilHandle
+  speedCoil.MeshId = "rbxassetid://16606212"
+  speedCoil.TextureId = "rbxassetid://16606141"
+  local rotationRate = 3
+  local Players = game:GetService("Players")
+  local speedCoilFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("SpeedCoils")
+#+end_src
+******* functions
+******** rotate 
+#+begin_src lua
+  local function rotate()
+      script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
+  end
+#+end_src
+******** onEquipped
+#+begin_src lua
+  local function onEquipped()
+      local character = script.Parent.Parent
+      character.Humanoid.JumpHeight = 15
+      if script.parent:FindFirstChild("Handle") then
+	 script.parent:FindFirstChild("Handle").Anchored = false
+      end
+  end  
+#+end_src
+******* executions
+#+begin_src lua
+  if script.Parent.Parent == speedCoilFolder then
+    script.Parent.Equipped:Connect(onEquipped)
+  end  
+#+end_src
 **** tool spawner
 ***** ToolSpawnerScript
 :properties:
