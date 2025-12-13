@@ -59,7 +59,7 @@ local function onTouched(otherPart)
 		script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
 		if coinCount.Value < 0 then
 		    humanoid.BreakJointsOnDeath = false
-		    humanoid.Health = 0
+		    humanoid.Health = humanoid.Health - 20
 		    coinCount.Value = 0
 		end
 		task.wait(5)
