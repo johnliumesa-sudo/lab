@@ -7,7 +7,9 @@ local gravityCoilCount = 3
 
 local spawner = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners"):WaitForChild("Part")
 local spawnerScript = script.Parent:FindFirstChild("ToolSpawnerScript")
-spawnerScript.Parent = spawner
+if spawnerScript then
+   spawnerScript.Parent = spawner
+end
 local spawnersFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners")
 local spawnRange = 48
 local spawnerCount = 3

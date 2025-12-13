@@ -1480,7 +1480,9 @@ Spawns gravity coils into the world.
 #+begin_src lua
   local spawner = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners"):WaitForChild("Part")
   local spawnerScript = script.Parent:FindFirstChild("ToolSpawnerScript")
-  spawnerScript.Parent = spawner
+  if spawnerScript then
+     spawnerScript.Parent = spawner
+  end
   local spawnersFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners")
   local spawnRange = 48
   local spawnerCount = 3
@@ -1578,18 +1580,19 @@ Spawns speed coils into the world.
 ******* variables 
 ******** speed coil variables
 #+begin_src lua
-  local speedCoil = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("SpeedCoils"):WaitForChild("Tool")
-  local speedCoilScript = script.Parent:FindFirstChild("SpeedCoilScript")
-  speedCoilScript.Parent = speedCoil
-  local speedCoilsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("SpeedCoils")
-  local spawnRange = 48
-  local speedCoilCount = 3
+    local speedCoil = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("SpeedCoils"):WaitForChild("Tool")
+    local speedCoilScript = script.Parent:FindFirstChild("SpeedCoilScript")
+    local speedCoilsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("SpeedCoils")
+    local spawnRange = 48
+    local speedCoilCount = 3
 #+end_src
 ******** tool spawner variables
 #+begin_src lua
   local spawner = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners"):WaitForChild("Part")
   local spawnerScript = script.Parent:FindFirstChild("ToolSpawnerScript")
-  spawnerScript.Parent = spawner
+  if spawnerScript then
+     spawnerScript.Parent = spawner
+  end
   local spawnersFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners")
   local spawnRange = 48
   local spawnerCount = 3
@@ -1664,7 +1667,7 @@ Defines individual speed coil behavior. Handle is a mesh part but it has to have
 #+begin_src lua
   local function onEquipped()
       local character = script.Parent.Parent
-      character.Humanoid.JumpHeight = 15
+      character.Humanoid.WalkSpeed = 30
       if script.parent:FindFirstChild("Handle") then
 	 script.parent:FindFirstChild("Handle").Anchored = false
       end

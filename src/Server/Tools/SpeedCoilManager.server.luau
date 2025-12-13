@@ -1,13 +1,14 @@
 local speedCoil = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("SpeedCoils"):WaitForChild("Tool")
 local speedCoilScript = script.Parent:FindFirstChild("SpeedCoilScript")
-speedCoilScript.Parent = speedCoil
 local speedCoilsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("SpeedCoils")
 local spawnRange = 48
 local speedCoilCount = 3
 
 local spawner = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners"):WaitForChild("Part")
 local spawnerScript = script.Parent:FindFirstChild("ToolSpawnerScript")
-spawnerScript.Parent = spawner
+if spawnerScript then
+   spawnerScript.Parent = spawner
+end
 local spawnersFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners")
 local spawnRange = 48
 local spawnerCount = 3
