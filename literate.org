@@ -489,26 +489,26 @@ local StartingPosition = Vector3.new(0, 5, 0)
 ****** handleObstacle
 #+begin_src lua
   local function handleObstacle(startPosition, targetPosition)
-      for i = 1, 50 do
-  	rigHumanoid.Jump = true
-  	task.wait(0.1)
-      end	
-      local alternativeAngles = {
-      CFrame.Angles(0, math.rad(90), 0),
-      CFrame.Angles(0, math.rad(-90), 0),
-      CFrame.Angles(0, math.rad(135), 0),
-      CFrame.Angles(0, math.rad(180), 0)
-      }
-      for _, angle in ipairs(alternativeAngles) do
-  	local baseDirection = (targetPosition - rigRootPart.Position).Unit
-  	local rotatedDirection = (angle * CFrame.new(baseDirection)).LookVector
-  	local newTargetPosition = rigRootPart.Position + rotatedDirection * 15
-  	rigHumanoid:MoveTo(newTargetPosition)
-  	rigHumanoid.MoveToFinished:Wait()
-  	if (rigRootPart.Position - startPosition).Magnitude > 0.5 then
-  	    break
-  	end
-      end
+     for i = 1, 50 do
+	rigHumanoid.Jump = true
+	task.wait(0.1)
+     end	
+     local alternativeAngles = {
+	CFrame.Angles(0, math.rad(90), 0),
+	CFrame.Angles(0, math.rad(-90), 0),
+	CFrame.Angles(0, math.rad(135), 0),
+	CFrame.Angles(0, math.rad(180), 0)
+     }
+     for _, angle in ipairs(alternativeAngles) do
+	local baseDirection = (targetPosition - rigRootPart.Position).Unit
+	local rotatedDirection = (angle * CFrame.new(baseDirection)).LookVector
+	local newTargetPosition = rigRootPart.Position + rotatedDirection * 15
+	rigHumanoid:MoveTo(newTargetPosition)
+	rigHumanoid.MoveToFinished:Wait()
+	if (rigRootPart.Position - startPosition).Magnitude > 0.5 then
+	   break
+	end
+     end
   end
 #+end_src
 ****** checkForObstaclesAndJump
