@@ -1,6 +1,6 @@
 local speedCoilBase = Instance.new("Tool")
 speedCoilBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("SpeedCoils")
-local speedCoilHandle = Instance.new("MeshPart")
+local speedCoilHandle = Instance.new("Part")
 speedCoilHandle.Parent =  speedCoilBase
 speedCoilHandle.Name = "Handle"
 local speedCoil = Instance.new ("SpecialMesh")
