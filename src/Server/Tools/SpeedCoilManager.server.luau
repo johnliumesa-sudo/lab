@@ -1,9 +1,8 @@
-local gravityCoil = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("GravityCoils"):WaitForChild("Tool")
-local gravityCoilScript = script.Parent:FindFirstChild("GravityCoilScript")
-gravityCoilScript.Parent = gravityCoil
-local gravityCoilsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("GravityCoils")
+local speedCoil = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("SpeedCoils"):WaitForChild("Tool")
+local speedCoilScript = script.Parent:FindFirstChild("SpeedCoilScript")
+local speedCoilsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("SpeedCoils")
 local spawnRange = 48
-local gravityCoilCount = 3
+local speedCoilCount = 3
 
 local spawner = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners"):WaitForChild("Part")
 local spawnerScript = script.Parent:FindFirstChild("ToolSpawnerScript")
@@ -17,19 +16,19 @@ local spawnerCount = 3
 local function randomSpawn()
   local xpos = math.random (-spawnRange, spawnRange)
   local zpos = math.random (-spawnRange, spawnRange)
-  local gravityCoilClone = gravityCoil:Clone()
-  local gravityCoilHandleClone = gravityCoilClone:FindFirstChild("Handle")
+  local speedCoilClone = speedCoil:Clone()
+  local speedCoilHandleClone = speedCoilClone:FindFirstChild("Handle")
   local spawnerClone = spawner:Clone()
   local spawnerScriptClone = spawnerClone:WaitForChild("ToolSpawnerScript")
   spawnerClone.Parent = spawnersFolder
   spawnerClone.Position = Vector3.new(xpos,1,zpos)
   spawnerClone.Anchored = true
   spawnerScriptClone.Parent = spawnerClone
-  gravityCoilClone.Parent = gravityCoilsFolder
-  gravityCoilHandleClone.Position = Vector3.new(xpos,4,zpos)
-  gravityCoilHandleClone.Anchored = true
-  local gravityCoilScriptClone = gravityCoilClone:WaitForChild("GravityCoilScript")
-  gravityCoilScriptClone.Parent = gravityCoilClone
+  speedCoilClone.Parent = speedCoilsFolder
+  speedCoilHandleClone.Position = Vector3.new(xpos,4,zpos)
+  speedCoilHandleClone.Anchored = true
+  local speedCoilScriptClone = speedCoilClone:WaitForChild("SpeedCoilScript")
+  speedCoilScriptClone.Parent = speedCoilClone
   return
 end
 
@@ -40,6 +39,6 @@ local function movements(ToolsClone)
   end
 end
 
-for i = 1, gravityCoilCount do
+for i = 1, speedCoilCount do
    randomSpawn()
 end
