@@ -1533,18 +1533,18 @@ Defines individual gravity coil behavior. Handle is a mesh part but it has to ha
 ****** code
 ******* variables
 #+begin_src lua
-  local gravityCoilBase = Instance.new("Tool")
-  gravityCoilBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("GravityCoils")
-  local gravityCoilHandle = Instance.new("MeshPart")
-  gravityCoilHandle.Parent =  gravityCoilBase
-  gravityCoilHandle.Name = "Handle"
-  local gravityCoil = Instance.new ("SpecialMesh")
-  gravityCoil.Parent = gravityCoilHandle
-  gravityCoil.MeshId = "rbxassetid://16606212"
-  gravityCoil.TextureId = "rbxassetid://16606141"
-  local rotationRate = 3
-  local Players = game:GetService("Players")
-  local gravityCoilFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("GravityCoils")
+    local gravityCoilBase = Instance.new("Tool")
+    gravityCoilBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("GravityCoils")
+    local gravityCoilHandle = Instance.new("Part")
+    gravityCoilHandle.Parent =  gravityCoilBase
+    gravityCoilHandle.Name = "Handle"
+    local gravityCoil = Instance.new ("SpecialMesh")
+    gravityCoil.Parent = gravityCoilHandle
+    gravityCoil.MeshId = "rbxassetid://12264149190"
+    gravityCoil.TextureId = "rbxassetid://16606141"
+    local rotationRate = 3
+    local Players = game:GetService("Players")
+    local gravityCoilFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("GravityCoils")
 #+end_src
 ******* functions
 ******** rotate 
@@ -1645,7 +1645,7 @@ Defines individual speed coil behavior. Handle is a mesh part but it has to have
 #+begin_src lua
   local speedCoilBase = Instance.new("Tool")
   speedCoilBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("SpeedCoils")
-  local speedCoilHandle = Instance.new("MeshPart")
+  local speedCoilHandle = Instance.new("Part")
   speedCoilHandle.Parent =  speedCoilBase
   speedCoilHandle.Name = "Handle"
   local speedCoil = Instance.new ("SpecialMesh")
