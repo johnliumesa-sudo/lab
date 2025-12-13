@@ -165,7 +165,7 @@ local function getClosestPlayer(rigRootPart)
   		      if distance < closestDistance then
   		      closestDistance = distance
   		      closestPlayer = player
-  		      -- print("Found a player at distance:", closestDistance)
+  		      print("Found a player at distance:", closestDistance)
   		      end
   	      end
     end
