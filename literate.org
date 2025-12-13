@@ -894,7 +894,7 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
 		  script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
 		  if coinCount.Value < 0 then
 		      humanoid.BreakJointsOnDeath = false
-		      humanoid.Health = 0
+		      humanoid.Health = humanoid.Health - 20
 		      coinCount.Value = 0
 		  end
 		  task.wait(5)
@@ -1677,6 +1677,145 @@ Defines individual speed coil behavior. Handle is a mesh part but it has to have
 #+begin_src lua
   if script.Parent.Parent == speedCoilFolder then
     script.Parent.Equipped:Connect(onEquipped)
+  end  
+#+end_src
+**** sword 
+***** SwordManager
+:properties:
+:header-args:lua: :tangle ./src/server/Tools/SwordManager.server.luau
+:END:
+****** notes
+Spawns speed coils into the world.
+****** code
+******* variables 
+******** sword variables
+#+begin_src lua
+  local sword = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("Swords"):WaitForChild("Tool")
+  local swordScript = script.Parent:FindFirstChild("SwordScript")
+  local swordsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Swords")
+  local spawnRange = 48
+  local swordCount = 3
+#+end_src
+******** tool spawner variables
+#+begin_src lua
+  local spawner = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners"):WaitForChild("Part")
+  local spawnerScript = script.Parent:FindFirstChild("ToolSpawnerScript")
+  if spawnerScript then
+     spawnerScript.Parent = spawner
+  end
+  local spawnersFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners")
+  local spawnRange = 48
+  local spawnerCount = 3
+#+end_src
+******* functions
+******** randomSpawn
+#+begin_src lua
+  local function randomSpawn()
+    local xpos = math.random (-spawnRange, spawnRange)
+    local zpos = math.random (-spawnRange, spawnRange)
+    local swordClone = sword:Clone()
+    local swordHandleClone = swordClone:FindFirstChild("Handle")
+    local spawnerClone = spawner:Clone()
+    local spawnerScriptClone = spawnerClone:WaitForChild("ToolSpawnerScript")
+    spawnerClone.Parent = spawnersFolder
+    spawnerClone.Position = Vector3.new(xpos,1,zpos)
+    spawnerClone.Anchored = true
+    spawnerScriptClone.Parent = spawnerClone
+    swordClone.Parent = swordsFolder
+    swordHandleClone.Position = Vector3.new(xpos,4,zpos)
+    swordHandleClone.Anchored = true
+    local swordScriptClone = swordClone:WaitForChild("SwordScript")
+    swordScriptClone.Parent = swordClone
+    return
+  end
+#+end_src
+******** movements
+#+begin_src lua
+  local function movements(ToolsClone)
+    local spinRate = math.rad
+    while true do
+	-- Movement logic placeholder
+    end
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  for i = 1, swordCount do
+     randomSpawn()
+  end
+#+end_src
+***** SwordScript
+:properties:
+:header-args:lua: :tangle ./src/server/Tools/SwordScript.server.luau
+:END:
+****** notes
+Defines individual speed coil behavior. Handle is a mesh part but it has to have the name "Handle" for it to have the TouchInterest, to support the onEquipped event.
+****** code
+******* variables
+#+begin_src lua
+    local swordBase = Instance.new("Tool")
+    swordBase.Grip = CFrame.new(0,-2.1,0)
+    swordBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("Swords")
+    local swordHandle = Instance.new("Part")
+    swordHandle.Parent =  swordBase
+    swordHandle.Name = "Handle"
+    local sword = Instance.new ("SpecialMesh")
+    sword.Parent = swordHandle
+    sword.MeshId = "rbxassetid://483368738"
+    sword.TextureId = "rbxassetid://483368752"
+    sword.Scale = Vector3.new(0.005, 0.005, 0.005)
+    local swordRange = 5
+    local rotationRate = 3
+    local Players = game:GetService("Players")
+    local swordFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Swords")
+#+end_src
+******* functions
+******** rotate 
+#+begin_src lua
+  local function rotate()
+      script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
+  end
+#+end_src
+******** onEquipped
+#+begin_src lua
+  local function onEquipped()
+      local character = script.Parent.Parent
+      character.Humanoid.WalkSpeed = 30
+      if script.parent:FindFirstChild("Handle") then
+	 script.parent:FindFirstChild("Handle").Anchored = false
+      end
+      script.parent:FindFirstChild("Handle")
+  end
+#+end_src
+******** getNearbyNPCs
+#+begin_src lua
+  local function getNearbyNPCs(swordRange)
+     while true do
+	local swordHandle = script.Parent:FindFirstChild("Handle")
+	if not swordHandle then return {} end
+	local swordPosition = swordHandle.Position
+	local nearbyNPCs = {}
+	-- Use GetPartBoundsInRadius for efficient, non-collision based spatial query
+	local partsInBounds = Workspace:GetPartBoundsInRadius(swordPosition, swordRange)
+	for _, part in ipairs(partsInBounds) do
+	   local model = part.Parent
+	   -- Check if the part belongs to an NPC model
+	   if model and model:IsA("Model") and model.Parent and model.Parent == NPCsFolder then
+	if part.Name == "HumanoidRootPart" and model:FindFirstChildWhichIsA("Humanoid") then
+	   table.insert(nearbyNPCs, model)
+	   print(model.Name)
+	end
+	   end
+	end
+	task.wait(0.01)
+     end
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  if script.Parent.Parent == swordFolder then
+    script.Parent.Equipped:Connect(onEquipped)
+    script.Parent.Equipped:Connect(getNearbyNPCs)
   end  
 #+end_src
 **** tool spawner
