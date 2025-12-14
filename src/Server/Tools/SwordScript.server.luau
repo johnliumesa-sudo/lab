@@ -14,6 +14,7 @@ local rotationRate = 3
 local Players = game:GetService("Players")
 local swordFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Swords")
 
+
 local function rotate()
     script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
 end
@@ -27,6 +28,14 @@ local function onEquipped()
     script.parent:FindFirstChild("Handle")
 end
 
+local function onAttack()
+   local player = script.Parent.Parent
+   local animator = player:WaitForChild("Animator") 
+   local slashAnim = animator:LoadAnimation(player.Animate.toolslash.ToolSlashAnim)
+   slashAnim:Play()
+end
+
 if script.Parent.Parent == swordFolder then
   script.Parent.Equipped:Connect(onEquipped)
+  
 end
