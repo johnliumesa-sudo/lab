@@ -7,15 +7,25 @@ local stopDistance = 3
 local debris = game:GetService("Debris")
 
 local function handleObstacle(rigRootPart, targetPosition)
-  local humanoid = rigRootPart.Parent:FindFirstChild("Humanoid")
-  local origin = rigRootPart.Position
---   local jumpPosition = rigRootPart.Position - (rigRootPart.CFrame.LookVector * 300)
-  if humanoid then
-    --   humanoid:MoveTo(jumpPosition)
-      --rigRootPart.CFrame = rigRootPart.CFrame * CFrame.new(0,0,3)
-      humanoid.Jump = true
-      humanoid:MoveTo(targetPosition)
-  end
+   local rigHumanoid = rigRootPart.Parent:FindFirstChild("Humanoid")
+   rigHumanoid.Jump = true
+   local startPosition = rigRootPart.Position
+   local alternativeAngles = {
+      CFrame.Angles(0, math.rad(90), 0),
+      CFrame.Angles(0, math.rad(-90), 0),
+      CFrame.Angles(0, math.rad(135), 0),
+      CFrame.Angles(0, math.rad(180), 0)
+   }
+   for _, angle in ipairs(alternativeAngles) do
+      --local baseDirection = (targetPosition - rigRootPart.Position).Unit
+      local newDirection = (angle * CFrame.new((targetPosition - rigRootPart.Position).Unit)).Position.Unit
+      local newTargetPosition = rigRootPart.Position + newDirection * 15
+      rigHumanoid:MoveTo(newTargetPosition)
+      rigHumanoid.MoveToFinished:Wait()
+      if (rigRootPart.Position - startPosition).Magnitude > 0.5 then
+	 break
+      end
+   end
 end
 
 local function checkForObstacles(targetPosition,rigRootPart)
@@ -56,7 +66,7 @@ local function moveToPlayer(playerRootPart, rigRootPart)
 	 AgentCanClimb = true,
 	 AgentJumpHeight = 7.2,
 	 AgentMaxSlope = 89,
-	 WaypointSpacing = 1,
+	 WaypointSpacing = 0.1,
 	 Costs = { plastic = 3 }
    })
    local success, errorMessage = pcall(function()
