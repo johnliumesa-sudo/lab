@@ -631,6 +631,100 @@ end
     end
   end
 #+end_src
+** sword
+*** old SwordScript
+:PROPERTIES:
+:END:
+**** notes
+**** code
+***** variables
+#+begin_src lua
+  local tool = script.parent
+  local handle = tool:FindFirstChildWhichIsA("MashPart")
+  local baseURL = "rbxassetid://"
+  local players = game:GetService("Players")
+  local debris = game:GetService("Debris")
+  local runService = game:GetService("RunService")
+
+  local damageValues = {
+     baseDamage = 5,
+     slashDamage = 10,
+     lungeDamage = 30,
+  }
+
+  local animations = {
+     R15Slash = 522635514,     
+     R15Lunge = 522638767,
+  }
+
+  local damage = damageValues.baseDamage
+  local grips = {
+     Up = CFrame.new(0, 0, -1.7, 0, 0, 1, 1, 0, 0, 0, 1, 0),
+     Out = CFrame.new(0, 0, -1.7, 0, 1, 0, 1, 0, 0, 0, 0, -1),
+  }
+  
+#+end_src
+***** functions
+****** checkIfAlive
+#+begin_src lua
+  local function checkIfAlive()
+     if Player and Player.Parent and Character and Character.Parent and Humanoid and Humanoid.Parent and Humanoid.Health>0 and Torso and Torso.Parent then
+	return true
+     else
+	return false
+     end
+  end
+#+end_src
+****** IsTeamMate
+#+begin_src lua
+  local function IsTeamMate(Player1, Player2)
+     return (Player1 and Player2 and not Player1.Neutral and not Player2.Neutral and Player1.TeamColor == Player2.TeamColor)
+  end
+#+end_src
+***** executions 
+#+begin_src lua
+  for i, v in pairs(handle:GetChildren()) do
+     if v:IsA("ParticleEmitter") then
+	v.rate = 20
+     end
+  end
+#+end_src
+*** SwordScript
+:PROPERTIES:
+:END:
+**** notes
+**** code
+***** variables
+#+begin_src lua
+  local tool = script.parent
+  local handle = tool:FindFirstChildWhichIsA("MashPart")
+  local rig = tool.Parent.Parent
+  local config = tool:WaitForChild("Configuration")
+  local attackFrequency = config.AttackFrequency.Value
+  local debounce  = false
+#+end_src
+***** functions
+****** attackPlayer
+#+begin_src lua
+  local function attackPlayer(Hit)
+     if Hit and Hit.Parent then
+	if Hit.Parent == rig then
+	   return
+	end
+	local humanoid = Hit.Parent:FindFirstChild("Humanoid")
+	if humanoid and humanoid.Health > 0 and debounce == false then
+	   debounce = true
+	   humanoid:TakeDamage(damage)
+	   task.wait(attackFrequency)
+	   debounce = false
+	end
+     end
+  end
+#+end_src
+***** executionts 
+#+begin_src lua
+  handle.Touched:Connect(attackPlayer)
+#+end_src
 ** tool spawn
 *** variables
 #+begin_src lua
