@@ -1880,15 +1880,47 @@ Defines individual speed coil behavior. Handle is a mesh part but it has to have
       script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
   end
 #+end_src
+******** onTouched
+#+begin_src lua
+local function onTouched(otherPart)
+    local character = otherPart.Parent
+    if character == script.Parent.Parent then
+      return
+    else
+      if character and character:IsA("Model") then
+	  local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+	  if humanoid then
+		local originHealth = humanoid.Health 
+		humanoid.Health = originHealth - math.random(10,30)
+	  end
+      end
+    end
+end
+#+end_src
+******** onClicked
+#+begin_src lua
+  local function onClicked()
+     local slashAnim = script.Parent.Parent:FindFirstChild("Animate"):FindFirstChild("toolslash"):FindFirstChild("ToolSlashAnim")
+     if slashAnim then
+	slashAnim:Play
+     end
+     script.Parent.onTouched:Connect(onTouched)
+  end
+#+end_src
 ******** onEquipped
 #+begin_src lua
-  local function onEquipped()
-      local character = script.Parent.Parent
+  local function onEquipped(mouse)
+     local character = script.Parent.Parent
       character.Humanoid.WalkSpeed = 30
       if script.parent:FindFirstChild("Handle") then
 	 script.parent:FindFirstChild("Handle").Anchored = false
       end
       script.parent:FindFirstChild("Handle")
+      if script.parent.parent.parent.parent == game.Workpace then
+	 if mouse then
+	    mouse.Button1Up:Connect(onClicked)
+	 end
+      end
   end
 #+end_src
 ******* executions
