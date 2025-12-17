@@ -275,57 +275,57 @@
 #+end_src
 **** moveToPlayer 
 #+begin_src lua
-local function moveToPlayer(playerRootPart)
-    local path = pathFindingService:CreatePath({
-	AgentRadius = 0.1,
-	AgentHeight = 0.1,
-	AgentCanJump = true,
-	AgentCanClimb = true,
-	AgentJumpHeight = 7.2,
-	AgentMaxSlope = 89,
-	WaypointSpacing = 1,
-	Costs = { plastic = 3 }
-	})
-    local success, errorMessage = pcall(function()
-	path:ComputeAsync(rigRootPart.Position, playerRootPart.Position)
-	end)
-    if success and path.Status == Enum.PathStatus.Success then
-	for _, waypoint in pairs(path:GetWaypoints()) do
-	    visualizePath(waypoint)
-	    local distance = CheckDistance(playerRootPart)
-	    local targetPosition = (distance <= stopDistance)
-		and playerRootPart.Position + (rigRootPart.Position - playerRootPart.Position).Unit * stopDistance
-		or waypoint.Position
-	    rigHumanoid:MoveTo(targetPosition)
-	    if distance > stopDistance and not walkAnimation.IsPlaying then
-		idleAnimation:Stop()
-		walkAnimation:Play()
-		local runningSound = rigRootPart:FindFirstChild("Running")
-		if runningSound then 
-		    runningSound:Play() 
-		end
-	    end
-	    if distance <= stopDistance then
-		if walkAnimation.IsPlaying then
-		    walkAnimation:Stop(0)
-		    local runningSound = rigRootPart:FindFirstChild("Running")
-		    if runningSound then runningSound:Stop() end
-		end
-		if waypoint.Action == Enum.PathWaypointAction.Jump then
-		    rigHumanoid.JumpHeight = 7.2
-		    rigHumanoid.Jump = true
-		end
-		checkForObstaclesAndJump(targetPosition)
-		if not idleAnimation.IsPlaying then
-		    idleAnimation:Play()
-		end
-		rigRootPart.CFrame = CFrame.lookAt(rigRootPart.Position, playerRootPart.Position)
-	    end
-	end
-    else
-	warn("-ErRoR 403: Pathfinding failed -")
-    end
-end
+  local function moveToPlayer(playerRootPart)
+      local path = pathFindingService:CreatePath({
+	  AgentRadius = 0.1,
+	  AgentHeight = 0.1,
+	  AgentCanJump = true,
+	  AgentCanClimb = true,
+	  AgentJumpHeight = 7.2,
+	  AgentMaxSlope = 89,
+	  WaypointSpacing = 1,
+	  Costs = { plastic = 3 }
+	  })
+      local success, errorMessage = pcall(function()
+	  path:ComputeAsync(rigRootPart.Position, playerRootPart.Position)
+	  end)
+      if success and path.Status == Enum.PathStatus.Success then
+	  for _, waypoint in pairs(path:GetWaypoints()) do
+	      visualizePath(waypoint)
+	      local distance = CheckDistance(playerRootPart)
+	      local targetPosition = (distance <= stopDistance)
+		  and playerRootPart.Position + (rigRootPart.Position - playerRootPart.Position).Unit * stopDistance
+		  or waypoint.Position
+	      rigHumanoid:MoveTo(targetPosition)
+	      if distance > stopDistance and not walkAnimation.IsPlaying then
+		  idleAnimation:Stop()
+		  walkAnimation:Play()
+		  local runningSound = rigRootPart:FindFirstChild("Running")
+		  if runningSound then 
+		      runningSound:Play() 
+		  end
+	      end
+	      if distance <= stopDistance then
+		  if walkAnimation.IsPlaying then
+		      walkAnimation:Stop(0)
+		      local runningSound = rigRootPart:FindFirstChild("Running")
+		      if runningSound then runningSound:Stop() end
+		  end
+		  if waypoint.Action == Enum.PathWaypointAction.Jump then
+		      rigHumanoid.JumpHeight = 7.2
+		      rigHumanoid.Jump = true
+		  end
+		  checkForObstaclesAndJump(targetPosition)
+		  if not idleAnimation.IsPlaying then
+		      idleAnimation:Play()
+		  end
+		  rigRootPart.CFrame = CFrame.lookAt(rigRootPart.Position, playerRootPart.Position)
+	      end
+	  end
+      else
+	  warn("-ErRoR 403: Pathfinding failed -")
+      end
+  end
 #+end_src
 **** getClosestPlayer 
 #+begin_src lua
@@ -1794,11 +1794,12 @@ Spawns speed coils into the world.
 ******* variables 
 ******** sword variables
 #+begin_src lua
-  local sword = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("Swords"):WaitForChild("Tool")
-  local swordScript = script.Parent:FindFirstChild("SwordScript")
-  local swordsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Swords")
-  local spawnRange = 48
-  local swordCount = 3
+    local sword = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("Swords"):WaitForChild("Tool")
+    local swordScript = script.Parent:FindFirstChild("SwordScript")
+    swordScript.Parent = sword
+    local swordsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Swords")
+    local spawnRange = 48
+    local swordCount = 3
 #+end_src
 ******** tool spawner variables
 #+begin_src lua
@@ -1857,21 +1858,24 @@ Defines individual speed coil behavior. Handle is a mesh part but it has to have
 ****** code
 ******* variables
 #+begin_src lua
-    local swordBase = Instance.new("Tool")
-    swordBase.Grip = CFrame.new(0,-2.1,0)
-    swordBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("Swords")
-    local swordHandle = Instance.new("Part")
-    swordHandle.Parent =  swordBase
-    swordHandle.Name = "Handle"
-    local sword = Instance.new ("SpecialMesh")
-    sword.Parent = swordHandle
-    sword.MeshId = "rbxassetid://483368738"
-    sword.TextureId = "rbxassetid://483368752"
-    sword.Scale = Vector3.new(0.005, 0.005, 0.005)
-    local swordRange = 5
-    local rotationRate = 3
-    local Players = game:GetService("Players")
-    local swordFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Swords")
+      local swordBase = Instance.new("Tool")
+      swordBase.Grip = CFrame.new(0,-2.1,0)
+      swordBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("Swords")
+      local swordHandle = Instance.new("Part")
+      swordHandle.Parent =  swordBase
+      swordHandle.Name = "Handle"
+      local sword = Instance.new ("SpecialMesh")
+      sword.Parent = swordHandle
+      sword.MeshId = "rbxassetid://483368738"
+      sword.TextureId = "rbxassetid://483368752"
+      sword.Scale = Vector3.new(0.005, 0.005, 0.005)
+      local swordRange = 5
+      local rotationRate = 3
+      local Players = game:GetService("Players")
+      local swordFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Swords")
+      local slashAnim = Instance.new("Animation")
+      slashAnim.AnimationId = "rbxassetid://522635514" -- REPLACE THIS with your actual Animation ID
+      slashAnim.Parent = script
 #+end_src
 ******* functions
 ******** rotate 
@@ -1900,34 +1904,35 @@ end
 ******** onClicked
 #+begin_src lua
   local function onClicked()
-     local slashAnim = script.Parent.Parent:FindFirstChild("Animate"):FindFirstChild("toolslash"):FindFirstChild("ToolSlashAnim")
-     if slashAnim then
-	slashAnim:Play
+     local character = script.Parent.Parent
+     local humanoid = character:FindFirstChild("Humanoid")
+     -- CORRECTED: Load the animation onto the humanoid, then play the track
+     if humanoid then
+	local animator = humanoid:FindFirstChild("Animator") or humanoid:WaitForChild("Animator")
+	if animator then
+	   local track = animator:LoadAnimation(slashAnim)
+	   track:Play()
+	end
      end
-     script.Parent.onTouched:Connect(onTouched)
   end
 #+end_src
 ******** onEquipped
 #+begin_src lua
-  local function onEquipped(mouse)
+  local function onEquipped()
      local character = script.Parent.Parent
       character.Humanoid.WalkSpeed = 30
       if script.parent:FindFirstChild("Handle") then
 	 script.parent:FindFirstChild("Handle").Anchored = false
       end
-      script.parent:FindFirstChild("Handle")
-      if script.parent.parent.parent.parent == game.Workpace then
-	 if mouse then
-	    mouse.Button1Up:Connect(onClicked)
-	 end
-      end
+      script.Parent.Activated:Connect(onClicked)
+      script.Parent:FindFirstChild("Handle").Touched:Connect(onTouched)
   end
 #+end_src
 ******* executions
 #+begin_src lua
-  if script.Parent.Parent == swordFolder then
-    script.Parent.Equipped:Connect(onEquipped)
-  end  
+   if script.Parent.Parent == swordFolder then
+     script.Parent.Equipped:Connect(onEquipped)
+   end
 #+end_src
 **** tool spawner
 ***** ToolSpawnerScript
