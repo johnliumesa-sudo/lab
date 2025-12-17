@@ -1,5 +1,6 @@
 local sword = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("Swords"):WaitForChild("Tool")
 local swordScript = script.Parent:FindFirstChild("SwordScript")
+swordScript.Parent = sword
 local swordsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Swords")
 local spawnRange = 48
 local swordCount = 3

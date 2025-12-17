@@ -13,6 +13,9 @@ local swordRange = 5
 local rotationRate = 3
 local Players = game:GetService("Players")
 local swordFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Swords")
+local slashAnim = Instance.new("Animation")
+slashAnim.AnimationId = "rbxassetid://522635514" -- REPLACE THIS with your actual Animation ID
+slashAnim.Parent = script
 
 local function rotate()
     script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
@@ -34,25 +37,26 @@ local function onTouched(otherPart)
 end
 
 local function onClicked()
-   local slashAnim = script.Parent.Parent:FindFirstChild("Animate"):FindFirstChild("toolslash"):FindFirstChild("ToolSlashAnim")
-   if slashAnim then
-      slashAnim:Play()
+   local character = script.Parent.Parent
+   local humanoid = character:FindFirstChild("Humanoid")
+   -- CORRECTED: Load the animation onto the humanoid, then play the track
+   if humanoid then
+      local animator = humanoid:FindFirstChild("Animator") or humanoid:WaitForChild("Animator")
+      if animator then
+	 local track = animator:LoadAnimation(slashAnim)
+	 track:Play()
+      end
    end
-   script.Parent.onTouched:Connect(onTouched)
 end
 
-local function onEquipped(mouse)
+local function onEquipped()
    local character = script.Parent.Parent
     character.Humanoid.WalkSpeed = 30
     if script.parent:FindFirstChild("Handle") then
        script.parent:FindFirstChild("Handle").Anchored = false
     end
-    script.parent:FindFirstChild("Handle")
-    if script.parent.parent.parent.parent == game.Workpace then
-       if mouse then
-	  mouse.Button1Up:Connect(onClicked)
-       end
-    end
+    script.Parent.Activated:Connect(onClicked)
+    script.Parent:FindFirstChild("Handle").Touched:Connect(onTouched)
 end
 
 if script.Parent.Parent == swordFolder then
