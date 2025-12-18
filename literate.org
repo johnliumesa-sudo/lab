@@ -729,7 +729,6 @@ end
 *** hinged_door
 **** DoorManager
 :properties:
-:header-args:lua: :tangle ./src/server/Structures/DoorManager.server.luau
 :END:
 ****** notes
 
@@ -815,7 +814,6 @@ Constructs a door frame and a door part, connects them with a HingeConstraint se
 #+end_src
 **** DoorScript
 :properties:
-:header-args:lua: :tangle ./src/server/Structures/DoorScript.server.luau
 :END:
 ****** notes
 
@@ -1687,6 +1685,133 @@ virtual space for clerks to interact with players
 --tradingEvent.onServerEvent:Connect(onTrading)
 #+end_src
 *** tools
+**** apple
+***** AppleManager
+:properties:
+:header-args:lua: :tangle ./src/server/Tools/AppleManager.server.luau
+:END:
+****** notes
+Spawns speed coils into the world.
+****** code
+******* variables 
+******** apple variables
+#+begin_src lua
+  local apple = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("Apples"):WaitForChild("Tool")
+  local appleScript = script.Parent:FindFirstChild("AppleScript")
+  if appleScript then
+      appleScript.Parent = apple
+  else
+      return
+  end
+  local applesFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Apples")
+  local spawnRange = 48
+  local appleCount = 3
+#+end_src
+******** tool spawner variables
+#+begin_src lua
+  local spawner = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners"):WaitForChild("Part")
+  local spawnerScript = script.Parent:FindFirstChild("ToolSpawnerScript")
+  if spawnerScript then
+     spawnerScript.Parent = spawner
+  end
+  local spawnersFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners")
+  local spawnRange = 48
+  local spawnerCount = 3
+#+end_src
+******* functions
+******** randomSpawn
+#+begin_src lua
+  local function randomSpawn()
+    local xpos = math.random (-spawnRange, spawnRange)
+    local zpos = math.random (-spawnRange, spawnRange)
+    local appleClone = apple:Clone()
+    local appleHandleClone = appleClone:FindFirstChild("Handle")
+    local spawnerClone = spawner:Clone()
+    local spawnerScriptClone = spawnerClone:WaitForChild("ToolSpawnerScript")
+    spawnerClone.Parent = spawnersFolder
+    spawnerClone.Position = Vector3.new(xpos,1,zpos)
+    spawnerClone.Anchored = true
+    spawnerScriptClone.Parent = spawnerClone
+    appleClone.Parent = applesFolder
+    appleHandleClone.Position = Vector3.new(xpos,4,zpos)
+    appleHandleClone.Anchored = true
+    local appleScriptClone = appleClone:WaitForChild("AppleScript")
+    appleScriptClone.Parent = appleClone
+    return
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  for i = 1, appleCount do
+     randomSpawn()
+  end
+#+end_src
+***** AppleScript
+:properties:
+:header-args:lua: :tangle ./src/server/Tools/AppleScript.server.luau
+:END:
+****** notes
+Defines individual speed coil behavior. Handle is a mesh part but it has to have the name "Handle" for it to have the TouchInterest, to support the onEquipped event.
+****** code
+******* variables
+#+begin_src lua
+  local appleBase = Instance.new("Tool")
+  appleBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("Apples")
+  local appleHandle = Instance.new("Part")
+  appleHandle.Parent =  appleBase
+  appleHandle.Name = "Handle"
+  local apple = Instance.new ("SpecialMesh")
+  apple.Parent = appleHandle
+  apple.MeshId = "rbxassetid://14120747098"
+  apple.Scale = Vector3.new(50, 50, 50)
+  apple.TextureId = "rbxassetid://14120747189"
+  apple.Scale = Vector3.new(0.05, 0.05, 0.05)
+  local appleFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Apples")
+  local eatAnim = Instance.new("Animation")
+  eatAnim.AnimationId = "rbxassetid://15967404108" -- REPLACE THIS with your actual Animation ID
+  eatAnim.Parent = script
+#+end_src
+******* functions
+******** onClicked
+#+begin_src lua
+  local function onClicked()
+     local character = script.Parent.Parent
+     local humanoid = character:FindFirstChild("Humanoid")
+     -- CORRECTED: Load the animation onto the humanoid, then play the track
+     if humanoid then
+	local animator = humanoid:FindFirstChild("Animator") or humanoid:WaitForChild("Animator")
+	if animator then
+	   local track = animator:LoadAnimation(eatAnim)
+	   track:Play()
+	end
+	if humanoid.Health < humanoid.MaxHealth then
+	humanoid.Health = humanoid.Health + 20
+	elseif humanoid.MaxHealth < 200 then
+	  humanoid.MaxHealth = humanoid.MaxHealth + 20
+	  humanoid.Health = humanoid.MaxHealth - 1
+	else
+	  print(humanoid.MaxHealth.." is the maximum health reachable!")
+	end  
+	script.Parent:Destroy()
+     end
+  end
+#+end_src
+******** onEquipped
+#+begin_src lua
+  local function onEquipped()
+     local character = script.Parent.Parent
+      if script.parent:FindFirstChild("Handle") then
+	 script.parent:FindFirstChild("Handle").Anchored = false
+      end
+      script.Parent.Activated:Connect(onClicked)
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  if script.Parent.Parent == appleFolder then
+    script.Parent.Equipped:Connect(onEquipped)
+  end  
+#+end_src
 **** gravity coil
 ***** GravityCoilManager
 :properties:
@@ -1977,6 +2102,157 @@ Spawns speed coils into the world.
 ***** SwordScript
 :properties:
 :header-args:lua: :tangle ./src/server/Tools/SwordScript.server.luau
+:END:
+****** notes
+Defines individual speed coil behavior. Handle is a mesh part but it has to have the name "Handle" for it to have the TouchInterest, to support the onEquipped event.
+****** code
+******* variables
+#+begin_src lua
+      local swordBase = Instance.new("Tool")
+      swordBase.Grip = CFrame.new(0,-2.1,0)
+      swordBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("Swords")
+      local swordHandle = Instance.new("Part")
+      swordHandle.Parent =  swordBase
+      swordHandle.Name = "Handle"
+      local sword = Instance.new ("SpecialMesh")
+      sword.Parent = swordHandle
+      sword.MeshId = "rbxassetid://483368738"
+      sword.TextureId = "rbxassetid://483368752"
+      sword.Scale = Vector3.new(0.005, 0.005, 0.005)
+      local swordRange = 5
+      local rotationRate = 3
+      local Players = game:GetService("Players")
+      local swordFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Swords")
+      local slashAnim = Instance.new("Animation")
+      slashAnim.AnimationId = "rbxassetid://522635514" -- REPLACE THIS with your actual Animation ID
+      slashAnim.Parent = script
+#+end_src
+******* functions
+******** rotate 
+#+begin_src lua
+  local function rotate()
+      script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
+  end
+#+end_src
+******** onTouched
+#+begin_src lua
+local function onTouched(otherPart)
+    local character = otherPart.Parent
+    if character == script.Parent.Parent then
+      return
+    else
+      if character and character:IsA("Model") then
+	  local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+	  if humanoid then
+		local originHealth = humanoid.Health 
+		humanoid.Health = originHealth - math.random(10,30)
+	  end
+      end
+    end
+end
+#+end_src
+******** onClicked
+#+begin_src lua
+  local function onClicked()
+     local character = script.Parent.Parent
+     local humanoid = character:FindFirstChild("Humanoid")
+     -- CORRECTED: Load the animation onto the humanoid, then play the track
+     if humanoid then
+	local animator = humanoid:FindFirstChild("Animator") or humanoid:WaitForChild("Animator")
+	if animator then
+	   local track = animator:LoadAnimation(slashAnim)
+	   track:Play()
+	end
+     end
+  end
+#+end_src
+******** onEquipped
+#+begin_src lua
+  local function onEquipped()
+     local character = script.Parent.Parent
+      character.Humanoid.WalkSpeed = 30
+      if script.parent:FindFirstChild("Handle") then
+	 script.parent:FindFirstChild("Handle").Anchored = false
+      end
+      script.Parent.Activated:Connect(onClicked)
+      script.Parent:FindFirstChild("Handle").Touched:Connect(onTouched)
+  end
+#+end_src
+******* executions
+#+begin_src lua
+   if script.Parent.Parent == swordFolder then
+     script.Parent.Equipped:Connect(onEquipped)
+   end
+#+end_src
+**** apple
+***** AppleManager
+:properties:
+:header-args:lua: :tangle ./src/server/Tools/AppleManager.server.luau
+:END:
+****** notes
+Spawns speed coils into the world.
+****** code
+******* variables 
+******** sword variables
+#+begin_src lua
+    local sword = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("Swords"):WaitForChild("Tool")
+    local swordScript = script.Parent:FindFirstChild("SwordScript")
+    swordScript.Parent = sword
+    local swordsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Swords")
+    local spawnRange = 48
+    local swordCount = 3
+#+end_src
+******** tool spawner variables
+#+begin_src lua
+  local spawner = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners"):WaitForChild("Part")
+  local spawnerScript = script.Parent:FindFirstChild("ToolSpawnerScript")
+  if spawnerScript then
+     spawnerScript.Parent = spawner
+  end
+  local spawnersFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners")
+  local spawnRange = 48
+  local spawnerCount = 3
+#+end_src
+******* functions
+******** randomSpawn
+#+begin_src lua
+  local function randomSpawn()
+    local xpos = math.random (-spawnRange, spawnRange)
+    local zpos = math.random (-spawnRange, spawnRange)
+    local swordClone = sword:Clone()
+    local swordHandleClone = swordClone:FindFirstChild("Handle")
+    local spawnerClone = spawner:Clone()
+    local spawnerScriptClone = spawnerClone:WaitForChild("ToolSpawnerScript")
+    spawnerClone.Parent = spawnersFolder
+    spawnerClone.Position = Vector3.new(xpos,1,zpos)
+    spawnerClone.Anchored = true
+    spawnerScriptClone.Parent = spawnerClone
+    swordClone.Parent = swordsFolder
+    swordHandleClone.Position = Vector3.new(xpos,4,zpos)
+    swordHandleClone.Anchored = true
+    local swordScriptClone = swordClone:WaitForChild("SwordScript")
+    swordScriptClone.Parent = swordClone
+    return
+  end
+#+end_src
+******** movements
+#+begin_src lua
+  local function movements(ToolsClone)
+    local spinRate = math.rad
+    while true do
+	-- Movement logic placeholder
+    end
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  for i = 1, swordCount do
+     randomSpawn()
+  end
+#+end_src
+***** AppleScript
+:properties:
+:header-args:lua: :tangle ./src/server/Tools/AppleScript.server.luau
 :END:
 ****** notes
 Defines individual speed coil behavior. Handle is a mesh part but it has to have the name "Handle" for it to have the TouchInterest, to support the onEquipped event.
