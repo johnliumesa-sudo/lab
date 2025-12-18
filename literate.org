@@ -725,6 +725,131 @@ end
 #+begin_src lua
   handle.Touched:Connect(attackPlayer)
 #+end_src
+** doors
+*** hinged_door
+**** DoorManager
+:properties:
+:header-args:lua: :tangle ./src/server/Structures/DoorManager.server.luau
+:END:
+****** notes
+
+Constructs a door frame and a door part, connects them with a HingeConstraint set to Servo mode, and injects the interaction script.
+
+****** code
+******* variables
+#+begin_src lua
+  local doorScript = script.Parent:FindFirstChild("DoorScript")
+  local structuresFolder = Instance.new("Folder")
+  structuresFolder.Name = "Structures"
+  structuresFolder.Parent = workspace
+  -- Dimensions
+  local frameHeight = 8
+  local frameWidth = 5
+  local doorThickness = 0.5
+#+end_src
+******* functions
+******** createDoor
+#+begin_src lua
+  local function createDoor(position)
+     local model = Instance.new("Model")
+     model.Name = "HingedDoor"
+     model.Parent = structuresFolder
+     -- 1. Create the Frame (Anchored)
+     local frame = Instance.new("Part")
+     frame.Name = "DoorFrame"
+     frame.Size = Vector3.new(1, frameHeight, 1) -- Just a hinge post for simplicity
+     frame.Position = position + Vector3.new(-frameWidth/2, frameHeight/2, 0)
+     frame.Anchored = true
+     frame.CanCollide = true
+     frame.Parent = model
+     -- 2. Create the Door (Unanchored)
+     local door = Instance.new("Part")
+     door.Name = "Door"
+     door.Size = Vector3.new(frameWidth, frameHeight, doorThickness)
+     -- Position door so its edge meets the frame
+     door.Position = frame.Position + Vector3.new(frameWidth/2, 0, 0)
+     door.Anchored = false -- MUST be unanchored to move
+     door.CanCollide = true
+     door.Parent = model
+
+     -- 3. Create Attachments
+     -- Attachment 0 goes on Frame
+     local att0 = Instance.new("Attachment")
+     att0.Name = "HingeAttachment0"
+     att0.Parent = frame
+     -- Center of the frame post
+     att0.Position = Vector3.new(frame.Size.X/2, 0, 0) 
+
+     -- Attachment 1 goes on Door
+     local att1 = Instance.new("Attachment")
+     att1.Name = "HingeAttachment1"
+     att1.Parent = door
+     -- Edge of the door
+     att1.Position = Vector3.new(-door.Size.X/2, 0, 0)
+
+     -- 4. Create HingeConstraint
+     local hinge = Instance.new("HingeConstraint")
+     hinge.Parent = model
+     hinge.Attachment0 = att0
+     hinge.Attachment1 = att1
+     hinge.ActuatorType = Enum.ActuatorType.Servo -- Takes the door to a specific angle
+     hinge.ServoMaxTorque = math.huge -- Force it to move regardless of weight
+     hinge.AngularSpeed = 2 -- Speed of opening
+     hinge.TargetAngle = 0
+   
+     -- 5. Add ProximityPrompt
+     local prompt = Instance.new("ProximityPrompt")
+     prompt.ObjectText = "Door"
+     prompt.ActionText = "Open"
+     prompt.Parent = door
+
+     local scriptClone = doorScript:Clone()
+     scriptClone.Parent = model -- Script goes in the model to find door and prompt easier
+  end
+#+end_src
+
+******* executions
+#+begin_src lua
+  -- Spawn a test door at a specific location
+  createDoor(Vector3.new(0, 0, 0))
+#+end_src
+**** DoorScript
+:properties:
+:header-args:lua: :tangle ./src/server/Structures/DoorScript.server.luau
+:END:
+****** notes
+
+Handles the ProximityPrompt trigger to toggle the HingeConstraint's TargetAngle.
+
+****** code
+******* variables
+#+begin_src lua
+  local model = script.Parent
+  local door = model:WaitForChild("Door")
+  local prompt = door:WaitForChild("ProximityPrompt")
+  local hinge = model:WaitForChild("HingeConstraint")
+  local isOpen = false
+  local openAngle = 90
+  local closedAngle = 0
+#+end_src
+******* functions
+******** toggleDoor
+#+begin_src lua
+  local function toggleDoor()
+     if isOpen then
+	hinge.TargetAngle = closedAngle
+	prompt.ActionText = "Open"
+     else
+	hinge.TargetAngle = openAngle
+	prompt.ActionText = "Close"
+     end
+     isOpen = not isOpen
+  end
+#+end_src
+******* executions
+#+begin_src lua
+prompt.Triggered:Connect(toggleDoor)
+#+end_src*  
 ** tool spawn
 *** variables
 #+begin_src lua
