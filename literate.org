@@ -997,6 +997,114 @@ Defines individual coin behavior (rotate, touch, reward).
     game:GetService("RunService").Heartbeat:Connect(rotate)
   end
 #+end_src
+**** present
+***** PresentManager
+:properties:
+:header-args:lua: :tangle ./src/server/Collectables/PresentManager.server.luau
+:END:
+****** notes
+Spawns the coins into the world.
+****** code
+******* variables
+#+begin_src lua
+    local present = game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Presents"):FindFirstChild("Part")
+    local presentScript = script.Parent:FindFirstChild("PresentScript")
+    presentScript.Parent = present
+    local presentsFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Presents")
+    local spawnRange = 48
+    local presentCount = 6
+#+end_src
+******* functions
+******** randomSpawn
+#+begin_src lua
+  local function randomSpawn()
+    local xpos = math.random (-spawnRange, spawnRange)
+    local zpos = math.random (-spawnRange, spawnRange)
+    local ypos = 3
+    local presentClone = present:Clone()
+    presentClone.Parent = presentsFolder
+    presentClone.Position = Vector3.new(xpos,ypos,zpos)
+    local presentScriptClone = presentClone:WaitForChild("PresentScript")
+    presentScriptClone.Parent = presentClone
+    return
+  end
+#+end_src
+******** movements
+#+begin_src lua
+  local function movements(collectablesClone)
+    local spinRate = math.rad
+    while true do
+  	-- Movement logic placeholder
+    end
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  for i = 1, presentCount do
+      randomSpawn()
+  end
+#+end_src
+***** PresentScript
+:properties:
+:header-args:lua: :tangle ./src/server/Collectables/PresentScript.server.luau
+:END:
+****** notes
+Defines individual coin behavior (rotate, touch, reward).
+****** code
+******* variables
+#+begin_src lua
+  local presentBase = Instance.new("Part")
+  presentBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Presents")
+  presentBase.Anchored = true
+  local present = Instance.new ("SpecialMesh")
+  present.Parent = presentBase
+  present.MeshId = "rbxassetid://13354760399"
+  present.TextureId = "rbxassetid://13354760424"
+  present.Scale = Vector3.new(0.3, 0.3, 0.3)
+  local rotationRate = 3
+  local tools = game:GetService("Workspace"):FindFirstChild("Tools")
+  local Players = game:GetService("Players")
+  local presentFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Presents")												    
+#+end_src
+******* functions
+******** rotate 
+#+begin_src lua
+  local function rotate()
+      script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
+  end
+#+end_src
+******** onTouched
+#+begin_src lua
+  local function onTouched(otherPart)
+     local character = otherPart.Parent
+     local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+     if humanoid then
+	local player = Players:GetPlayerFromCharacter(character)
+	if player then
+	   local leaderstats = player:WaitForChild("leaderstats")
+	   script.Parent:Destroy()
+	   if leaderstats.CoinCount.Value < 500 then
+	      if leaderstats.CoinCount.Value >= 10 then
+		 leaderstats.CoinCount.Value = leaderstats.CoinCount.Value*2
+		 humanoid.health += 25
+	      else
+		 leaderstats.CoinCount.Value += 50
+		 humanoid.health += 50	
+	      end		
+	   else	
+	      humanoid.health = humanoid.MaxHealth
+	   end
+	end
+     end
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  if script.Parent.Parent == presentFolder then
+    script.Parent.Touched:Connect(onTouched)
+    game:GetService("RunService").Heartbeat:Connect(rotate)
+  end
+#+end_src
 *** npcs
 **** patrols
 ***** PatrolManager
@@ -1752,6 +1860,7 @@ Spawns speed coils into the world.
     local xpos = math.random (-spawnRange, spawnRange)
     local zpos = math.random (-spawnRange, spawnRange)
     local appleClone = apple:Clone()
+    appleClone.Name = ("Apple")
     local appleHandleClone = appleClone:FindFirstChild("Handle")
     local spawnerClone = spawner:Clone()
     local spawnerScriptClone = spawnerClone:WaitForChild("ToolSpawnerScript")
@@ -1875,6 +1984,7 @@ Spawns gravity coils into the world.
     local xpos = math.random (-spawnRange, spawnRange)
     local zpos = math.random (-spawnRange, spawnRange)
     local gravityCoilClone = gravityCoil:Clone()
+    gravityCoilClone.Name = ("GravityCoil")
     local gravityCoilHandleClone = gravityCoilClone:FindFirstChild("Handle")
     local spawnerClone = spawner:Clone()
     local spawnerScriptClone = spawnerClone:WaitForChild("ToolSpawnerScript")
@@ -1985,6 +2095,7 @@ Spawns speed coils into the world.
     local xpos = math.random (-spawnRange, spawnRange)
     local zpos = math.random (-spawnRange, spawnRange)
     local speedCoilClone = speedCoil:Clone()
+    speedCoilClone.Name = ("SpeedCoil")
     local speedCoilHandleClone = speedCoilClone:FindFirstChild("Handle")
     local spawnerClone = spawner:Clone()
     local spawnerScriptClone = spawnerClone:WaitForChild("ToolSpawnerScript")
@@ -2096,6 +2207,7 @@ Spawns speed coils into the world.
     local xpos = math.random (-spawnRange, spawnRange)
     local zpos = math.random (-spawnRange, spawnRange)
     local swordClone = sword:Clone()
+    swordClone.Name = ("Sword")
     local swordHandleClone = swordClone:FindFirstChild("Handle")
     local spawnerClone = spawner:Clone()
     local spawnerScriptClone = spawnerClone:WaitForChild("ToolSpawnerScript")
