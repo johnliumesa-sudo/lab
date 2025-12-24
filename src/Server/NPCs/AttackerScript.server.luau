@@ -142,7 +142,7 @@ local function onTouched(otherPart)
 	      script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
 	      script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
 	      humanoid.BreakJointsOnDeath = false
-	      humanoid:TakeDamage(19)
+	      humanoid.Health = 0
 	      task.wait(5)
 	      script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
 	      script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
