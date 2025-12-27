@@ -12,6 +12,7 @@ if spawnerScript then
 end
 local spawnersFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners")
 local spawnRange = 48
+local spawnerCount = 3
 
 local function randomSpawn()
   local xpos = math.random (-spawnRange, spawnRange)
