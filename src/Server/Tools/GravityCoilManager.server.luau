@@ -3,7 +3,7 @@ local gravityCoilScript = script.Parent:FindFirstChild("GravityCoilScript")
 gravityCoilScript.Parent = gravityCoil
 local gravityCoilsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("GravityCoils")
 local spawnRange = 48
-local gravityCoilCount = 3
+local gravityCoilCount = 100
 
 local spawner = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners"):WaitForChild("Part")
 local spawnerScript = script.Parent:FindFirstChild("ToolSpawnerScript")
@@ -43,4 +43,5 @@ end
 
 for i = 1, gravityCoilCount do
    randomSpawn()
+   task.wait(20)
 end
