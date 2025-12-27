@@ -3,7 +3,7 @@ local swordScript = script.Parent:FindFirstChild("SwordScript")
 swordScript.Parent = sword
 local swordsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Swords")
 local spawnRange = 48
-local swordCount = 100
+local swordCount = 3
 
 local spawner = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners"):WaitForChild("Part")
 local spawnerScript = script.Parent:FindFirstChild("ToolSpawnerScript")
@@ -43,5 +43,4 @@ end
 
 for i = 1, swordCount do
    randomSpawn()
-   task.wait(20)
 end

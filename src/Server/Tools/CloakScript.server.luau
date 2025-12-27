@@ -5,26 +5,30 @@ cloakHandle.Parent =  cloakBase
 cloakHandle.Name = "Handle"
 local cloak = Instance.new ("SpecialMesh")
 cloak.Parent = cloakHandle
-cloak.MeshId = "rbxassetid://12264149190"
-cloak.TextureId = "rbxassetid://16606141"
+cloak.MeshId = "rbxassetid://1017195132"
+cloak.TextureId = "rbxassetid://1017195162"
 local rotationRate = 3
 local Players = game:GetService("Players")
 local cloakFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Cloaks")
 
+local function rotate()
+    script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
+end
+
 local function onActivated(character)
     for _, part in ipairs(character:GetDescendants()) do
-        if part:IsA("BasePart") or part:IsA("Decal") then
-          if part.Name ~= "HumanoidRootPart" then
-            if part.Transparency > 0 then
-              part.Transparency = 0
-            else
-              part.Transparency = 1
-              if part:IsA("MeshPart") or part:IsA("Part") then
-                part.CanTouch = false
-              end
-            end  
-          end
-        end
+	if part:IsA("BasePart") or part:IsA("Decal") then
+	  if part.Name ~= "HumanoidRootPart" then
+	    if part.Transparency > 0 then
+	      part.Transparency = 0
+	    else
+	      part.Transparency = 1
+	      if part:IsA("MeshPart") or part:IsA("Part") then
+		part.CanTouch = false
+	      end
+	    end  
+	  end
+	end
     end
 end
 
@@ -38,10 +42,10 @@ local function onEquipped()
 end
 
 if script.Parent.Parent == cloakFolder then
-  script.Parent.Equipped:Connect(onEquipped)
+   script.Parent.Equipped:Connect(onEquipped)
 end
 
 if script.Parent.Parent:IsA("Model") then
-  local character = script.Parent.Parent
-  script.Parent.Activated:Connect(onActivated(character))
+   local character = script.Parent.Parent
+   script.Parent.Activated:Connect(onActivated(character))
 end
