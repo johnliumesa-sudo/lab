@@ -1,9 +1,9 @@
-local sword = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("Swords"):WaitForChild("Tool")
-local swordScript = script.Parent:FindFirstChild("SwordScript")
-swordScript.Parent = sword
-local swordsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Swords")
+local cloak = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("Cloaks"):WaitForChild("Tool")
+local cloakScript = script.Parent:FindFirstChild("CloakScript")
+cloakScript.Parent = cloak
+local cloaksFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("Cloaks")
 local spawnRange = 48
-local swordCount = 100
+local cloakCount = 100
 
 local spawner = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners"):WaitForChild("Part")
 local spawnerScript = script.Parent:FindFirstChild("ToolSpawnerScript")
@@ -12,36 +12,28 @@ if spawnerScript then
 end
 local spawnersFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners")
 local spawnRange = 48
-local spawnerCount = 3
 
 local function randomSpawn()
   local xpos = math.random (-spawnRange, spawnRange)
   local zpos = math.random (-spawnRange, spawnRange)
-  local swordClone = sword:Clone()
-  swordClone.Name = ("Sword")
-  local swordHandleClone = swordClone:FindFirstChild("Handle")
+  local cloakClone = cloak:Clone()
+  cloakClone.Name = ("Cloak")
+  local cloakHandleClone = cloakClone:FindFirstChild("Handle")
   local spawnerClone = spawner:Clone()
   local spawnerScriptClone = spawnerClone:WaitForChild("ToolSpawnerScript")
   spawnerClone.Parent = spawnersFolder
   spawnerClone.Position = Vector3.new(xpos,1,zpos)
   spawnerClone.Anchored = true
   spawnerScriptClone.Parent = spawnerClone
-  swordClone.Parent = swordsFolder
-  swordHandleClone.Position = Vector3.new(xpos,4,zpos)
-  swordHandleClone.Anchored = true
-  local swordScriptClone = swordClone:WaitForChild("SwordScript")
-  swordScriptClone.Parent = swordClone
+  cloakClone.Parent = cloaksFolder
+  cloakHandleClone.Position = Vector3.new(xpos,4,zpos)
+  cloakHandleClone.Anchored = true
+  local cloakScriptClone = cloakClone:WaitForChild("CloakScript")
+  cloakScriptClone.Parent = cloakClone
   return
 end
 
-local function movements(ToolsClone)
-  local spinRate = math.rad
-  while true do
-      -- Movement logic placeholder
-  end
-end
-
-for i = 1, swordCount do
+for i = 1, cloakCount do
    randomSpawn()
    task.wait(20)
 end

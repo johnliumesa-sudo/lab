@@ -2,7 +2,7 @@ local speedCoil = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):F
 local speedCoilScript = script.Parent:FindFirstChild("SpeedCoilScript")
 local speedCoilsFolder = game:GetService("Workspace"):FindFirstChild("Tools"):FindFirstChild("SpeedCoils")
 local spawnRange = 48
-local speedCoilCount = 3
+local speedCoilCount = 100
 
 local spawner = game:GetService("ReplicatedStorage"):FindFirstChild("Tools"):FindFirstChild("ToolSpawners"):WaitForChild("Part")
 local spawnerScript = script.Parent:FindFirstChild("ToolSpawnerScript")
@@ -42,4 +42,5 @@ end
 
 for i = 1, speedCoilCount do
    randomSpawn()
+   task.wait(22)
 end

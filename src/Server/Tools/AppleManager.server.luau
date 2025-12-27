@@ -7,7 +7,7 @@ else
 end
 local applesFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Apples")
 local spawnRange = 48
-local appleCount = 3
+local appleCount = 100
 
 local function randomSpawn()
   local xpos = math.random (-spawnRange, spawnRange)
@@ -23,4 +23,5 @@ end
 
 for i = 1, appleCount do
    randomSpawn()
+   task.wait(20)
 end
