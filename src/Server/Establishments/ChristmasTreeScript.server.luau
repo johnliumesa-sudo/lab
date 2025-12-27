@@ -12,5 +12,5 @@ local function rotate()
 end
 
 if script.Parent.Parent == christmastreesFolder then
-  game:GetService("RunService").Heartbeat:Connect(rotate)
+   game:GetService("RunService").Heartbeat:Connect(rotate)
 end

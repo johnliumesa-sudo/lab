@@ -1819,7 +1819,7 @@ Spawns the coins into the world.
 ****** code
 ******* variables
 #+begin_src lua
-  local portal = game:GetService("ReplicatedStorage"):FindFirstChild("Establishments"):FindFirstChild("Portals"):FindFirstChild("Part")
+  local portal = game:GetService("ReplicatedStorage"):FindFirstChild("Establishments"):FindFirstChild("Portals"):WaitForChild("Part")
   local portalScript = script.Parent:FindFirstChild("PortalScript")
   portalScript.Parent = portal
   local portalsFolder = game:GetService("Workspace"):FindFirstChild("Establishments"):FindFirstChild("Portals")
@@ -1869,6 +1869,7 @@ Defines internal behavior of toolstands.
   portalFrame.Color = Color3.new(0.533333, 0.431372, 0.145098)
   local teleportRange = 100
   local Players = game:GetService("Players")
+  local portalsFolder = game:GetService("Workspace"):FindFirstChild("Establishments"):FindFirstChild("Portals")
 #+end_src
 ******* functions 
 ******** onTouched
@@ -1887,9 +1888,11 @@ Defines internal behavior of toolstands.
 #+end_src
 ******* executions 
 #+begin_src lua
-  script.Parent.Touched:Connect(onTouched)
-  #+end_src
-**** Christmas tree
+  if script.parent.parent = portalsFolder then  
+    script.Parent.Touched:Connect(onTouched)
+  end
+#+end_src
+**** christmas tree
 ***** ChristmasTreeManager
 :properties:
 :header-args:lua: :tangle ./src/server/Establishments/ChristmasTreeManager.server.luau
@@ -1899,7 +1902,7 @@ Spawns the coins into the world.
 ****** code
 ******* variables
 #+begin_src lua
-  local christmastree = game:GetService("ReplicatedStorage"):FindFirstChild("Establishments"):FindFirstChild("ChristmasTrees"):FindFirstChild("Part")
+  local christmastree = game:GetService("ReplicatedStorage"):FindFirstChild("Establishments"):FindFirstChild("ChristmasTrees"):WaitForChild("Part")
   local christmastreeScript = script.Parent:FindFirstChild("ChristmasTreeScript")
   christmastreeScript.Parent = christmastree
   local christmastreesFolder = game:GetService("Workspace"):FindFirstChild("Establishments"):FindFirstChild("ChristmasTrees")
@@ -1941,6 +1944,7 @@ Defines internal behavior of toolstands.
   christmasTree.Parent = christmasTreeBase
   christmasTree.MeshId = "rbxassetid://551508688"
   christmasTree.TextureId = "rbxassetid://551508937"
+  local christmastreesFolder = game:GetService("Workspace"):FindFirstChild("Establishments"):FindFirstChild("ChristmasTrees")
 #+end_src
 ******* functions 
 ******** rotate
@@ -1951,8 +1955,8 @@ Defines internal behavior of toolstands.
 #+end_src
 ******* executions 
 #+begin_src lua
-  if script.Parent.Parent == presentFolder then
-    game:GetService("RunService").Heartbeat:Connect(rotate)
+  if script.Parent.Parent == christmastreesFolder then
+     game:GetService("RunService").Heartbeat:Connect(rotate)
   end
 #+end_src
 *** tools

@@ -1,4 +1,4 @@
-local portal = game:GetService("ReplicatedStorage"):FindFirstChild("Establishments"):FindFirstChild("Portals"):FindFirstChild("Part")
+local portal = game:GetService("ReplicatedStorage"):FindFirstChild("Establishments"):FindFirstChild("Portals"):WaitForChild("Part")
 local portalScript = script.Parent:FindFirstChild("PortalScript")
 portalScript.Parent = portal
 local portalsFolder = game:GetService("Workspace"):FindFirstChild("Establishments"):FindFirstChild("Portals")

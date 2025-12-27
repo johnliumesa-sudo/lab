@@ -1,4 +1,4 @@
-local christmastree = game:GetService("ReplicatedStorage"):FindFirstChild("Establishments"):FindFirstChild("ChristmasTrees"):FindFirstChild("Part")
+local christmastree = game:GetService("ReplicatedStorage"):FindFirstChild("Establishments"):FindFirstChild("ChristmasTrees"):WaitForChild("Part")
 local christmastreeScript = script.Parent:FindFirstChild("ChristmasTreeScript")
 christmastreeScript.Parent = christmastree
 local christmastreesFolder = game:GetService("Workspace"):FindFirstChild("Establishments"):FindFirstChild("ChristmasTrees")

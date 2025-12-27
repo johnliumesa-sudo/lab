@@ -11,6 +11,7 @@ portalFrame.Material = Enum.Material.Wood
 portalFrame.Color = Color3.new(0.533333, 0.431372, 0.145098)
 local teleportRange = 100
 local Players = game:GetService("Players")
+local portalsFolder = game:GetService("Workspace"):FindFirstChild("Establishments"):FindFirstChild("Portals")
 
 local function onTouched(otherPart)
    local character = otherPart.Parent
@@ -24,4 +25,6 @@ local function onTouched(otherPart)
    end
 end
 
-script.Parent.Touched:Connect(onTouched)
+if script.parent.parent = portalsFolder then  
+  script.Parent.Touched:Connect(onTouched)
+end
