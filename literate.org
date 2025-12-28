@@ -904,7 +904,7 @@ prompt.Triggered:Connect(toggleDoor)
 **** coins
 ***** CoinManager
 :properties:
-:header-args:lua: :tangle ./src/server/Collectables/CoinManager.server.luau
+:header-args:lua: :tangle ./place1/src/server/Collectables/CoinManager.server.luau
 :END:
 ****** notes
 Spawns the coins into the world.
@@ -950,7 +950,7 @@ Spawns the coins into the world.
 #+end_src
 ***** CoinScript
 :properties:
-:header-args:lua: :tangle ./src/server/Collectables/CoinScript.server.luau
+:header-args:lua: :tangle ./place1/src/server/Collectables/CoinScript.server.luau
 :END:
 ****** notes
 Defines individual coin behavior (rotate, touch, reward).
@@ -1000,7 +1000,7 @@ Defines individual coin behavior (rotate, touch, reward).
 **** present
 ***** PresentManager
 :properties:
-:header-args:lua: :tangle ./src/server/Collectables/PresentManager.server.luau
+:header-args:lua: :tangle ./place1/src/server/Collectables/PresentManager.server.luau
 :END:
 ****** notes
 Spawns the coins into the world.
@@ -1036,7 +1036,7 @@ Spawns the coins into the world.
 #+end_src
 ***** PresentScript
 :properties:
-:header-args:lua: :tangle ./src/server/Collectables/PresentScript.server.luau
+:header-args:lua: :tangle ./place1/src/server/Collectables/PresentScript.server.luau
 :END:
 ****** notes
 Defines individual coin behavior (rotate, touch, reward).
@@ -1099,7 +1099,7 @@ Defines individual coin behavior (rotate, touch, reward).
 **** patrols
 ***** PatrolManager
 :properties:
-:header-args:lua: :tangle ./src/server/NPCs/PatrolManager.server.luau
+:header-args:lua: :tangle ./place1/src/server/NPCs/PatrolManager.server.luau
 :END:
 ****** notes
 Spawns the Patrol NPCs.
@@ -1136,7 +1136,7 @@ Spawns the Patrol NPCs.
 #+end_src
 ***** PatrolScript
 :PROPERTIES:
-:header-args:lua: :tangle ./src/server/NPCs/PatrolScript.server.luau
+:header-args:lua: :tangle ./place1/src/server/NPCs/PatrolScript.server.luau
 :END:
 ****** notes
 FIXED LOGIC: This script builds the NPC body on the existing model (script.Parent) instead of creating a new ghost model in storage. This ensures hrp.Touched actually works in the Workspace.
@@ -1247,7 +1247,7 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
 **** clerks
 ***** ClerkManager
 :properties:
-:header-args:lua: :tangle ./src/server/NPCs/ClerkManager.server.luau
+:header-args:lua: :tangle ./place1/src/server/NPCs/ClerkManager.server.luau
 :END:
 ****** notes
 Spawns the Clerk NPCs.
@@ -1286,7 +1286,7 @@ Spawns the Clerk NPCs.
 #+end_src
 ***** ClerkScript
 :PROPERTIES:
-:header-args:lua: :tangle ./src/server/NPCs/ClerkScript.server.luau
+:header-args:lua: :tangle ./place1/src/server/NPCs/ClerkScript.server.luau
 :END:
 ****** notes
 Creates the logic for the store clerk which handles conversations.
@@ -1351,7 +1351,7 @@ Creates the logic for the store clerk which handles conversations.
 **** attackers
 ***** AttackerManager
 :properties:
-:header-args:lua: :tangle ./src/server/NPCs/AttackerManager.server.luau
+:header-args:lua: :tangle ./place1/src/server/NPCs/AttackerManager.server.luau
 :END:
 ****** notes
 Spawns the attacker NPCs.
@@ -1388,7 +1388,7 @@ Spawns the attacker NPCs.
 #+end_src
 ***** AttackerScript
 :PROPERTIES:
-:header-args:lua: :tangle ./src/server/NPCs/AttackerScript.server.luau
+:header-args:lua: :tangle ./place1/src/server/NPCs/AttackerScript.server.luau
 :END:
 ****** notes
 Defines attacker behavior, creation, and logic.
@@ -1620,7 +1620,7 @@ Defines attacker behavior, creation, and logic.
 *** obstacles
 **** BlockManager
 :properties:
-:header-args:lua: :tangle ./src/server/obstacles/BlockManager.server.luau
+:header-args:lua: :tangle ./place1/src/server/obstacles/BlockManager.server.luau
 :END:
 ***** notes
 Generates and manages random blocks as obstacles in an orientation that allows the player to escape from patrols, however, it allows attackers to climb. 
@@ -1686,7 +1686,7 @@ Generates and manages random blocks as obstacles in an orientation that allows t
 **** tool shop 
 ***** ToolShopManager
 :properties:
-:header-args:lua: :tangle ./src/server/Establishments/ToolShopManager.server.luau
+:header-args:lua: :tangle ./place1/src/server/Establishments/ToolShopManager.server.luau
 :END:
 ****** notes
 virtual space for clerks to interact with players
@@ -1785,7 +1785,7 @@ virtual space for clerks to interact with players
 **** terrain modifier
 ***** TerrainModifierScript
 :properties:
-:header-args:lua: :tangle ./src/server/Establishments/TerrainModifierScript.server.luau
+:header-args:lua: :tangle ./place1/src/server/Establishments/TerrainModifierScript.server.luau
 :END:
 ****** notes
 Defines internal behavior of toolstands.
@@ -1812,7 +1812,7 @@ Defines internal behavior of toolstands.
 **** portal
 ***** PortalManager
 :properties:
-:header-args:lua: :tangle ./src/server/Establishments/PortalManager.server.luau
+:header-args:lua: :tangle ./place1/src/server/Establishments/PortalManager.server.luau
 :END:
 ****** notes
 Spawns the coins into the world.
@@ -1849,7 +1849,7 @@ Spawns the coins into the world.
 #+end_src
 ***** PortalScript
 :properties:
-:header-args:lua: :tangle ./src/server/Establishments/PortalScript.server.luau
+:header-args:lua: :tangle ./place1/src/server/Establishments/PortalScript.server.luau
 :END:
 ****** notes
 Defines internal behavior of toolstands.
@@ -1895,7 +1895,7 @@ Defines internal behavior of toolstands.
 **** christmas tree
 ***** ChristmasTreeManager
 :properties:
-:header-args:lua: :tangle ./src/server/Establishments/ChristmasTreeManager.server.luau
+:header-args:lua: :tangle ./place1/src/server/Establishments/ChristmasTreeManager.server.luau
 :END:
 ****** notes
 Spawns the coins into the world.
@@ -1930,7 +1930,7 @@ Spawns the coins into the world.
 #+end_src
 ***** ChristmasTreeScript
 :properties:
-:header-args:lua: :tangle ./src/server/Establishments/ChristmasTreeScript.server.luau
+:header-args:lua: :tangle ./place1/src/server/Establishments/ChristmasTreeScript.server.luau
 :END:
 ****** notes
 Defines internal behavior of toolstands.
@@ -1963,7 +1963,7 @@ Defines internal behavior of toolstands.
 **** apple
 ***** AppleManager
 :properties:
-:header-args:lua: :tangle ./src/server/Tools/AppleManager.server.luau
+:header-args:lua: :tangle ./place1/src/server/Tools/AppleManager.server.luau
 :END:
 ****** notes
 Spawns speed coils into the world.
@@ -2004,7 +2004,7 @@ Spawns speed coils into the world.
 #+end_src
 ***** AppleScript
 :properties:
-:header-args:lua: :tangle ./src/server/Tools/AppleScript.server.luau
+:header-args:lua: :tangle ./place1/src/server/Tools/AppleScript.server.luau
 :END:
 ****** notes
 Defines individual speed coil behavior. Handle is a mesh part but it has to have the name "Handle" for it to have the TouchInterest, to support the onEquipped event.
@@ -2061,7 +2061,7 @@ Defines individual speed coil behavior. Handle is a mesh part but it has to have
 **** gravity coil
 ***** GravityCoilManager
 :properties:
-:header-args:lua: :tangle ./src/server/Tools/GravityCoilManager.server.luau
+:header-args:lua: :tangle ./place1/src/server/Tools/GravityCoilManager.server.luau
 :END:
 ****** notes
 Spawns gravity coils into the world.
@@ -2127,7 +2127,7 @@ Spawns gravity coils into the world.
 #+end_src
 ***** GravityCoilScript
 :properties:
-:header-args:lua: :tangle ./src/server/Tools/GravityCoilScript.server.luau
+:header-args:lua: :tangle ./place1/src/server/Tools/GravityCoilScript.server.luau
 :END:
 ****** notes
 Defines individual gravity coil behavior. Handle is a mesh part but it has to have the name "Handle" for it to have the TouchInterest, to support the onEquipped event.
@@ -2173,7 +2173,7 @@ Defines individual gravity coil behavior. Handle is a mesh part but it has to ha
 **** cloak
 ***** CloakManager
 :properties:
-:header-args:lua: :tangle ./src/server/Tools/CloakManager.server.luau
+:header-args:lua: :tangle ./place1/src/server/Tools/CloakManager.server.luau
 :END:
 ****** notes
 Spawns gravity coils into the world.
@@ -2231,7 +2231,7 @@ Spawns gravity coils into the world.
 #+end_src
 ***** CloakScript
 :properties:
-:header-args:lua: :tangle ./src/server/Tools/CloakScript.server.luau
+:header-args:lua: :tangle ./place1/src/server/Tools/CloakScript.server.luau
 :END:
 ****** notes
 Defines individual gravity coil behavior. Handle is a mesh part but it has to have the name "Handle" for it to have the TouchInterest, to support the onEquipped event.
@@ -2302,7 +2302,7 @@ Defines individual gravity coil behavior. Handle is a mesh part but it has to ha
 **** speed coil
 ***** SpeedCoilManager
 :properties:
-:header-args:lua: :tangle ./src/server/Tools/SpeedCoilManager.server.luau
+:header-args:lua: :tangle ./place1/src/server/Tools/SpeedCoilManager.server.luau
 :END:
 ****** notes
 Spawns speed coils into the world.
@@ -2367,7 +2367,7 @@ Spawns speed coils into the world.
 #+end_src
 ***** SpeedCoilScript
 :properties:
-:header-args:lua: :tangle ./src/server/Tools/SpeedCoilScript.server.luau
+:header-args:lua: :tangle ./place1/src/server/Tools/SpeedCoilScript.server.luau
 :END:
 ****** notes
 Defines individual speed coil behavior. Handle is a mesh part but it has to have the name "Handle" for it to have the TouchInterest, to support the onEquipped event.
@@ -2413,7 +2413,7 @@ Defines individual speed coil behavior. Handle is a mesh part but it has to have
 **** sword 
 ***** SwordManager
 :properties:
-:header-args:lua: :tangle ./src/server/Tools/SwordManager.server.luau
+:header-args:lua: :tangle ./place1/src/server/Tools/SwordManager.server.luau
 :END:
 ****** notes
 Spawns speed coils into the world.
@@ -2479,7 +2479,7 @@ Spawns speed coils into the world.
 #+end_src
 ***** SwordScript
 :properties:
-:header-args:lua: :tangle ./src/server/Tools/SwordScript.server.luau
+:header-args:lua: :tangle ./place1/src/server/Tools/SwordScript.server.luau
 :END:
 ****** notes
 Defines individual speed coil behavior. Handle is a mesh part but it has to have the name "Handle" for it to have the TouchInterest, to support the onEquipped event.
@@ -2565,7 +2565,7 @@ end
 **** tool spawner
 ***** ToolSpawnerScript
 :properties:
-:header-args:lua: :tangle ./src/server/Tools/ToolSpawnerScript.server.luau
+:header-args:lua: :tangle ./place1/src/server/Tools/ToolSpawnerScript.server.luau
 :END:
 ****** notes
 Defines internal behavior of toolstands.
@@ -2630,7 +2630,7 @@ Defines internal behavior of toolstands.
 **** dialog
 ***** DialogManager
 :properties:
-:header-args:lua: :tangle ./src/server/UI/DialogManager.server.luau
+:header-args:lua: :tangle ./place1/src/server/UI/DialogManager.server.luau
 :END:
 ****** notes
 creates dialog
@@ -2660,7 +2660,7 @@ creates dialog
 **** leaderboard
 ***** LeaderboardManager
 :properties:
-:header-args:lua: :tangle ./src/server/UI/LeaderboardManager.server.luau
+:header-args:lua: :tangle ./place1/src/server/UI/LeaderboardManager.server.luau
 :END:
 ****** notes
 Standard leaderboard setup to track coins.
@@ -2690,7 +2690,7 @@ players.PlayerAdded:Connect(onPlayerSpawn)
 *** player 
 **** PlayerScript
 :PROPERTIES:
-:header-args:lua: :tangle ./src/client/PlayerScript.client.luau
+:header-args:lua: :tangle ./place1/src/client/PlayerScript.client.luau
 :END:
 ***** notes
 Handles client-side logic, including listening for dialog selections, notifying the server, and processing the server's response.
