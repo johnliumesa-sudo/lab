@@ -3,21 +3,21 @@
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
-        "$path": "src/Shared"
+        "$path": "place1/src/Shared"
     },
     "ServerScriptService": {
-        "$path": "src/Server"
+        "$path": "place1/src/Server"
     },
     "StarterPlayer": {
       "StarterPlayerScripts": {
         "Client": {
-          "$path": "src/Client"
+          "$path": "place1/src/Client"
         }
       }
     },
     
     "Workspace": {
-      "$path": "src/Workspace",
+      "$path": "place1/src/Workspace",
       "Baseplate": {
         "$className": "Part",
         "$properties": {
