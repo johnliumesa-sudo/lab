@@ -2171,6 +2171,7 @@ Defines individual gravity coil behavior. Handle is a mesh part but it has to ha
     script.Parent.Equipped:Connect(onEquipped)
   end
 #+end_src
+<<<<<<< HEAD
 ***** cloak
 ****** CloakManager
 :properties:
@@ -2302,6 +2303,10 @@ Defines individual gravity coil behavior. Handle is a mesh part but it has to ha
 #+end_src
 ***** speed coil
 ****** SpeedCoilManager
+=======
+**** speed coil
+***** SpeedCoilManager
+>>>>>>> parent of 3215c5c (created Cloaks. (#40))
 :properties:
 :header-args:lua: :tangle ./place1/src/server/Tools/SpeedCoilManager.server.luau
 :END:
