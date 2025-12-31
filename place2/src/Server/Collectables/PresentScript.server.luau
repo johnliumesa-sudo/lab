@@ -11,6 +11,10 @@ local tools = game:GetService("Workspace"):FindFirstChild("Tools")
 local Players = game:GetService("Players")
 local presentFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Presents")
 
+local function rotate()
+    script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
+end
+
 local function onTouched(otherPart)
    local character = otherPart.Parent
    local humanoid = character:FindFirstChildWhichIsA("Humanoid")
@@ -19,7 +23,7 @@ local function onTouched(otherPart)
 	if player then
 	   local leaderstats = player:WaitForChild("leaderstats")
 	   script.Parent:Destroy()
-	   if leaderstats.CoinCount.Value < 200 then
+	   if leaderstats.CoinCount.Value < 500 then
 	      if leaderstats.CoinCount.Value >= 10 then
 		 leaderstats.CoinCount.Value = leaderstats.CoinCount.Value*2
 		 humanoid.health += 25
@@ -27,10 +31,8 @@ local function onTouched(otherPart)
 		 leaderstats.CoinCount.Value += 50
 		 humanoid.health += 50	
 	      end		
-	   elseif humanoid.health < humanoid.MaxHealth then	
+	   else	
 	      humanoid.health = humanoid.MaxHealth
-	   else
-	      humanoid.MaxHealth += 50 
 	   end
 	end
    end
@@ -38,4 +40,5 @@ end
 
 if script.Parent.Parent == presentFolder then
   script.Parent.Touched:Connect(onTouched)
+  game:GetService("RunService").Heartbeat:Connect(rotate)
 end
