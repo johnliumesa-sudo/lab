@@ -15,35 +15,35 @@ if script.Parent.Parent.Parent.Parent == game.Workspace then
   local regionCenter = script.Parent.CFrame + Vector3.new(0, 2, 0)
   local parts = game.Workspace:GetPartBoundsInBox(regionCenter,Vector3.new(4,4,4))
   for _, part in pairs(parts) do 
-	  if part and part.Parent and part.Parent:IsA("Tool")then
-		  tool = part.Parent
-	  end
+	    if part and part.Parent and part.Parent:IsA("Tool")then
+		    tool = part.Parent
+	    end
   end
   if tool then
-	  while true do
-		  local toolCopy = tool
-		  local handle = toolCopy:FindFirstChild("Handle")
-		  --toolCopy.Parent = script.Parent
-		  local toolOnPad = true
-		  local parentConnection
-		  parentConnection = toolCopy.AncestryChanged:Connect(function()
-			  if handle then 
-				  handle.Anchored = false
-			  end
-			  toolOnPad = false
-			  parentConnection:Disconnect()
-		  end)
-		  --if handle then
-			  --handle.CFrame = (spawner.CFrame * CFrame.fromEulerAngles(0,0, math.rad(-90)) + Vector3.new(0, handle.Size.Y * 1.2, 0))
-			  --handle.Anchored = true
-		  --end
-		  while toolOnPad do 
-			  if handle then
-				  handle.CFrame = handle.CFrame * CFrame.Angles(0, math.pi/60,0)
-			  end
-			  task.wait()
-		  end
-		  task.wait(60)
-	  end
+	    while true do
+		    local toolCopy = tool
+		    local handle = toolCopy:FindFirstChild("Handle")
+		    --toolCopy.Parent = script.Parent
+		    local toolOnPad = true
+		    local parentConnection
+		    parentConnection = toolCopy.AncestryChanged:Connect(function()
+			    if handle then 
+				    handle.Anchored = false
+			    end
+			    toolOnPad = false
+			    parentConnection:Disconnect()
+		    end)
+		    --if handle then
+			    --handle.CFrame = (spawner.CFrame * CFrame.fromEulerAngles(0,0, math.rad(-90)) + Vector3.new(0, handle.Size.Y * 1.2, 0))
+			    --handle.Anchored = true
+		    --end
+		    while toolOnPad do 
+			    if handle then
+				    handle.CFrame = handle.CFrame * CFrame.Angles(0, math.pi/60,0)
+			    end
+			    task.wait()
+		    end
+		    task.wait(60)
+	    end
   end
 end

@@ -19,7 +19,7 @@ local function onEquipped()
     local character = script.Parent.Parent
     character.Humanoid.WalkSpeed = 30
     if script.parent:FindFirstChild("Handle") then
-       script.parent:FindFirstChild("Handle").Anchored = false
+	 script.parent:FindFirstChild("Handle").Anchored = false
     end
 end
 

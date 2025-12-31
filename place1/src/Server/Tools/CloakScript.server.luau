@@ -17,25 +17,25 @@ end
 
 local function onActivated(character)
     for _, part in ipairs(character:GetDescendants()) do
-	if part:IsA("BasePart") or part:IsA("Decal") then
-	  if part.Name ~= "HumanoidRootPart" then
-	    if part.Transparency > 0 then
-	      part.Transparency = 0
-	    else
-	      part.Transparency = 1
-	      if part:IsA("MeshPart") or part:IsA("Part") then
-		part.CanTouch = false
-	      end
-	    end  
+	  if part:IsA("BasePart") or part:IsA("Decal") then
+	    if part.Name ~= "HumanoidRootPart" then
+	      if part.Transparency > 0 then
+		part.Transparency = 0
+	      else
+		part.Transparency = 1
+		if part:IsA("MeshPart") or part:IsA("Part") then
+		  part.CanTouch = false
+		end
+	      end  
+	    end
 	  end
-	end
     end
 end
 
 local function onEquipped()
     local character = script.Parent.Parent
     if script.parent:FindFirstChild("Handle") then
-       script.parent:FindFirstChild("Handle").Anchored = false
+	 script.parent:FindFirstChild("Handle").Anchored = false
     end
     task.wait(1)
     script.Parent.Activated:Connect(onActivated(character))

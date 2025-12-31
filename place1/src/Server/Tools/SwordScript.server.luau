@@ -41,11 +41,11 @@ local function onClicked()
    local humanoid = character:FindFirstChild("Humanoid")
    -- CORRECTED: Load the animation onto the humanoid, then play the track
    if humanoid then
-      local animator = humanoid:FindFirstChild("Animator") or humanoid:WaitForChild("Animator")
-      if animator then
-	 local track = animator:LoadAnimation(slashAnim)
-	 track:Play()
-      end
+	local animator = humanoid:FindFirstChild("Animator") or humanoid:WaitForChild("Animator")
+	if animator then
+	   local track = animator:LoadAnimation(slashAnim)
+	   track:Play()
+	end
    end
 end
 
@@ -53,7 +53,7 @@ local function onEquipped()
    local character = script.Parent.Parent
     character.Humanoid.WalkSpeed = 30
     if script.parent:FindFirstChild("Handle") then
-       script.parent:FindFirstChild("Handle").Anchored = false
+	 script.parent:FindFirstChild("Handle").Anchored = false
     end
     script.Parent.Activated:Connect(onClicked)
     script.Parent:FindFirstChild("Handle").Touched:Connect(onTouched)

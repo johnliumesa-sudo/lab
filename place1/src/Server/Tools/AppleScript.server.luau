@@ -15,25 +15,25 @@ local function onTouched(otherPart)
     local character = otherPart.Parent
     local humanoid = character:FindFirstChildWhichIsA("Humanoid")
     if humanoid then
-      local Players = game:GetService("Players")
-      local player = Players:GetPlayerFromCharacter(character)
-      if player then
-	 local animator = humanoid:FindFirstChild("Animator") or humanoid:WaitForChild("Animator")
-	 if animator then
-	    local track = animator:LoadAnimation(eatAnim)
-	    track:Play()
-	 end
-	 if humanoid.Health < humanoid.MaxHealth then
-	    humanoid.Health = humanoid.Health + 20
-	 elseif humanoid.MaxHealth < 200 then
-	    humanoid.MaxHealth = humanoid.MaxHealth + 20
-	    humanoid.Health = humanoid.MaxHealth - 1
-	 else
-	    print(humanoid.MaxHealth.." is the maximum health reachable!")
-	 end  
-      script.Parent:Destroy()
+	local Players = game:GetService("Players")
+	local player = Players:GetPlayerFromCharacter(character)
+	if player then
+	   local animator = humanoid:FindFirstChild("Animator") or humanoid:WaitForChild("Animator")
+	   if animator then
+	      local track = animator:LoadAnimation(eatAnim)
+	      track:Play()
+	   end
+	   if humanoid.Health < humanoid.MaxHealth then
+	      humanoid.Health = humanoid.Health + 20
+	   elseif humanoid.MaxHealth < 200 then
+	      humanoid.MaxHealth = humanoid.MaxHealth + 20
+	      humanoid.Health = humanoid.MaxHealth - 1
+	   else
+	      print(humanoid.MaxHealth.." is the maximum health reachable!")
+	   end  
+	script.Parent:Destroy()
    end
-      end
+	end
 end
 
 if script.Parent.Parent == appleFolder then

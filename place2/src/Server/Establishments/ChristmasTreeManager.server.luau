@@ -3,11 +3,11 @@ local christmastreeScript = script.Parent:FindFirstChild("ChristmasTreeScript")
 christmastreeScript.Parent = christmastree
 local christmastreesFolder = game:GetService("Workspace"):FindFirstChild("Establishments"):FindFirstChild("ChristmasTrees")
 local spawnRange = 48
-local christmastreeCount = 6
+local christmastreeCount = 1
 
 local function randomSpawn()
-  local xpos = math.random (-spawnRange, spawnRange)
-  local zpos = math.random (-spawnRange, spawnRange)
+  local xpos = 0
+  local zpos = 0
   local ypos = 3
   local christmastreeClone = christmastree:Clone()
   christmastreeClone.Parent = christmastreesFolder

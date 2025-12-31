@@ -19,22 +19,22 @@ local function onTouched(otherPart)
    local character = otherPart.Parent
    local humanoid = character:FindFirstChildWhichIsA("Humanoid")
    if humanoid then
-      local player = Players:GetPlayerFromCharacter(character)
-      if player then
-	 local leaderstats = player:WaitForChild("leaderstats")
-	 script.Parent:Destroy()
-	 if leaderstats.CoinCount.Value < 500 then
-	    if leaderstats.CoinCount.Value >= 10 then
-	       leaderstats.CoinCount.Value = leaderstats.CoinCount.Value*2
-	       humanoid.health += 25
-	    else
-	       leaderstats.CoinCount.Value += 50
-	       humanoid.health += 50	
-	    end		
-	 else	
-	    humanoid.health = humanoid.MaxHealth
-	 end
-      end
+	local player = Players:GetPlayerFromCharacter(character)
+	if player then
+	   local leaderstats = player:WaitForChild("leaderstats")
+	   script.Parent:Destroy()
+	   if leaderstats.CoinCount.Value < 500 then
+	      if leaderstats.CoinCount.Value >= 10 then
+		 leaderstats.CoinCount.Value = leaderstats.CoinCount.Value*2
+		 humanoid.health += 25
+	      else
+		 leaderstats.CoinCount.Value += 50
+		 humanoid.health += 50	
+	      end		
+	   else	
+	      humanoid.health = humanoid.MaxHealth
+	   end
+	end
    end
 end
 
