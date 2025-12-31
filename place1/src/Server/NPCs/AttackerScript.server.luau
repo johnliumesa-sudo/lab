@@ -11,20 +11,20 @@ local function handleObstacle(rigRootPart, targetPosition)
    rigHumanoid.Jump = true
    local startPosition = rigRootPart.Position
    local alternativeAngles = {
-      CFrame.Angles(0, math.rad(90), 0),
-      CFrame.Angles(0, math.rad(-90), 0),
-      CFrame.Angles(0, math.rad(135), 0),
-      CFrame.Angles(0, math.rad(180), 0)
+	CFrame.Angles(0, math.rad(90), 0),
+	CFrame.Angles(0, math.rad(-90), 0),
+	CFrame.Angles(0, math.rad(135), 0),
+	CFrame.Angles(0, math.rad(180), 0)
    }
    for _, angle in ipairs(alternativeAngles) do
-      --local baseDirection = (targetPosition - rigRootPart.Position).Unit
-      local newDirection = (angle * CFrame.new((targetPosition - rigRootPart.Position).Unit)).Position.Unit
-      local newTargetPosition = rigRootPart.Position + newDirection * 15
-      rigHumanoid:MoveTo(newTargetPosition)
-      rigHumanoid.MoveToFinished:Wait()
-      if (rigRootPart.Position - startPosition).Magnitude > 0.5 then
-	 break
-      end
+	--local baseDirection = (targetPosition - rigRootPart.Position).Unit
+	local newDirection = (angle * CFrame.new((targetPosition - rigRootPart.Position).Unit)).Position.Unit
+	local newTargetPosition = rigRootPart.Position + newDirection * 15
+	rigHumanoid:MoveTo(newTargetPosition)
+	rigHumanoid.MoveToFinished:Wait()
+	if (rigRootPart.Position - startPosition).Magnitude > 0.5 then
+	   break
+	end
    end
 end
 
@@ -36,9 +36,9 @@ local function checkForObstacles(targetPosition,rigRootPart)
   local direction = (targetPosition - rigRootPart.Position).Unit * 3
   local rayResult = workspace:Raycast(origin, direction, rayParams)
   if rayResult and rayResult.Instance then
-      if rayResult.Instance.CanCollide then
-	  handleObstacle(rigRootPart, targetPosition)
-      end
+	if rayResult.Instance.CanCollide then
+	    handleObstacle(rigRootPart, targetPosition)
+	end
   end
 end
 
@@ -60,31 +60,31 @@ end
 local function moveToPlayer(playerRootPart, rigRootPart)
    local rigHumanoid = rigRootPart.Parent:FindFirstChild("Humanoid")
    local path = pathFindingService:CreatePath({
-	 AgentRadius = 0.1,
-	 AgentHeight = 0.1,
-	 AgentCanJump = true,
-	 AgentCanClimb = true,
-	 AgentJumpHeight = 7.2,
-	 AgentMaxSlope = 89,
-	 WaypointSpacing = 0.1,
-	 Costs = { plastic = 3 }
+	   AgentRadius = 0.1,
+	   AgentHeight = 0.1,
+	   AgentCanJump = true,
+	   AgentCanClimb = true,
+	   AgentJumpHeight = 7.2,
+	   AgentMaxSlope = 89,
+	   WaypointSpacing = 0.1,
+	   Costs = { plastic = 3 }
    })
    local success, errorMessage = pcall(function()
-	 path:ComputeAsync(rigRootPart.Position, playerRootPart.Position)
+	   path:ComputeAsync(rigRootPart.Position, playerRootPart.Position)
    end)     
    if success and path.Status == Enum.PathStatus.Success then
-      for _, waypoint in pairs(path:GetWaypoints()) do
-	 visualizePath(waypoint)
-	 local distance = checkDistance(playerRootPart, rigRootPart)
-	 local targetPosition = (distance <= stopDistance)
-	    and playerRootPart.Position + (rigRootPart.Position - playerRootPart.Position).Unit * stopDistance
-	    or waypoint.Position
-	 rigHumanoid:MoveTo(targetPosition)
-	  checkForObstacles(targetPosition, rigRootPart)
-	  rigRootPart.CFrame = CFrame.lookAt(rigRootPart.Position, playerRootPart.Position)
-      end
+	for _, waypoint in pairs(path:GetWaypoints()) do
+	   visualizePath(waypoint)
+	   local distance = checkDistance(playerRootPart, rigRootPart)
+	   local targetPosition = (distance <= stopDistance)
+	      and playerRootPart.Position + (rigRootPart.Position - playerRootPart.Position).Unit * stopDistance
+	      or waypoint.Position
+	   rigHumanoid:MoveTo(targetPosition)
+	    checkForObstacles(targetPosition, rigRootPart)
+	    rigRootPart.CFrame = CFrame.lookAt(rigRootPart.Position, playerRootPart.Position)
+	end
    else
-      warn("-ErRoR 403: Pathfinding failed -")
+	warn("-ErRoR 403: Pathfinding failed -")
    end
 end
 
@@ -135,19 +135,19 @@ end
 local function onTouched(otherPart)
   local character = otherPart.Parent
   if character and character:IsA("Model") then
-      local humanoid = character:FindFirstChildWhichIsA("Humanoid")
-      if humanoid then
-	  local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
-	  if player then
-	      script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
-	      script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
-	      humanoid.BreakJointsOnDeath = false
-	      humanoid.Health = 0
-	      task.wait(5)
-	      script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
-	      script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
-	  end
-      end
+	local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+	if humanoid then
+	    local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
+	    if player then
+		script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
+		script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
+		humanoid.BreakJointsOnDeath = false
+		humanoid.Health = 0
+		task.wait(5)
+		script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
+		script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
+	    end
+	end
   end
 end
 
@@ -156,12 +156,12 @@ local function movement()
    local hrp = script.Parent:FindFirstChild("HumanoidRootPart") 
    StartingPosition = hrp.Position    
    while true do
-       local randomX = math.random(-50, 50)
-       local randomZ = math.random(-50, 50)
-       local targetPosition = StartingPosition + Vector3.new(randomX, 0, randomZ)
-       humanoid:MoveTo(targetPosition)
-       humanoid.MoveToFinished:Wait()
-       task.wait(0.1)
+	 local randomX = math.random(-50, 50)
+	 local randomZ = math.random(-50, 50)
+	 local targetPosition = StartingPosition + Vector3.new(randomX, 0, randomZ)
+	 humanoid:MoveTo(targetPosition)
+	 humanoid.MoveToFinished:Wait()
+	 task.wait(0.1)
    end
 end
 
@@ -169,15 +169,15 @@ local function getClosestPlayer(rigRootPart)
     local closestPlayer = nil
     local closestDistance = math.huge
     for _, player in ipairs(Players:GetPlayers()) do
-  	      local character = player.Character
-  	      if character and character:FindFirstChild("HumanoidRootPart") then
-  		      local distance = (character.HumanoidRootPart.Position - rigRootPart.Position).Magnitude
-  		      if distance < closestDistance then
-  		      closestDistance = distance
-  		      closestPlayer = player
-  		      print("Found a player at distance:", closestDistance)
-  		      end
-  	      end
+		local character = player.Character
+		if character and character:FindFirstChild("HumanoidRootPart") then
+			local distance = (character.HumanoidRootPart.Position - rigRootPart.Position).Magnitude
+			if distance < closestDistance then
+			closestDistance = distance
+			closestPlayer = player
+			print("Found a player at distance:", closestDistance)
+			end
+		end
     end
     return closestPlayer, closestDistance
 end
@@ -188,13 +188,13 @@ if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild(
    local rigRootPart = script.Parent:FindFirstChild("HumanoidRootPart")
    -- task.spawn(movement)
    while true do
-      local closestPlayer, closestDistance = getClosestPlayer(rigRootPart)
-      if closestPlayer and closestPlayer.Character then
-	 local playerRootPart = closestPlayer.Character:WaitForChild("HumanoidRootPart")
-	 if closestDistance <= targetDistance then
-	    moveToPlayer(playerRootPart, rigRootPart)
-	 end
-      end
-      task.wait(refreshRate)
+	local closestPlayer, closestDistance = getClosestPlayer(rigRootPart)
+	if closestPlayer and closestPlayer.Character then
+	   local playerRootPart = closestPlayer.Character:WaitForChild("HumanoidRootPart")
+	   if closestDistance <= targetDistance then
+	      moveToPlayer(playerRootPart, rigRootPart)
+	   end
+	end
+	task.wait(refreshRate)
    end
 end

@@ -17,11 +17,11 @@ local function onTouched(otherPart)
    local character = otherPart.Parent
    local humanoid = character:FindFirstChildWhichIsA("Humanoid")
    if humanoid then
-      local player = Players:GetPlayerFromCharacter(character)
-      if player then
-	local hrp = character:FindFirstChildWhichIsA("HumanoidRootPart")
-	hrp.Position = Vector3.new(math.random(1, teleportRange), 50, math.random(1, teleportRange))
-      end
+	local player = Players:GetPlayerFromCharacter(character)
+	if player then
+	  local hrp = character:FindFirstChildWhichIsA("HumanoidRootPart")
+	  hrp.Position = Vector3.new(math.random(1, teleportRange), 50, math.random(1, teleportRange))
+	end
    end
 end
 
