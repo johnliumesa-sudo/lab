@@ -17,5 +17,5 @@ local function randomSpawn()
 end
 
 for i = 1, presentCount do
-    randomSpawn()
+    --randomSpawn()
 end
