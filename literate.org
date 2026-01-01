@@ -1889,7 +1889,7 @@ Defines internal behavior of toolstands.
 #+end_src
 ******** executions 
 #+begin_src lua
-  if script.parent.parent = portalsFolder then  
+  if script.parent.parent == portalsFolder then  
     script.Parent.Touched:Connect(onTouched)
   end
 #+end_src
@@ -2839,7 +2839,7 @@ Spawns the coins into the world.
 ******* code
 ******** variables
 #+begin_src lua
-    local present = game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Presents"):FindFirstChild("Part")
+    local present = game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Presents"):WaitForChild("Part")
     local presentScript = script.Parent:FindFirstChild("PresentScript")
     presentScript.Parent = present
     local presentsFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Presents")
@@ -2863,7 +2863,7 @@ Spawns the coins into the world.
 ******** executions
 #+begin_src lua
   for i = 1, presentCount do
-      --randomSpawn()
+      randomSpawn()
   end
 #+end_src
 ****** PresentScript
@@ -2992,13 +2992,18 @@ Defines internal behavior of toolstands.
 ******* code
 ******** variables
 #+begin_src lua
-  local frontWall = Instance.new("MeshPart")
+  local frontWall = Instance.new("Part")
   frontWall.Name = "frontWall"
+  frontWall.Size = Vector3.new(10,10,2)
+  frontWall.Position = Vector3.new(0,5,20)
   local wallFolder = Instance.new("Folder")
   wallFolder.Parent = game:GetService("Workspace")
   wallFolder.Name = "Walls"
   frontWall.Parent = wallFolder
   local wallpaper = Instance.new("Decal")
+  wallpaper.Texture = "http://www.roblox.com/asset/?id=5993087930"
+  wallpaper.Parent = frontWall
+  wallpaper.Face = Enum.NormalId.Front
 #+end_src
 ******** executions
 #+begin_src lua

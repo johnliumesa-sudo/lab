@@ -25,6 +25,6 @@ local function onTouched(otherPart)
    end
 end
 
-if script.parent.parent = portalsFolder then  
+if script.parent.parent == portalsFolder then  
   script.Parent.Touched:Connect(onTouched)
 end

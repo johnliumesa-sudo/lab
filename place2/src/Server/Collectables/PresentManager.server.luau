@@ -1,4 +1,4 @@
-local present = game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Presents"):FindFirstChild("Part")
+local present = game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Presents"):WaitForChild("Part")
 local presentScript = script.Parent:FindFirstChild("PresentScript")
 presentScript.Parent = present
 local presentsFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Presents")
@@ -17,5 +17,5 @@ local function randomSpawn()
 end
 
 for i = 1, presentCount do
-    --randomSpawn()
+    randomSpawn()
 end
