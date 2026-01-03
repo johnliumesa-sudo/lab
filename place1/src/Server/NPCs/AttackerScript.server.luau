@@ -118,7 +118,6 @@ local function createAttacker()
     local headMesh = Instance.new("SpecialMesh")
     headMesh.MeshType = Enum.MeshType.Head
     headMesh.Parent = head
-
     local weld_hrp_torso = Instance.new("WeldConstraint")
     weld_hrp_torso.Part0 = hrp
     weld_hrp_torso.Part1 = torso

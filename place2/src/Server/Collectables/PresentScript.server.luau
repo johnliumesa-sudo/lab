@@ -7,7 +7,6 @@ present.MeshId = "rbxassetid://13354760399"
 present.TextureId = "rbxassetid://13354760424"
 present.Scale = Vector3.new(0.3, 0.3, 0.3)
 local rotationRate = 3
-local tools = game:GetService("Workspace"):FindFirstChild("Tools")
 local Players = game:GetService("Players")
 local presentFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Presents")
 
@@ -35,10 +34,14 @@ local function onTouched(otherPart)
 	      humanoid.health = humanoid.MaxHealth
 	   end
 	end
+   elseif character:IsA("Part") or character:IsA("MeshPart") then
+      script.Parent.Anchored = true
    end
 end
 
 if script.Parent.Parent == presentFolder then
   script.Parent.Touched:Connect(onTouched)
-  game:GetService("RunService").Heartbeat:Connect(rotate)
+  task.wait(9)
+  script.Parent:Destroy()
+  --game:GetService("RunService").Heartbeat:Connect(rotate)
 end

@@ -44,7 +44,6 @@ end
 if script.Parent.Parent == cloakFolder then
    script.Parent.Equipped:Connect(onEquipped)
 end
-
 if script.Parent.Parent:IsA("Model") then
    local character = script.Parent.Parent
    script.Parent.Activated:Connect(onActivated(character))
