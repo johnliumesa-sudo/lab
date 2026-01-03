@@ -16,5 +16,5 @@ local function randomSpawn()
 end
 
 for i = 1, christmastreeCount do
-    randomSpawn()
+    --randomSpawn()
 end

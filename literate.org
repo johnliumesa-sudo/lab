@@ -1,8 +1,88 @@
 #+TITLE: Roblox Game Design Document
 #+AUTHOR: Aaron Liu
 #+DESCRIPTION: A master literate programming file for the Coin Collection game.
-
 * references
+** A.I. sentence generator
+*** PresentManager
+**** notes
+Spawns the coins into the world.
+**** code
+***** variables
+#+begin_src lua
+      local present = game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Presents"):WaitForChild("Part")
+      local presentScript = script.Parent:FindFirstChild("PresentScript")
+      presentScript.Parent = present
+      local presentsFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Presents")
+      local spawnRange = 48
+      local presentCount = 6
+      local holidaySentences = {"I'm only here for the cookies!", "Santa saw your search history.", "Error 404: Reindeer not found.", "Is it too late to be good?", "Keep your hands off my eggnog!", "I’m on the 'think about it' list.", "Fruitcake: the gift that keeps returning.", "Does this elf hat make me look tall?", "Rein-dear, please stop spawning!", "I’m dreaming of a white loading screen.", "My favorite color is Christmas lights.", "Sleigh my name, sleigh my name.", "Resting Grinch face mode engaged.", "100% chance of reindeer dropping.", "Santa’s reindeer ate my homework.", "I’m full of holiday 'spirits'.", "I like big bulbs and I cannot lie.", "All I want for Christmas is... pie.", "Naughty is the new nice.", "Sugar cookie levels: Critical.", "Elves made me do it.", "North Pole position: First place.", "Currently under seasonal construction.", "Yule be sorry if you miss this!", "Official cookie taster on duty.", "I put the 'ho' in holiday.", "Sleigh-ing the competition since December.", "Warning: High tinsel strength.", "Don't get your tinsel in a tangle.", "Jingle bells, Batman smells...", "Believe in your-elf.", "Ornamental but mostly accidental.", "Snow place like home.", "It’s beginning to look a lot like... lag.", "Rudolph’s nose is actually a LED.", "Frosty just got a brain freeze.", "Checking the list twice? Way too much work.", "I'm on the 'tried my best' list.", "Total mistletoe avoidance expert.", "Snow way I'm giving this back.", "Wrap it like it's hot.", "Up to snow good.", "Dear Santa, define 'good'.", "Gnome place like the North Pole.", "Gingerbread man: The original edible.", "Keep calm and carrot on (for Rudolph).", "Feeling pine, everything is fine.", "I'm only a morning person on Dec 25.", "Tangled in lights, send help.", "Candy cane addiction level: High.", "Snowman for hire: Cool guy only.", "Sleigh what?!", "May your pixels be merry and bright.", "Blame it on the eggnog.", "I'm snow bored without presents.", "Santa's helper (mostly just eats cookies).", "Let it snow... elsewhere.", "Bah humbug? No, bah hungry.", "Peppermint fueled game development.", "Holiday mode: Active. Brain: Offline.", "I’m just here for the loot.", "Don't shake the present!", "Fragile: Do not drop (unless it's coal).", "Coal is just pre-diamonds.", "Sweater weather is better weather.", "Spreading cheer and code errors.", "Is it Christmas yet? How about now?", "One more cookie won't hurt.", "Famous for my gingerbread destruction.", "Nutcracker: The original security system.", "Ice, ice, baby reindeer.", "Polar Express? More like Polar Local.", "I’ve got resting gift face.", "Wait, did I leave the oven on?", "Santa's sleigh has a better GPU.", "Snowball fight in progress!", "Chill out, it's Christmas.", "Hot cocoa: The universal battery.", "Elf on the shelf is watching you.", "Reindeer games? I prefer Roblox.", "Mistletoe: The ultimate trap.", "Sledding is just falling with style.", "Chimney delivery is so 1800s.", "Amazon Prime stole Santa’s job.", "I'm dreaming of a quiet server.", "Voted most likely to eat the decorations.", "Ugly sweater champion 2025.", "Spawning joy at 60 FPS.", "Merry Everything and Happy Always.", "Ho ho ho... whoops!", "Present presence is required.", "Stocking stuffer? More like stocking filler.", "I’m snow glad you’re here!", "Keep your friends close and presents closer.", "Santa needs a GPS upgrade.", "The Grinch called, he wants his look back.", "Is it a toy? Is it a bug?", "Merry Christmas, ya filthy animal!", "Look at all these chickens (reindeer).", "End of list. Happy Holidays!"}
+#+end_src
+***** functions
+****** applyRainbowText
+#+begin_src lua
+  local function applyRainbowText(sourceText)
+     local holidayColors = {
+        "rgb(255, 0, 0)",   -- Red
+        "rgb(0, 255, 0)",   -- Green
+        "rgb(255, 255, 255)", -- White
+        "rgb(255, 215, 0)", -- Gold
+        "rgb(0, 191, 255)"  -- Ice Blue
+     }
+     local richTextResult = ""
+     for word in string.gmatch(sourceText, "%S+") do
+        local randomColor = holidayColors[math.random(1, #holidayColors)]
+        -- Wrap the entire word in one color tag and add a space after
+        richTextResult ..= '<font color="' .. randomColor .. '">' .. word .. '</font> '
+     end
+     return richTextResult
+  end
+#+end_src
+****** createHolidayLabel
+#+begin_src lua
+  local function createHolidayLabel(parentPart)
+     local billboard = Instance.new("BillboardGui")
+     billboard.Name = "HolidayLabel"
+     billboard.Size = UDim2.new(0, 200, 0, 50)
+     billboard.Adornee = parentPart
+     billboard.AlwaysOnTop = true
+     billboard.ExtentsOffset = Vector3.new(0, 3, 0) -- Positioned above the present
+     billboard.Parent = parentPart
+     local label = Instance.new("TextLabel")
+     label.Size = UDim2.new(1, 0, 1, 0)
+     label.BackgroundTransparency = 1
+     label.TextColor3 = Color3.new(1, 1, 1) -- White text
+     label.TextStrokeTransparency = 0 -- Black outline for readability
+     label.Font = Enum.Font.LuckiestGuy
+     label.TextSize = 15
+     -- Pick a random sentence
+     label.Parent = billboard
+     label.TextWrapped = true -- Ensure sentences don't cut off
+     label.RichText = true
+     local rawSentence = holidaySentences[math.random(1, #holidaySentences)]
+     label.Text = applyRainbowText(rawSentence)
+     return billboard
+  end
+#+end_src
+****** randomSpawn
+#+begin_src lua
+  local function randomSpawn()
+    local xpos = math.random (-spawnRange, spawnRange)
+    local zpos = math.random (-spawnRange, spawnRange)
+    local ypos = 3
+    local present = game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Presents"):WaitForChild("Part")
+    local presentClone = present:Clone()
+    presentClone.Parent = presentsFolder
+    presentClone.Position = Vector3.new(xpos,ypos,zpos)
+    createHolidayLabel(presentClone)
+    return
+  end
+#+end_src
+***** executions
+#+begin_src lua
+  for i = 1, presentCount do
+     randomSpawn()
+  end
+#+end_src
 ** store manager
 *** variables 
 #+begin_src lua
@@ -359,7 +439,6 @@
       task.wait(refreshRate)
   end
 #+end_src
-
 ** attackers
 *** AttackerManager
 :properties:
@@ -453,7 +532,6 @@ local StartingPosition = Vector3.new(0, 5, 0)
       local headMesh = Instance.new("SpecialMesh")
       headMesh.MeshType = Enum.MeshType.Head
       headMesh.Parent = head
-
       local weld_hrp_torso = Instance.new("WeldConstraint")
       weld_hrp_torso.Part0 = hrp
       weld_hrp_torso.Part1 = torso
@@ -645,18 +723,15 @@ end
   local players = game:GetService("Players")
   local debris = game:GetService("Debris")
   local runService = game:GetService("RunService")
-
   local damageValues = {
      baseDamage = 5,
      slashDamage = 10,
      lungeDamage = 30,
   }
-
   local animations = {
      R15Slash = 522635514,     
      R15Lunge = 522638767,
   }
-
   local damage = damageValues.baseDamage
   local grips = {
      Up = CFrame.new(0, 0, -1.7, 0, 0, 1, 1, 0, 0, 0, 1, 0),
@@ -731,9 +806,7 @@ end
 :properties:
 :END:
 ****** notes
-
 Constructs a door frame and a door part, connects them with a HingeConstraint set to Servo mode, and injects the interaction script.
-
 ****** code
 ******* variables
 #+begin_src lua
@@ -770,7 +843,6 @@ Constructs a door frame and a door part, connects them with a HingeConstraint se
      door.Anchored = false -- MUST be unanchored to move
      door.CanCollide = true
      door.Parent = model
-
      -- 3. Create Attachments
      -- Attachment 0 goes on Frame
      local att0 = Instance.new("Attachment")
@@ -778,14 +850,12 @@ Constructs a door frame and a door part, connects them with a HingeConstraint se
      att0.Parent = frame
      -- Center of the frame post
      att0.Position = Vector3.new(frame.Size.X/2, 0, 0) 
-
      -- Attachment 1 goes on Door
      local att1 = Instance.new("Attachment")
      att1.Name = "HingeAttachment1"
      att1.Parent = door
      -- Edge of the door
      att1.Position = Vector3.new(-door.Size.X/2, 0, 0)
-
      -- 4. Create HingeConstraint
      local hinge = Instance.new("HingeConstraint")
      hinge.Parent = model
@@ -801,12 +871,10 @@ Constructs a door frame and a door part, connects them with a HingeConstraint se
      prompt.ObjectText = "Door"
      prompt.ActionText = "Open"
      prompt.Parent = door
-
      local scriptClone = doorScript:Clone()
      scriptClone.Parent = model -- Script goes in the model to find door and prompt easier
   end
 #+end_src
-
 ******* executions
 #+begin_src lua
   -- Spawn a test door at a specific location
@@ -816,9 +884,7 @@ Constructs a door frame and a door part, connects them with a HingeConstraint se
 :properties:
 :END:
 ****** notes
-
 Handles the ProximityPrompt trigger to toggle the HingeConstraint's TargetAngle.
-
 ****** code
 ******* variables
 #+begin_src lua
@@ -896,7 +962,6 @@ prompt.Triggered:Connect(toggleDoor)
 		  task.wait(60)
 	  end
   end
-
 #+end_src
 * source
 ** place1
@@ -1180,7 +1245,6 @@ FIXED LOGIC: This script builds the NPC body on the existing model (script.Paren
       local headMesh = Instance.new("SpecialMesh")
       headMesh.MeshType = Enum.MeshType.Head
       headMesh.Parent = head
-
       local weld_hrp_torso = Instance.new("WeldConstraint")
       weld_hrp_torso.Part0 = hrp
       weld_hrp_torso.Part1 = torso
@@ -1529,7 +1593,6 @@ Defines attacker behavior, creation, and logic.
       local headMesh = Instance.new("SpecialMesh")
       headMesh.MeshType = Enum.MeshType.Head
       headMesh.Parent = head
-
       local weld_hrp_torso = Instance.new("WeldConstraint")
       weld_hrp_torso.Part0 = hrp
       weld_hrp_torso.Part1 = torso
@@ -2295,7 +2358,6 @@ Defines individual gravity coil behavior. Handle is a mesh part but it has to ha
   if script.Parent.Parent == cloakFolder then
      script.Parent.Equipped:Connect(onEquipped)
   end
-
   if script.Parent.Parent:IsA("Model") then
      local character = script.Parent.Parent
      script.Parent.Activated:Connect(onActivated(character))
@@ -2822,10 +2884,6 @@ Handles client-side logic, including listening for dialog selections, notifying 
   }
 } 
 #+end_src
-
-
-
-
 ** place2
 *** server
 **** collectibles
@@ -2835,17 +2893,36 @@ Handles client-side logic, including listening for dialog selections, notifying 
 :header-args:lua: :tangle ./place2/src/server/Collectables/PresentManager.server.luau
 :END:
 ******* notes
-Spawns the coins into the world.
+Modified to use a list of 100 holiday words. Implemented a "glow" effect using TweenService that pulsates each label's transparency and scale.
 ******* code
 ******** variables
 #+begin_src lua
-      local present = game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Presents"):WaitForChild("Part")
-      local presentScript = script.Parent:FindFirstChild("PresentScript")
-      presentScript.Parent = present
-      local presentsFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Presents")
-      local spawnRange = 48
-      local presentCount = 6
-      local holidayWords = {"Merry", "Jolly", "Peace", "Giving", "Cheer", "Bright", "Spirit", "Holiday"}
+  local TweenService = game:GetService("TweenService")
+  local ReplicatedStorage = game:GetService("ReplicatedStorage")
+  local Workspace = game:GetService("Workspace")
+  local present = ReplicatedStorage:WaitForChild("Collectables"):WaitForChild("Presents"):WaitForChild("Part")
+  local presentsFolder = Workspace:WaitForChild("Collectables"):WaitForChild("Presents")
+  local spawnRange = 48
+  local presentCount = 100 -- Updated to match the word list size
+  local holidayWords = {
+     "Snow", "Bell", "Star", "Gift", "Tree", "Deer", "Sled", "Noel", "Cold", "Home",
+     "Joy", "Hope", "Love", "Calm", "Kind", "Wish", "Yule", "Pine", "Fire", "Gold",
+     "Holly", "Merry", "Jolly", "Candy", "Cane", "Frost", "Santa", "Elves", "Sleigh", "Light",
+     "Winter", "Spirit", "Giving", "Cheer", "Bright", "Peace", "Praise", "Glory", "Wonder", "Magic",
+     "Gingy", "Baking", "Cookie", "Cocoa", "Coffee", "Snacks", "Feasting", "Family", "Friends", "Church",
+     "Chimney", "Stocking", "Reindeer", "Rudolph", "Dasher", "Dancer", "Prancer", "Vixen", "Comet", "Cupid",
+     "Donner", "Blitzen", "Workshop", "Northpole", "Icecap", "Glacier", "Iceberg", "Snowman", "Igloo", "Mittens",
+     "Scarf", "Jumper", "Sweater", "Blanket", "Earmuffs", "Tinsel", "Wreath", "Bauble", "Ornaments", "Garland",
+     "Carols", "Hymns", "Music", "Singing", "Dance", "Parties", "Games", "Laughter", "Smiling", "Hugger",
+     "Ribbon", "Wrappings", "Parcel", "Boxed", "Surprise", "Kindness", "Presents", "Holiday", "Tradition", "Believer"
+  }
+  local holidayColors = {
+     Color3.new(1, 0, 0),    -- Red
+     Color3.new(0, 1, 0),    -- Green
+     Color3.new(1, 1, 1),    -- White
+     Color3.new(1, 0.84, 0), -- Gold
+     Color3.new(0, 0.75, 1)  -- Ice Blue
+  }
 #+end_src
 ******** functions
 ********* createHolidayLabel
@@ -2853,42 +2930,57 @@ Spawns the coins into the world.
   local function createHolidayLabel(parentPart)
      local billboard = Instance.new("BillboardGui")
      billboard.Name = "HolidayLabel"
-     billboard.Size = UDim2.new(0, 200, 0, 50)
+     billboard.Size = UDim2.new(0, 150, 0, 50)
      billboard.Adornee = parentPart
      billboard.AlwaysOnTop = true
-     billboard.ExtentsOffset = Vector3.new(0, 3, 0) -- Positioned above the present
+     billboard.ExtentsOffset = Vector3.new(0, 3, 0)
      billboard.Parent = parentPart
      local label = Instance.new("TextLabel")
      label.Size = UDim2.new(1, 0, 1, 0)
      label.BackgroundTransparency = 1
-     label.TextColor3 = Color3.new(1, 1, 1) -- White text
-     label.TextStrokeTransparency = 0 -- Black outline for readability
      label.Font = Enum.Font.LuckiestGuy
-     label.TextSize = 24
-     -- Pick a random word
-     label.Text = holidayWords[math.random(1, #holidayWords)]
+     label.TextSize = 18
+     label.RichText = true
+     -- Set random word and random glowing color
+     local randomWord = holidayWords[math.random(1, #holidayWords)]
+     local chosenColor = holidayColors[math.random(1, #holidayColors)]
+     label.TextColor3 = chosenColor
+     label.TextStrokeColor3 = chosenColor -- Matching stroke for the glow effect
+     label.TextStrokeTransparency = 0.5
+     label.Text = randomWord
      label.Parent = billboard
+     -- Create the Glow Animation
+     local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
+     local goal = {
+        TextStrokeTransparency = 0,
+        TextSize = 24
+     }
+     local tween = TweenService:Create(label, tweenInfo, goal)
+     tween:Play()
      return billboard
   end
 #+end_src
 ********* randomSpawn
 #+begin_src lua
   local function randomSpawn()
-    local xpos = math.random (-spawnRange, spawnRange)
-    local zpos = math.random (-spawnRange, spawnRange)
-    local ypos = 3
-    local present = game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Presents"):WaitForChild("Part")
-    local presentClone = present:Clone()
-    presentClone.Parent = presentsFolder
-    presentClone.Position = Vector3.new(xpos,ypos,zpos)
-    createHolidayLabel(presentClone)
-    return
+     local xpos = math.random (-spawnRange, spawnRange)
+     local zpos = 20
+     local ypos = 40
+     local presentScript = script.Parent:FindFirstChild("PresentScript")
+     local presentClone = present:Clone()
+     local presentScriptClone = presentScript:Clone()
+     presentScriptClone.Parent = presentClone
+     presentClone.Parent = presentsFolder
+     presentClone.Position = Vector3.new(xpos, ypos, zpos)
+     presentClone.Anchored = false
+     createHolidayLabel(presentClone)
   end
 #+end_src
 ******** executions
 #+begin_src lua
   for i = 1, presentCount do
-      randomSpawn()
+     randomSpawn()
+     task.wait(3) -- Small delay to prevent frame drops during mass tweening
   end
 #+end_src
 ****** PresentScript
@@ -2925,29 +3017,33 @@ Defines individual coin behavior (rotate, touch, reward).
      local character = otherPart.Parent
      local humanoid = character:FindFirstChildWhichIsA("Humanoid")
      if humanoid then
-	local player = Players:GetPlayerFromCharacter(character)
-	if player then
-	   local leaderstats = player:WaitForChild("leaderstats")
-	   script.Parent:Destroy()
-	   if leaderstats.CoinCount.Value < 500 then
-	      if leaderstats.CoinCount.Value >= 10 then
-		 leaderstats.CoinCount.Value = leaderstats.CoinCount.Value*2
-		 humanoid.health += 25
-	      else
-		 leaderstats.CoinCount.Value += 50
-		 humanoid.health += 50	
-	      end		
-	   else	
-	      humanoid.health = humanoid.MaxHealth
-	   end
-	end
+  	local player = Players:GetPlayerFromCharacter(character)
+  	if player then
+  	   local leaderstats = player:WaitForChild("leaderstats")
+  	   script.Parent:Destroy()
+  	   if leaderstats.CoinCount.Value < 500 then
+  	      if leaderstats.CoinCount.Value >= 10 then
+  		 leaderstats.CoinCount.Value = leaderstats.CoinCount.Value*2
+  		 humanoid.health += 25
+  	      else
+  		 leaderstats.CoinCount.Value += 50
+  		 humanoid.health += 50	
+  	      end		
+  	   else	
+  	      humanoid.health = humanoid.MaxHealth
+  	   end
+  	end
+     elseif character:IsA("Part") or character:IsA("MeshPart") then
+        script.Parent.Anchored = true
      end
   end
 #+end_src
 ******** executions
 #+begin_src lua
   if script.Parent.Parent == presentFolder then
-    --script.Parent.Touched:Connect(onTouched)
+    script.Parent.Touched:Connect(onTouched)
+    task.wait(9)
+    script.Parent:Destroy()
     --game:GetService("RunService").Heartbeat:Connect(rotate)
   end
 #+end_src
@@ -3019,8 +3115,8 @@ Defines internal behavior of toolstands.
 #+begin_src lua
   local frontWall = Instance.new("Part")
   frontWall.Name = "frontWall"
-  frontWall.Size = Vector3.new(10,10,2)
-  frontWall.Position = Vector3.new(0,5,20)
+  frontWall.Size = Vector3.new(48,48,2)
+  frontWall.Position = Vector3.new(0,36,40)
   local wallFolder = Instance.new("Folder")
   wallFolder.Parent = game:GetService("Workspace")
   wallFolder.Name = "Walls"
@@ -3066,7 +3162,7 @@ Spawns the coins into the world.
 ******** executions
 #+begin_src lua
   for i = 1, christmastreeCount do
-      randomSpawn()
+      --randomSpawn()
   end
 #+end_src
 ****** ChristmasTreeScript
@@ -3193,7 +3289,3 @@ players.PlayerAdded:Connect(onPlayerSpawn)
   }
 } 
 #+end_src
-
-
-
-

@@ -34,10 +34,14 @@ local function onTouched(otherPart)
 	      humanoid.health = humanoid.MaxHealth
 	   end
 	end
+   elseif character:IsA("Part") or character:IsA("MeshPart") then
+      script.Parent.Anchored = true
    end
 end
 
 if script.Parent.Parent == presentFolder then
-  --script.Parent.Touched:Connect(onTouched)
+  script.Parent.Touched:Connect(onTouched)
+  task.wait(9)
+  script.Parent:Destroy()
   --game:GetService("RunService").Heartbeat:Connect(rotate)
 end
