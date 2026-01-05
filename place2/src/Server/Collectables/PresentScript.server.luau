@@ -14,7 +14,7 @@ local function rotate()
     script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
 end
 
-local function onTouched(otherPart)
+local function onTyped(otherPart)
    local character = otherPart.Parent
    local humanoid = character:FindFirstChildWhichIsA("Humanoid")
    if humanoid then
@@ -40,7 +40,6 @@ local function onTouched(otherPart)
 end
 
 if script.Parent.Parent == presentFolder then
-  script.Parent.Touched:Connect(onTouched)
   task.wait(9)
   script.Parent:Destroy()
   --game:GetService("RunService").Heartbeat:Connect(rotate)

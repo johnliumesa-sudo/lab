@@ -25,6 +25,25 @@ local holidayColors = {
    Color3.new(0, 0.75, 1)  -- Ice Blue
 }
 
+local WordEvent = game:GetService("ReplicatedStorage"):WaitForChild("EventFolder"):WaitForChild("WordEvent")
+local function onWordTyped(player, typedWord)
+   -- Loop through all spawned presents in the Workspace
+   for _, present in pairs(presentsFolder:GetChildren()) do
+      -- Compare typed text to the name assigned during createHolidayLabel
+      if present.Name:lower() == typedWord:lower() then
+	 -- Award points (using logic from your PresentScript)
+	 local leaderstats = player:FindFirstChild("leaderstats")
+	 if leaderstats then
+	    leaderstats.CoinCount.Value += 50
+	 end
+	 -- Visual feedback or simple destruction
+	 present:Destroy()
+	 print("Match found! Present " .. typedWord .. " collected by " .. player.Name)
+	 break -- Only destroy one match per type
+      end
+   end
+end
+
 local function createHolidayLabel(parentPart)
    local billboard = Instance.new("BillboardGui")
    billboard.Name = "HolidayLabel"
@@ -46,6 +65,7 @@ local function createHolidayLabel(parentPart)
    label.TextStrokeColor3 = chosenColor -- Matching stroke for the glow effect
    label.TextStrokeTransparency = 0.5
    label.Text = randomWord
+   parentPart.Name = label.Text
    label.Parent = billboard
    -- Create the Glow Animation
    local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
@@ -72,6 +92,7 @@ local function randomSpawn()
    createHolidayLabel(presentClone)
 end
 
+WordEvent.OnServerEvent:Connect(onWordTyped)
 for i = 1, presentCount do
    randomSpawn()
    task.wait(3) -- Small delay to prevent frame drops during mass tweening
