@@ -1,5 +1,5 @@
 local eventFolder = Instance.new("Folder")
-eventFolder.Name = "EventFolder123"
+eventFolder.Name = "Events"
 eventFolder.Parent = game:GetService("ReplicatedStorage")
 local event = Instance.new("RemoteEvent")
 event.Name = "WordEvent"

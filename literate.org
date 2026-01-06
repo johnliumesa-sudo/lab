@@ -2905,16 +2905,16 @@ Modified to use a list of 100 holiday words. Implemented a "glow" effect using T
   local spawnRange = 48
   local presentCount = 100 -- Updated to match the word list size
   local holidayWords = {
-     "Snow", "Bell", "Star", "Gift", "Tree", "Deer", "Sled", "Noel", "Cold", "Home",
-     "Joy", "Hope", "Love", "Calm", "Kind", "Wish", "Yule", "Pine", "Fire", "Gold",
-     "Holly", "Merry", "Jolly", "Candy", "Cane", "Frost", "Santa", "Elves", "Sleigh", "Light",
-     "Winter", "Spirit", "Giving", "Cheer", "Bright", "Peace", "Praise", "Glory", "Wonder", "Magic",
-     "Gingy", "Baking", "Cookie", "Cocoa", "Coffee", "Snacks", "Feasting", "Family", "Friends", "Church",
-     "Chimney", "Stocking", "Reindeer", "Rudolph", "Dasher", "Dancer", "Prancer", "Vixen", "Comet", "Cupid",
-     "Donner", "Blitzen", "Workshop", "Northpole", "Icecap", "Glacier", "Iceberg", "Snowman", "Igloo", "Mittens",
-     "Scarf", "Jumper", "Sweater", "Blanket", "Earmuffs", "Tinsel", "Wreath", "Bauble", "Ornaments", "Garland",
-     "Carols", "Hymns", "Music", "Singing", "Dance", "Parties", "Games", "Laughter", "Smiling", "Hugger",
-     "Ribbon", "Wrappings", "Parcel", "Boxed", "Surprise", "Kindness", "Presents", "Holiday", "Tradition", "Believer"
+     "snow", "bell", "star", "gift", "tree", "deer", "sled", "noel", "cold", "home",
+     "joy", "hope", "love", "calm", "kind", "wish", "yule", "pine", "fire", "gold",
+     "holly", "merry", "jolly", "candy", "cane", "frost", "santa", "elves", "sleigh", "light",
+     "winter", "spirit", "giving", "cheer", "bright", "peace", "praise", "glory", "wonder", "magic",
+     "gingy", "baking", "cookie", "cocoa", "coffee", "snacks", "feasting", "family", "friends", "church",
+     "chimney", "stocking", "reindeer", "rudolph", "dasher", "dancer", "prancer", "vixen", "comet", "cupid",
+     "donner", "blitzen", "workshop", "northpole", "icecap", "glacier", "iceberg", "snowman", "igloo", "mittens",
+     "scarf", "jumper", "sweater", "blanket", "earmuffs", "tinsel", "wreath", "bauble", "ornaments", "garland",
+     "carols", "hymns", "music", "singing", "dance", "parties", "games", "laughter", "smiling", "hugger",
+     "ribbon", "wrappings", "parcel", "boxed", "surprise", "kindness", "presents", "holiday", "tradition", "believer"
   }
   local holidayColors = {
      Color3.new(1, 0, 0),    -- Red
@@ -2927,7 +2927,7 @@ Modified to use a list of 100 holiday words. Implemented a "glow" effect using T
 ******** functions
 ********* onWordTyped
 #+begin_src lua
-  local WordEvent = game:GetService("ReplicatedStorage"):WaitForChild("EventFolder"):WaitForChild("WordEvent")
+  local WordEvent = game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("WordEvent")
   local function onWordTyped(player, typedWord)
      -- Loop through all spawned presents in the Workspace
      for _, present in pairs(presentsFolder:GetChildren()) do
@@ -3230,7 +3230,7 @@ Modified to use a list of 100 holiday words. Implemented a "glow" effect using T
 ******** variables
 #+begin_src lua
   local eventFolder = Instance.new("Folder")
-  eventFolder.Name = "EventFolder123"
+  eventFolder.Name = "Events"
   eventFolder.Parent = game:GetService("ReplicatedStorage")
   local event = Instance.new("RemoteEvent")
   event.Name = "WordEvent"
@@ -3239,41 +3239,6 @@ Modified to use a list of 100 holiday words. Implemented a "glow" effect using T
 ******** functions
 ******** executions
 **** ui
-***** TypingClient
-:properties:
-:header-args:lua: :tangle ./place2/src/server/UI/TypingClient.client.luau
-:END:
-******* notes
-Captures the TextBox input and fires the event.
-******* code
-******** variables
-#+begin_src lua
-  local player = game:GetService("Players").LocalPlayer
-  local WordEvent = game:GetService("ReplicatedStorage"):WaitForChild("WordEvent")
-  -- Create basic UI via script to keep file count low
-  local sg = Instance.new("ScreenGui", player.PlayerGui)
-  local frame = instance.new("Frame")
-  frame.BackgroundColor3 = color3.new(0.152941, 0.784313, 0.117647)
-  frame.Size - UDim2.new(0, 500, 0, 50)
-  frame.Position = UDim2.new(0.5, -150, 0.8, 0)
-  frame.Parent = sg
-  local tb = Instance.new("TextBox", sg)
-  tb.Size = UDim2.new(0, 300, 0, 50)
-  tb.Position = UDim2.new(0.5, -150, 0.8, 0)
-  tb.PlaceholderText = "Type the holiday words here..."
-  tb.ClearTextOnFocus = true
-  tb.Parent = frame
-#+end_src
-******** executions
-#+begin_src lua
-tb.FocusLost:Connect(function(enterPressed)
-if enterPressed and #tb.Text > 0 then
-WordEvent:FireServer(tb.Text)
-tb.Text = "" -- Reset box
-tb:CaptureFocus() -- Keep typing for fast gameplay
-end
-end)
-#+end_src
 ***** leaderboard
 ****** LeaderboardManager
 :properties:
@@ -3305,6 +3270,42 @@ players.PlayerAdded:Connect(onPlayerSpawn)
 #+end_src
 *** client 
 **** player 
+***** typing 
+****** TypingManager
+:properties:
+:header-args:lua: :tangle ./place2/src/client/Typing.client.luau
+:END:
+******* notes
+Captures the TextBox input and fires the event.
+******* code
+******** variables
+#+begin_src lua
+  local player = game:GetService("Players").LocalPlayer
+  local WordEvent = game:GetService("ReplicatedStorage"):FindFirstChild("Events"):WaitForChild("WordEvent")
+  -- Create basic UI via script to keep file count low
+  local sg = Instance.new("ScreenGui", player.PlayerGui)
+  local frame = Instance.new("Frame")
+  frame.BackgroundColor3 = Color3.new(0.152941, 0.784313, 0.117647)
+  frame.Size = UDim2.new(0, 500, 0, 50)
+  frame.Position = UDim2.new(0.5, -150, 0.8, 0)
+  frame.Parent = sg
+  local tb = Instance.new("TextBox", sg)
+  tb.Size = UDim2.new(0, 300, 0, 50)
+  tb.Position = UDim2.new(0.5, -150, 0.8, 0)
+  tb.PlaceholderText = "Type the holiday words here..."
+  tb.ClearTextOnFocus = true
+  tb.Parent = frame
+#+end_src
+******** executions
+#+begin_src lua
+  tb.FocusLost:Connect(function(enterPressed)
+        if enterPressed and #tb.Text > 0 then
+  	 WordEvent:FireServer(tb.Text)
+  	 tb.Text = "" -- Reset box
+  	 tb:CaptureFocus() -- Keep typing for fast gameplay
+        end
+  end)
+#+end_src
 *** rojo
 **** default.project
 :properties:

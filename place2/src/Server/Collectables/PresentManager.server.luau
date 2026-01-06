@@ -6,16 +6,16 @@ local presentsFolder = Workspace:WaitForChild("Collectables"):WaitForChild("Pres
 local spawnRange = 48
 local presentCount = 100 -- Updated to match the word list size
 local holidayWords = {
-   "Snow", "Bell", "Star", "Gift", "Tree", "Deer", "Sled", "Noel", "Cold", "Home",
-   "Joy", "Hope", "Love", "Calm", "Kind", "Wish", "Yule", "Pine", "Fire", "Gold",
-   "Holly", "Merry", "Jolly", "Candy", "Cane", "Frost", "Santa", "Elves", "Sleigh", "Light",
-   "Winter", "Spirit", "Giving", "Cheer", "Bright", "Peace", "Praise", "Glory", "Wonder", "Magic",
-   "Gingy", "Baking", "Cookie", "Cocoa", "Coffee", "Snacks", "Feasting", "Family", "Friends", "Church",
-   "Chimney", "Stocking", "Reindeer", "Rudolph", "Dasher", "Dancer", "Prancer", "Vixen", "Comet", "Cupid",
-   "Donner", "Blitzen", "Workshop", "Northpole", "Icecap", "Glacier", "Iceberg", "Snowman", "Igloo", "Mittens",
-   "Scarf", "Jumper", "Sweater", "Blanket", "Earmuffs", "Tinsel", "Wreath", "Bauble", "Ornaments", "Garland",
-   "Carols", "Hymns", "Music", "Singing", "Dance", "Parties", "Games", "Laughter", "Smiling", "Hugger",
-   "Ribbon", "Wrappings", "Parcel", "Boxed", "Surprise", "Kindness", "Presents", "Holiday", "Tradition", "Believer"
+   "snow", "bell", "star", "gift", "tree", "deer", "sled", "noel", "cold", "home",
+   "joy", "hope", "love", "calm", "kind", "wish", "yule", "pine", "fire", "gold",
+   "holly", "merry", "jolly", "candy", "cane", "frost", "santa", "elves", "sleigh", "light",
+   "winter", "spirit", "giving", "cheer", "bright", "peace", "praise", "glory", "wonder", "magic",
+   "gingy", "baking", "cookie", "cocoa", "coffee", "snacks", "feasting", "family", "friends", "church",
+   "chimney", "stocking", "reindeer", "rudolph", "dasher", "dancer", "prancer", "vixen", "comet", "cupid",
+   "donner", "blitzen", "workshop", "northpole", "icecap", "glacier", "iceberg", "snowman", "igloo", "mittens",
+   "scarf", "jumper", "sweater", "blanket", "earmuffs", "tinsel", "wreath", "bauble", "ornaments", "garland",
+   "carols", "hymns", "music", "singing", "dance", "parties", "games", "laughter", "smiling", "hugger",
+   "ribbon", "wrappings", "parcel", "boxed", "surprise", "kindness", "presents", "holiday", "tradition", "believer"
 }
 local holidayColors = {
    Color3.new(1, 0, 0),    -- Red
@@ -25,7 +25,7 @@ local holidayColors = {
    Color3.new(0, 0.75, 1)  -- Ice Blue
 }
 
-local WordEvent = game:GetService("ReplicatedStorage"):WaitForChild("EventFolder"):WaitForChild("WordEvent")
+local WordEvent = game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("WordEvent")
 local function onWordTyped(player, typedWord)
    -- Loop through all spawned presents in the Workspace
    for _, present in pairs(presentsFolder:GetChildren()) do
