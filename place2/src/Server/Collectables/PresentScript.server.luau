@@ -40,7 +40,7 @@ local function onTyped(otherPart)
 end
 
 if script.Parent.Parent == presentFolder then
-  task.wait(9)
+  task.wait(15)
   script.Parent:Destroy()
   --game:GetService("RunService").Heartbeat:Connect(rotate)
 end

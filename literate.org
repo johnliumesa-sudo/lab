@@ -2959,8 +2959,8 @@ Modified to use a list of 100 holiday words. Implemented a "glow" effect using T
      local label = Instance.new("TextLabel")
      label.Size = UDim2.new(1, 0, 1, 0)
      label.BackgroundTransparency = 1
-     label.Font = Enum.Font.LuckiestGuy
-     label.TextSize = 18
+     label.Font = Enum.Font.Arimo
+     label.TextSize = 12
      label.RichText = true
      -- Set random word and random glowing color
      local randomWord = holidayWords[math.random(1, #holidayWords)]
@@ -3064,7 +3064,7 @@ Defines individual coin behavior (rotate, touch, reward).
 ******** executions
 #+begin_src lua
   if script.Parent.Parent == presentFolder then
-    task.wait(9)
+    task.wait(15)
     script.Parent:Destroy()
     --game:GetService("RunService").Heartbeat:Connect(rotate)
   end
@@ -3089,15 +3089,9 @@ Defines internal behavior of toolstands.
   texture:Destroy()
 #+end_src
 ******** functions 
-********* rotate
-#+begin_src lua
-  local function rotate()
-     baseplate.CFrame *= CFrame.Angles(0, 0.005, 0)
-  end
-#+end_src
 ******** executions 
 #+begin_src lua
-  game:GetService("RunService").Heartbeat:Connect(rotate)
+  --game:GetService("RunService").Heartbeat:Connect(rotate)
 #+end_src
 ***** music
 ****** MusicScript
@@ -3298,12 +3292,14 @@ Captures the TextBox input and fires the event.
 #+end_src
 ******** executions
 #+begin_src lua
-  tb.FocusLost:Connect(function(enterPressed)
-        if enterPressed and #tb.Text > 0 then
-  	 WordEvent:FireServer(tb.Text)
-  	 tb.Text = "" -- Reset box
-  	 tb:CaptureFocus() -- Keep typing for fast gameplay
-        end
+  tb.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Keyboard then
+	    if input.KeyCode == Enum.KeyCode.Return then
+	WordEvent:FireServer(player, tb.Text)
+	tb.Text = "" -- Reset box
+	tb:CaptureFocus() -- Keep typing for fast gameplay
+	end
+    end
   end)
 #+end_src
 *** rojo

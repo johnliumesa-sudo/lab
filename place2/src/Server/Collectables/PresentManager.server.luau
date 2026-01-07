@@ -55,8 +55,8 @@ local function createHolidayLabel(parentPart)
    local label = Instance.new("TextLabel")
    label.Size = UDim2.new(1, 0, 1, 0)
    label.BackgroundTransparency = 1
-   label.Font = Enum.Font.LuckiestGuy
-   label.TextSize = 18
+   label.Font = Enum.Font.Arimo
+   label.TextSize = 12
    label.RichText = true
    -- Set random word and random glowing color
    local randomWord = holidayWords[math.random(1, #holidayWords)]

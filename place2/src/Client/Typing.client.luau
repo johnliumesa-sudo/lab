@@ -14,10 +14,12 @@ tb.PlaceholderText = "Type the holiday words here..."
 tb.ClearTextOnFocus = true
 tb.Parent = frame
 
-tb.FocusLost:Connect(function(enterPressed)
-      if enterPressed and #tb.Text > 0 then
-	 WordEvent:FireServer(tb.Text)
-	 tb.Text = "" -- Reset box
-	 tb:CaptureFocus() -- Keep typing for fast gameplay
-      end
+tb.InputBegan:Connect(function(input)
+  if input.UserInputType == Enum.UserInputType.Keyboard then
+	    if input.KeyCode == Enum.KeyCode.Return then
+	WordEvent:FireServer(player, tb.Text)
+	tb.Text = "" -- Reset box
+	tb:CaptureFocus() -- Keep typing for fast gameplay
+	end
+  end
 end)
