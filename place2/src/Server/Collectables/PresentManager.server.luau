@@ -80,7 +80,7 @@ end
 
 local function randomSpawn()
    local xpos = math.random (-spawnRange, spawnRange)
-   local zpos = 20
+   local zpos = -20
    local ypos = 40
    local presentScript = script.Parent:FindFirstChild("PresentScript")
    local presentClone = present:Clone()
