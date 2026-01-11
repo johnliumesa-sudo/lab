@@ -4,4 +4,8 @@ baseplate.Color = Color3.new(0, 0.7, 0)
 local texture = baseplate:WaitForChild("Texture")
 texture:Destroy()
 
---game:GetService("RunService").Heartbeat:Connect(rotate)
+local function rotate()
+   baseplate.CFrame *= CFrame.Angles(0, 0.005, 0)
+end
+
+game:GetService("RunService").Heartbeat:Connect(rotate)
