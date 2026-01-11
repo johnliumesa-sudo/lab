@@ -55,8 +55,8 @@ local function createHolidayLabel(parentPart)
    local label = Instance.new("TextLabel")
    label.Size = UDim2.new(1, 0, 1, 0)
    label.BackgroundTransparency = 1
-   label.Font = Enum.Font.Arimo
-   label.TextSize = 12
+   label.Font = Enum.Font.LuckiestGuy
+   label.TextSize = 18
    label.RichText = true
    -- Set random word and random glowing color
    local randomWord = holidayWords[math.random(1, #holidayWords)]
@@ -80,7 +80,7 @@ end
 
 local function randomSpawn()
    local xpos = math.random (-spawnRange, spawnRange)
-   local zpos = -20
+   local zpos = 20
    local ypos = 40
    local presentScript = script.Parent:FindFirstChild("PresentScript")
    local presentClone = present:Clone()
