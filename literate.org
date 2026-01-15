@@ -2959,7 +2959,7 @@ Modified to use a list of 100 holiday words. Implemented a "glow" effect using T
      local label = Instance.new("TextLabel")
      label.Size = UDim2.new(1, 0, 1, 0)
      label.BackgroundTransparency = 1
-     label.Font = Enum.Font.LuckiestGuy
+     label.Font = Enum.Font.Arimo
      label.TextSize = 18
      label.RichText = true
      -- Set random word and random glowing color
@@ -2986,7 +2986,7 @@ Modified to use a list of 100 holiday words. Implemented a "glow" effect using T
 #+begin_src lua
   local function randomSpawn()
      local xpos = math.random (-spawnRange, spawnRange)
-     local zpos = 20
+     local zpos = -20
      local ypos = 40
      local presentScript = script.Parent:FindFirstChild("PresentScript")
      local presentClone = present:Clone()
@@ -3126,8 +3126,8 @@ Defines internal behavior of toolstands.
 #+begin_src lua
   local frontWall = Instance.new("Part")
   frontWall.Name = "frontWall"
-  frontWall.Size = Vector3.new(48,48,2)
-  frontWall.Position = Vector3.new(0,36,40)
+  frontWall.Size = Vector3.new(88,88,2)
+  frontWall.Position = Vector3.new(0,-36,40)
   local wallFolder = Instance.new("Folder")
   wallFolder.Parent = game:GetService("Workspace")
   wallFolder.Name = "Walls"
@@ -3243,15 +3243,23 @@ local players = game:GetService("Players")
 ******** functions
 ********* onPlayerSpawn
 #+begin_src lua
-local function onPlayerSpawn(player)
-local leaderstats = Instance.new("Folder")
-leaderstats.Name = "leaderstats"
-leaderstats.Parent = player
-local coinCount = Instance.new("IntValue")
-coinCount.Name = "CoinCount"
-coinCount.Parent = leaderstats
-coinCount.Value = 0
-end
+  local function onPlayerSpawn(player)
+      local leaderstats = Instance.new("Folder")
+      leaderstats.Name = "leaderstats"
+      leaderstats.Parent = player
+      local coinCount = Instance.new("IntValue")
+      coinCount.Name = "CoinCount"
+      coinCount.Parent = leaderstats
+      coinCount.Value = 0
+      -- Minimal Scripting: Toggle transparency on spawn
+	player.CharacterAdded:Connect(function(char)
+		for _, part in pairs(char:GetDescendants()) do
+		    if part:IsA("BasePart") or part:IsA("Decal") then
+			part.Transparency = 1
+		    end
+		end
+	end)
+  end
 #+end_src
 ******** executions
 #+begin_src lua
@@ -3271,7 +3279,7 @@ Captures the TextBox input and fires the event.
 #+begin_src lua
     local player = game:GetService("Players").LocalPlayer
     local WordEvent = game:GetService("ReplicatedStorage"):FindFirstChild("Events"):WaitForChild("WordEvent")
-    player.CameraMode = Enum.CameraMode.LockFirstPerson
+    --player.CameraMode = Enum.CameraMode.LockFirstPerson
     -- Create basic UI via script to keep file count low
     local ContextActionService = game:GetService("ContextActionService")
     local UserInputService = game:GetService("UserInputService")
@@ -3305,37 +3313,30 @@ Captures the TextBox input and fires the event.
 ******** executions
 #+begin_src lua
     -- Disable Mouse/Clicking Logic
-    ContextActionService:BindAction(
-        "DisableMouse",
-        sinkInput,
-        false,
-        Enum.UserInputType.MouseButton1,
-        Enum.UserInputType.MouseButton2,
-        Enum.UserInputType.Touch,
-        Enum.UserInputType.MouseWheel
-    )
+	ContextActionService:BindAction(
+	    "DisableMouse",
+	    sinkInput,
+	    false,
+	    Enum.UserInputType.MouseButton1,
+	    Enum.UserInputType.MouseButton2,
+	    Enum.UserInputType.Touch,
+	    Enum.UserInputType.MouseWheel,
+	    Enum.UserInputType.MouseMovement
+	)
     -- Input handler
-    tb.InputEnded:Connect(function(input)
-  	  if input.UserInputType == Enum.UserInputType.Keyboard then
-  	      if input.KeyCode == Enum.KeyCode.Return then
-  		  WordEvent:FireServer(tb.Text)
-  		  tb.Text = "" -- Reset box
-  		  tb:CaptureFocus() -- Keep typing for fast gameplay
-  	      else
-  		  return
-  	      end
-  	  else
-  	      return
-  	  end
-    end)
-    -- Re-Captures the focus  
-    task.wait(0.5) -- give the ui a moment to parent properly
-    tb:CaptureFocus()
-    tb.FocusLost:Connect(function(enterPressed)
-  	  task.defer(function()
-  		  tb:CaptureFocus()
-  	  end)
-    end)	
+	tb.InputEnded:Connect(function(input)
+	    if input.UserInputType == Enum.UserInputType.Keyboard then
+		if input.KeyCode == Enum.KeyCode.Return then
+		    WordEvent:FireServer(tb.Text)
+		    tb.Text = "" -- Reset box
+		    tb:CaptureFocus() -- Keep typing for fast gameplay
+		else
+		    return
+		end
+	    else
+		return
+	    end
+	end)
 #+end_src
 *** rojo
 **** default.project

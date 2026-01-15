@@ -1,7 +1,7 @@
 local frontWall = Instance.new("Part")
 frontWall.Name = "frontWall"
-frontWall.Size = Vector3.new(48,48,2)
-frontWall.Position = Vector3.new(0,36,40)
+frontWall.Size = Vector3.new(88,88,2)
+frontWall.Position = Vector3.new(0,-36,40)
 local wallFolder = Instance.new("Folder")
 wallFolder.Parent = game:GetService("Workspace")
 wallFolder.Name = "Walls"

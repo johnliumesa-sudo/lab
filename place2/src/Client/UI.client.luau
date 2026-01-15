@@ -1,6 +1,6 @@
 local player = game:GetService("Players").LocalPlayer
 local WordEvent = game:GetService("ReplicatedStorage"):FindFirstChild("Events"):WaitForChild("WordEvent")
-player.CameraMode = Enum.CameraMode.LockFirstPerson
+--player.CameraMode = Enum.CameraMode.LockFirstPerson
 -- Create basic UI via script to keep file count low
 local ContextActionService = game:GetService("ContextActionService")
 local UserInputService = game:GetService("UserInputService")
@@ -30,34 +30,27 @@ local function sinkInput()
 end
 
 -- Disable Mouse/Clicking Logic
-ContextActionService:BindAction(
-    "DisableMouse",
-    sinkInput,
-    false,
-    Enum.UserInputType.MouseButton1,
-    Enum.UserInputType.MouseButton2,
-    Enum.UserInputType.Touch,
-    Enum.UserInputType.MouseWheel
-)
+	ContextActionService:BindAction(
+	    "DisableMouse",
+	    sinkInput,
+	    false,
+	    Enum.UserInputType.MouseButton1,
+	    Enum.UserInputType.MouseButton2,
+	    Enum.UserInputType.Touch,
+	    Enum.UserInputType.MouseWheel,
+	    Enum.UserInputType.MouseMovement
+	)
 -- Input handler
-tb.InputEnded:Connect(function(input)
-	  if input.UserInputType == Enum.UserInputType.Keyboard then
-	      if input.KeyCode == Enum.KeyCode.Return then
-		  WordEvent:FireServer(tb.Text)
-		  tb.Text = "" -- Reset box
-		  tb:CaptureFocus() -- Keep typing for fast gameplay
-	      else
-		  return
-	      end
-	  else
-	      return
-	  end
-end)
--- Re-Captures the focus  
-task.wait(0.5) -- give the ui a moment to parent properly
-tb:CaptureFocus()
-tb.FocusLost:Connect(function(enterPressed)
-	  task.defer(function()
-		  tb:CaptureFocus()
-	  end)
-end)
+	tb.InputEnded:Connect(function(input)
+	    if input.UserInputType == Enum.UserInputType.Keyboard then
+		if input.KeyCode == Enum.KeyCode.Return then
+		    WordEvent:FireServer(tb.Text)
+		    tb.Text = "" -- Reset box
+		    tb:CaptureFocus() -- Keep typing for fast gameplay
+		else
+		    return
+		end
+	    else
+		return
+	    end
+	end)
