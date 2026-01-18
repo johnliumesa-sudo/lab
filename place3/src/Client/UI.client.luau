@@ -30,27 +30,28 @@ local function sinkInput()
 end
 
 -- Disable Mouse/Clicking Logic
-	ContextActionService:BindAction(
-	    "DisableMouse",
-	    sinkInput,
-	    false,
-	    Enum.UserInputType.MouseButton1,
-	    Enum.UserInputType.MouseButton2,
-	    Enum.UserInputType.Touch,
-	    Enum.UserInputType.MouseWheel,
-	    Enum.UserInputType.MouseMovement
-	)
+ContextActionService:BindAction(
+    "DisableMouse",
+    sinkInput,
+    false,
+    Enum.UserInputType.MouseButton1,
+    Enum.UserInputType.MouseButton2,
+    Enum.UserInputType.Touch,
+    Enum.UserInputType.MouseWheel,
+    Enum.UserInputType.MouseMovement
+)
 -- Input handler
-	tb.InputEnded:Connect(function(input)
-	    if input.UserInputType == Enum.UserInputType.Keyboard then
-		if input.KeyCode == Enum.KeyCode.Return then
-		    WordEvent:FireServer(tb.Text)
-		    tb.Text = "" -- Reset box
-		    tb:CaptureFocus() -- Keep typing for fast gameplay
-		else
-		    return
-		end
+tb:CaptureFocus() -- Keep typing for fast gameplay
+tb.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.Keyboard then
+	    if input.KeyCode == Enum.KeyCode.Return then
+		WordEvent:FireServer(tb.Text)
+		tb.Text = "" -- Reset box
+		tb:CaptureFocus() -- Keep typing for fast gameplay
 	    else
 		return
 	    end
-	end)
+	else
+	    return
+	end
+end)

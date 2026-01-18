@@ -6,14 +6,23 @@ local itemsFolder = Workspace:WaitForChild("Collectables"):WaitForChild("Items")
 local spawnRange = 48
 local itemCount = 10 -- Updated to match the word list size
 local Words = {
-    "Ascend", "Cabelas", "Nitro", "Tracker", "Tahoe", "Mako", "Ranger", "Triton", "SunTracker", "Regency", "WhiteRiver", "JohnnyMorris", "BassPro", "RedHead", "WorldWideSpec", "NaturalReflections", "BobbieGarland", "BassBuggie", "FishinBarge", "PartyBarge", "ProQualifier", "CarbonLite", "Extreme", "BionicBlade", "MicroLite", "TourneySpecial", "GoldSeries", "Platinum", "MegaCast", "Stratos", "UncleBucks", "XPS", "Holographic", "LazerEye", "SpeedShad", "TheEgg", "SquirminWorm", "StikO", "FinesseWorm", "CrawChunk", "Zman", "StrikeKing", "Keitech", "Yamamoto", "Berkley", "AbuGarcia", "Penn", "Shimano", "Daiwa", "Lew’s", "Lowrance", "Garmin", "Humminbird", "MinnKota", "Motorguide", "PowerPole", "Talon", "BlackMarket", "Propel", "Vortex", "SheOutdoor", "Harkila", "Meindl", "Danner", "LaCrosse", "MuckBoot", "Rocky", "IrishSetter", "Merrell", "Columbia", "Thermacell", "YETI", "Blackstone", "CampChef", "Lodge", "BioLite", "Jetboil", "Osprey", "CamelBak", "Petzl", "Gulp", "PowerBait", "Trilene", "Spiderwire", "Stren", "Seguar", "KVD", "BillDance", "JimmyHouston", "RolandMartin", "Carp", "Catfish", "Bass", "Walleye", "Trout", "Crappie", "Salmon", "Muskie", "Pike", "Snook"
+   "snow", "bell", "star", "gift", "tree", "deer", "sled", "noel", "cold", "home",
+   "joy", "hope", "love", "calm", "kind", "wish", "yule", "pine", "fire", "gold",
+   "holly", "merry", "jolly", "candy", "cane", "frost", "santa", "elves", "sleigh", "light",
+   "winter", "spirit", "giving", "cheer", "bright", "peace", "praise", "glory", "wonder", "magic",
+   "gingy", "baking", "cookie", "cocoa", "coffee", "snacks", "feasting", "family", "friends", "church",
+   "chimney", "stocking", "reindeer", "rudolph", "dasher", "dancer", "prancer", "vixen", "comet", "cupid",
+   "donner", "blitzen", "workshop", "northpole", "icecap", "glacier", "iceberg", "snowman", "igloo", "mittens",
+   "scarf", "jumper", "sweater", "blanket", "earmuffs", "tinsel", "wreath", "bauble", "ornaments", "garland",
+   "carols", "hymns", "music", "singing", "dance", "parties", "games", "laughter", "smiling", "hugger",
+   "ribbon", "wrappings", "parcel", "boxed", "surprise", "kindness", "items", "tradition", "believer"
 }
 local Colors = {
-    Color3.new(1, 0, 0),    -- Red
-    Color3.new(0, 1, 0),    -- Green
-    Color3.new(1, 1, 1),    -- White
-    Color3.new(1, 0.84, 0), -- Gold
-    Color3.new(0, 0.75, 1)  -- Ice Blue
+   Color3.new(1, 0, 0),    -- Red
+   Color3.new(0, 1, 0),    -- Green
+   Color3.new(1, 1, 1),    -- White
+   Color3.new(1, 0.84, 0), -- Gold
+   Color3.new(0, 0.75, 1)  -- Ice Blue
 }
 
 local WordEvent = game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("WordEvent")

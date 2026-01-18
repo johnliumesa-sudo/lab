@@ -2887,24 +2887,24 @@ Handles client-side logic, including listening for dialog selections, notifying 
 ** place2
 *** server
 **** collectibles
-***** present
-****** PresentManager
+***** item
+****** ItemManager
 :properties:
-:header-args:lua: :tangle ./place2/src/server/Collectables/PresentManager.server.luau
+:header-args:lua: :tangle ./place2/src/server/Collectables/ItemManager.server.luau
 :END:
 ******* notes
-Modified to use a list of 100 holiday words. Implemented a "glow" effect using TweenService that pulsates each label's transparency and scale.
+Modified to use a list of 100  words. Implemented a "glow" effect using TweenService that pulsates each label's transparency and scale.
 ******* code
 ******** variables
 #+begin_src lua
   local TweenService = game:GetService("TweenService")
   local ReplicatedStorage = game:GetService("ReplicatedStorage")
   local Workspace = game:GetService("Workspace")
-  local present = ReplicatedStorage:WaitForChild("Collectables"):WaitForChild("Presents"):WaitForChild("Part")
-  local presentsFolder = Workspace:WaitForChild("Collectables"):WaitForChild("Presents")
+  local item = ReplicatedStorage:WaitForChild("Collectables"):WaitForChild("Items"):WaitForChild("Part")
+  local itemsFolder = Workspace:WaitForChild("Collectables"):WaitForChild("Items")
   local spawnRange = 48
-  local presentCount = 100 -- Updated to match the word list size
-  local holidayWords = {
+  local itemCount = 10 -- Updated to match the word list size
+  local Words = {
      "snow", "bell", "star", "gift", "tree", "deer", "sled", "noel", "cold", "home",
      "joy", "hope", "love", "calm", "kind", "wish", "yule", "pine", "fire", "gold",
      "holly", "merry", "jolly", "candy", "cane", "frost", "santa", "elves", "sleigh", "light",
@@ -2914,9 +2914,9 @@ Modified to use a list of 100 holiday words. Implemented a "glow" effect using T
      "donner", "blitzen", "workshop", "northpole", "icecap", "glacier", "iceberg", "snowman", "igloo", "mittens",
      "scarf", "jumper", "sweater", "blanket", "earmuffs", "tinsel", "wreath", "bauble", "ornaments", "garland",
      "carols", "hymns", "music", "singing", "dance", "parties", "games", "laughter", "smiling", "hugger",
-     "ribbon", "wrappings", "parcel", "boxed", "surprise", "kindness", "presents", "holiday", "tradition", "believer"
+     "ribbon", "wrappings", "parcel", "boxed", "surprise", "kindness", "items", "tradition", "believer"
   }
-  local holidayColors = {
+  local Colors = {
      Color3.new(1, 0, 0),    -- Red
      Color3.new(0, 1, 0),    -- Green
      Color3.new(1, 1, 1),    -- White
@@ -2929,28 +2929,28 @@ Modified to use a list of 100 holiday words. Implemented a "glow" effect using T
 #+begin_src lua
   local WordEvent = game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("WordEvent")
   local function onWordTyped(player, typedWord)
-     -- Loop through all spawned presents in the Workspace
-     for _, present in pairs(presentsFolder:GetChildren()) do
-        -- Compare typed text to the name assigned during createHolidayLabel
-        if present.Name:lower() == typedWord:lower() then
-  	 -- Award points (using logic from your PresentScript)
+     -- Loop through all spawned items in the Workspace
+     for _, item in pairs(itemsFolder:GetChildren()) do
+        -- Compare typed text to the name assigned during createLabel
+        if item.Name:lower() == typedWord:lower() then
+  	 -- Award points (using logic from your ItemScript)
   	 local leaderstats = player:FindFirstChild("leaderstats")
   	 if leaderstats then
   	    leaderstats.CoinCount.Value += 50
   	 end
   	 -- Visual feedback or simple destruction
-  	 present:Destroy()
-  	 print("Match found! Present " .. typedWord .. " collected by " .. player.Name)
+  	 item:Destroy()
+  	 print("Match found! Item " .. typedWord .. " collected by " .. player.Name)
   	 break -- Only destroy one match per type
         end
      end
   end
 #+end_src
-********* createHolidayLabel
+********* createLabel
 #+begin_src lua
-  local function createHolidayLabel(parentPart)
+  local function createLabel(parentPart)
      local billboard = Instance.new("BillboardGui")
-     billboard.Name = "HolidayLabel"
+     billboard.Name = "Label"
      billboard.Size = UDim2.new(0, 150, 0, 50)
      billboard.Adornee = parentPart
      billboard.AlwaysOnTop = true
@@ -2963,8 +2963,8 @@ Modified to use a list of 100 holiday words. Implemented a "glow" effect using T
      label.TextSize = 18
      label.RichText = true
      -- Set random word and random glowing color
-     local randomWord = holidayWords[math.random(1, #holidayWords)]
-     local chosenColor = holidayColors[math.random(1, #holidayColors)]
+     local randomWord = Words[math.random(1, #Words)]
+     local chosenColor = Colors[math.random(1, #Colors)]
      label.TextColor3 = chosenColor
      label.TextStrokeColor3 = chosenColor -- Matching stroke for the glow effect
      label.TextStrokeTransparency = 0.5
@@ -2988,44 +2988,44 @@ Modified to use a list of 100 holiday words. Implemented a "glow" effect using T
      local xpos = math.random (-spawnRange, spawnRange)
      local zpos = -20
      local ypos = 40
-     local presentScript = script.Parent:FindFirstChild("PresentScript")
-     local presentClone = present:Clone()
-     local presentScriptClone = presentScript:Clone()
-     presentScriptClone.Parent = presentClone
-     presentClone.Parent = presentsFolder
-     presentClone.Position = Vector3.new(xpos, ypos, zpos)
-     presentClone.Anchored = false
-     createHolidayLabel(presentClone)
+     local itemScript = script.Parent:FindFirstChild("ItemScript")
+     local itemClone = item:Clone()
+     local itemScriptClone = itemScript:Clone()
+     itemScriptClone.Parent = itemClone
+     itemClone.Parent = itemsFolder
+     itemClone.Position = Vector3.new(xpos, ypos, zpos)
+     itemClone.Anchored = false
+     createLabel(itemClone)
   end
 #+end_src
 ******** executions
 #+begin_src lua
   WordEvent.OnServerEvent:Connect(onWordTyped)
-  for i = 1, presentCount do
+  for i = 1, itemCount do
      randomSpawn()
      task.wait(3) -- Small delay to prevent frame drops during mass tweening
   end
 #+end_src
-****** PresentScript
+****** ItemScript
 :properties:
-:header-args:lua: :tangle ./place2/src/server/Collectables/PresentScript.server.luau
+:header-args:lua: :tangle ./place2/src/server/Collectables/ItemScript.server.luau
 :END:
 ******* notes
 Defines individual coin behavior (rotate, touch, reward).
 ******* code
 ******** variables
 #+begin_src lua
-  local presentBase = Instance.new("Part")
-  presentBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Presents")
-  presentBase.Anchored = true
-  local present = Instance.new ("SpecialMesh")
-  present.Parent = presentBase
-  present.MeshId = "rbxassetid://13354760399"
-  present.TextureId = "rbxassetid://13354760424"
-  present.Scale = Vector3.new(0.3, 0.3, 0.3)
+  local itemBase = Instance.new("Part")
+  itemBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Items")
+  itemBase.Anchored = true
+  local item = Instance.new ("SpecialMesh")
+  item.Parent = itemBase
+  item.MeshId = "rbxassetid://13354760399"
+  item.TextureId = "rbxassetid://13354760424"
+  item.Scale = Vector3.new(0.3, 0.3, 0.3)
   local rotationRate = 3
   local Players = game:GetService("Players")
-  local presentFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Presents")												    
+  local itemFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Items")												    
 #+end_src
 ******** functions
 ********* rotate 
@@ -3063,7 +3063,7 @@ Defines individual coin behavior (rotate, touch, reward).
 #+end_src
 ******** executions
 #+begin_src lua
-  if script.Parent.Parent == presentFolder then
+  if script.Parent.Parent == itemFolder then
     task.wait(9)
     script.Parent:Destroy()
     --game:GetService("RunService").Heartbeat:Connect(rotate)
@@ -3140,73 +3140,6 @@ Defines internal behavior of toolstands.
 ******** executions
 #+begin_src lua
 #+end_src
-***** christmas tree
-****** ChristmasTreeManager
-:properties:
-:header-args:lua: :tangle ./place2/src/server/Establishments/ChristmasTreeManager.server.luau
-:END:
-******* notes
-Spawns the coins into the world.
-******* code
-******** variables
-#+begin_src lua
-  local christmastree = game:GetService("ReplicatedStorage"):FindFirstChild("Establishments"):FindFirstChild("ChristmasTrees"):WaitForChild("Part")
-  local christmastreeScript = script.Parent:FindFirstChild("ChristmasTreeScript")
-  christmastreeScript.Parent = christmastree
-  local christmastreesFolder = game:GetService("Workspace"):FindFirstChild("Establishments"):FindFirstChild("ChristmasTrees")
-  local spawnRange = 48
-  local christmastreeCount = 1
-#+end_src
-******** functions
-********* randomSpawn
-#+begin_src lua
-  local function randomSpawn()
-    local xpos = 0
-    local zpos = 0
-    local ypos = 3
-    local christmastreeClone = christmastree:Clone()
-    christmastreeClone.Parent = christmastreesFolder
-    christmastreeClone.Position = Vector3.new(xpos,ypos,zpos)
-    return
-  end
-#+end_src
-******** executions
-#+begin_src lua
-  for i = 1, christmastreeCount do
-      --randomSpawn()
-  end
-#+end_src
-****** ChristmasTreeScript
-:properties:
-:header-args:lua: :tangle ./place2/src/server/Establishments/ChristmasTreeScript.server.luau
-:END:
-******* notes
-Defines internal behavior of toolstands.
-******* code
-******** variables
-#+begin_src lua
-  local christmasTreeBase = Instance.new("Part")
-  christmasTreeBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Establishments"):FindFirstChild("ChristmasTrees")
-  christmasTreeBase.Anchored = true
-  local christmasTree = Instance.new ("SpecialMesh")
-  christmasTree.Parent = christmasTreeBase
-  christmasTree.MeshId = "rbxassetid://551508688"
-  christmasTree.TextureId = "rbxassetid://551508937"
-  local christmastreesFolder = game:GetService("Workspace"):FindFirstChild("Establishments"):FindFirstChild("ChristmasTrees")
-#+end_src
-******** functions 
-********* rotate
-#+begin_src lua
-  local function rotate()
-     christmasTreeBase.CFrame *= CFrame.Angles(0, 0.005, 0)
-  end
-#+end_src
-******** executions 
-#+begin_src lua
-  if script.Parent.Parent == christmastreesFolder then
-     game:GetService("RunService").Heartbeat:Connect(rotate)
-  end
-#+end_src
 **** tools
 **** events
 ***** RemoteEvents
@@ -3214,7 +3147,7 @@ Defines internal behavior of toolstands.
 :header-args:lua: :tangle ./place2/src/server/Events/RemoteEventManager.server.luau
 :END:
 ******* notes
-Modified to use a list of 100 holiday words. Implemented a "glow" effect using TweenService that pulsates each label's transparency and scale.
+Modified to use a list of 100  words. Implemented a "glow" effect using TweenService that pulsates each label's transparency and scale.
 ******* code
 ******** variables
 #+begin_src lua
@@ -3300,7 +3233,7 @@ Captures the TextBox input and fires the event.
     local tb = Instance.new("TextBox", sg)
     tb.Size = UDim2.new(0, 300, 0, 50)
     tb.Position = UDim2.new(0.5, -150, 0.8, 0)
-    tb.PlaceholderText = "Type the holiday words here..."
+    tb.PlaceholderText = "Type here..."
     tb.ClearTextOnFocus = true
     tb.Parent = frame
 #+end_src
@@ -3313,30 +3246,31 @@ Captures the TextBox input and fires the event.
 ******** executions
 #+begin_src lua
     -- Disable Mouse/Clicking Logic
-	ContextActionService:BindAction(
-	    "DisableMouse",
-	    sinkInput,
-	    false,
-	    Enum.UserInputType.MouseButton1,
-	    Enum.UserInputType.MouseButton2,
-	    Enum.UserInputType.Touch,
-	    Enum.UserInputType.MouseWheel,
-	    Enum.UserInputType.MouseMovement
-	)
+    ContextActionService:BindAction(
+        "DisableMouse",
+        sinkInput,
+        false,
+        Enum.UserInputType.MouseButton1,
+        Enum.UserInputType.MouseButton2,
+        Enum.UserInputType.Touch,
+        Enum.UserInputType.MouseWheel,
+        Enum.UserInputType.MouseMovement
+    )
     -- Input handler
-	tb.InputEnded:Connect(function(input)
-	    if input.UserInputType == Enum.UserInputType.Keyboard then
-		if input.KeyCode == Enum.KeyCode.Return then
-		    WordEvent:FireServer(tb.Text)
-		    tb.Text = "" -- Reset box
-		    tb:CaptureFocus() -- Keep typing for fast gameplay
-		else
-		    return
-		end
-	    else
-		return
-	    end
-	end)
+    tb:CaptureFocus() -- Keep typing for fast gameplay
+    tb.InputEnded:Connect(function(input)
+    	if input.UserInputType == Enum.UserInputType.Keyboard then
+    	    if input.KeyCode == Enum.KeyCode.Return then
+    		WordEvent:FireServer(tb.Text)
+    		tb.Text = "" -- Reset box
+    		tb:CaptureFocus() -- Keep typing for fast gameplay
+    	    else
+    		return
+    	    end
+    	else
+    	    return
+    	end
+    end)
 #+end_src
 *** rojo
 **** default.project
@@ -3412,32 +3346,23 @@ Modified to use a list of 100  words. Implemented a "glow" effect using TweenSer
 ******* code
 ******** variables
 #+begin_src lua
-  local TweenService = game:GetService("TweenService")
-  local ReplicatedStorage = game:GetService("ReplicatedStorage")
-  local Workspace = game:GetService("Workspace")
-  local item = ReplicatedStorage:WaitForChild("Collectables"):WaitForChild("Items"):WaitForChild("Part")
-  local itemsFolder = Workspace:WaitForChild("Collectables"):WaitForChild("Items")
-  local spawnRange = 48
-  local itemCount = 100 -- Updated to match the word list size
-  local Words = {
-     "snow", "bell", "star", "gift", "tree", "deer", "sled", "noel", "cold", "home",
-     "joy", "hope", "love", "calm", "kind", "wish", "yule", "pine", "fire", "gold",
-     "holly", "merry", "jolly", "candy", "cane", "frost", "santa", "elves", "sleigh", "light",
-     "winter", "spirit", "giving", "cheer", "bright", "peace", "praise", "glory", "wonder", "magic",
-     "gingy", "baking", "cookie", "cocoa", "coffee", "snacks", "feasting", "family", "friends", "church",
-     "chimney", "stocking", "reindeer", "rudolph", "dasher", "dancer", "prancer", "vixen", "comet", "cupid",
-     "donner", "blitzen", "workshop", "northpole", "icecap", "glacier", "iceberg", "snowman", "igloo", "mittens",
-     "scarf", "jumper", "sweater", "blanket", "earmuffs", "tinsel", "wreath", "bauble", "ornaments", "garland",
-     "carols", "hymns", "music", "singing", "dance", "parties", "games", "laughter", "smiling", "hugger",
-     "ribbon", "wrappings", "parcel", "boxed", "surprise", "kindness", "items", "tradition", "believer"
-  }
-  local Colors = {
-     Color3.new(1, 0, 0),    -- Red
-     Color3.new(0, 1, 0),    -- Green
-     Color3.new(1, 1, 1),    -- White
-     Color3.new(1, 0.84, 0), -- Gold
-     Color3.new(0, 0.75, 1)  -- Ice Blue
-  }
+    local TweenService = game:GetService("TweenService")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local Workspace = game:GetService("Workspace")
+    local item = ReplicatedStorage:WaitForChild("Collectables"):WaitForChild("Items"):WaitForChild("Part")
+    local itemsFolder = Workspace:WaitForChild("Collectables"):WaitForChild("Items")
+    local spawnRange = 48
+    local itemCount = 10 -- Updated to match the word list size
+    local Words = {
+        "Ascend", "Cabelas", "Nitro", "Tracker", "Tahoe", "Mako", "Ranger", "Triton", "SunTracker", "Regency", "WhiteRiver", "JohnnyMorris", "BassPro", "RedHead", "WorldWideSpec", "NaturalReflections", "BobbieGarland", "BassBuggie", "FishinBarge", "PartyBarge", "ProQualifier", "CarbonLite", "Extreme", "BionicBlade", "MicroLite", "TourneySpecial", "GoldSeries", "Platinum", "MegaCast", "Stratos", "UncleBucks", "XPS", "Holographic", "LazerEye", "SpeedShad", "TheEgg", "SquirminWorm", "StikO", "FinesseWorm", "CrawChunk", "Zman", "StrikeKing", "Keitech", "Yamamoto", "Berkley", "AbuGarcia", "Penn", "Shimano", "Daiwa", "Lew’s", "Lowrance", "Garmin", "Humminbird", "MinnKota", "Motorguide", "PowerPole", "Talon", "BlackMarket", "Propel", "Vortex", "SheOutdoor", "Harkila", "Meindl", "Danner", "LaCrosse", "MuckBoot", "Rocky", "IrishSetter", "Merrell", "Columbia", "Thermacell", "YETI", "Blackstone", "CampChef", "Lodge", "BioLite", "Jetboil", "Osprey", "CamelBak", "Petzl", "Gulp", "PowerBait", "Trilene", "Spiderwire", "Stren", "Seguar", "KVD", "BillDance", "JimmyHouston", "RolandMartin", "Carp", "Catfish", "Bass", "Walleye", "Trout", "Crappie", "Salmon", "Muskie", "Pike", "Snook"
+    }
+    local Colors = {
+        Color3.new(1, 0, 0),    -- Red
+        Color3.new(0, 1, 0),    -- Green
+        Color3.new(1, 1, 1),    -- White
+        Color3.new(1, 0.84, 0), -- Gold
+        Color3.new(0, 0.75, 1)  -- Ice Blue
+    }
 #+end_src
 ******** functions
 ********* onWordTyped
@@ -3761,30 +3686,31 @@ Captures the TextBox input and fires the event.
 ******** executions
 #+begin_src lua
     -- Disable Mouse/Clicking Logic
-	ContextActionService:BindAction(
-	    "DisableMouse",
-	    sinkInput,
-	    false,
-	    Enum.UserInputType.MouseButton1,
-	    Enum.UserInputType.MouseButton2,
-	    Enum.UserInputType.Touch,
-	    Enum.UserInputType.MouseWheel,
-	    Enum.UserInputType.MouseMovement
-	)
+    ContextActionService:BindAction(
+        "DisableMouse",
+        sinkInput,
+        false,
+        Enum.UserInputType.MouseButton1,
+        Enum.UserInputType.MouseButton2,
+        Enum.UserInputType.Touch,
+        Enum.UserInputType.MouseWheel,
+        Enum.UserInputType.MouseMovement
+    )
     -- Input handler
-	tb.InputEnded:Connect(function(input)
-	    if input.UserInputType == Enum.UserInputType.Keyboard then
-		if input.KeyCode == Enum.KeyCode.Return then
-		    WordEvent:FireServer(tb.Text)
-		    tb.Text = "" -- Reset box
-		    tb:CaptureFocus() -- Keep typing for fast gameplay
-		else
-		    return
-		end
-	    else
-		return
-	    end
-	end)
+    tb:CaptureFocus() -- Keep typing for fast gameplay
+    tb.InputEnded:Connect(function(input)
+    	if input.UserInputType == Enum.UserInputType.Keyboard then
+    	    if input.KeyCode == Enum.KeyCode.Return then
+    		WordEvent:FireServer(tb.Text)
+    		tb.Text = "" -- Reset box
+    		tb:CaptureFocus() -- Keep typing for fast gameplay
+    	    else
+    		return
+    	    end
+    	else
+    	    return
+    	end
+    end)
 #+end_src
 *** rojo
 **** default.project
