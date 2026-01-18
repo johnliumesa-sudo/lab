@@ -1,0 +1,32 @@
+#    -*- mode: org -*-
+
+
+Archived entries from file g:/My Drive/workspace/Roblox/lab/literate.org
+
+
+* variables
+:PROPERTIES:
+:ARCHIVE_TIME: 2026-01-18 Sun 16:03
+:ARCHIVE_FILE: g:/My Drive/workspace/Roblox/lab/literate.org
+:ARCHIVE_OLPATH: source/place3/server/collectibles/item/ItemManager/code
+:ARCHIVE_CATEGORY: literate
+:END:
+#+begin_src lua
+    local TweenService = game:GetService("TweenService")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local Workspace = game:GetService("Workspace")
+    local item = ReplicatedStorage:WaitForChild("Collectables"):WaitForChild("Items"):WaitForChild("Part")
+    local itemsFolder = Workspace:WaitForChild("Collectables"):WaitForChild("Items")
+    local spawnRange = 48
+    local itemCount = 10 -- Updated to match the word list size
+    local Words = {
+        "Ascend", "Cabelas", "Nitro", "Tracker", "Tahoe", "Mako", "Ranger", "Triton", "SunTracker", "Regency", "WhiteRiver", "JohnnyMorris", "BassPro", "RedHead", "WorldWideSpec", "NaturalReflections", "BobbieGarland", "BassBuggie", "FishinBarge", "PartyBarge", "ProQualifier", "CarbonLite", "Extreme", "BionicBlade", "MicroLite", "TourneySpecial", "GoldSeries", "Platinum", "MegaCast", "Stratos", "UncleBucks", "XPS", "Holographic", "LazerEye", "SpeedShad", "TheEgg", "SquirminWorm", "StikO", "FinesseWorm", "CrawChunk", "Zman", "StrikeKing", "Keitech", "Yamamoto", "Berkley", "AbuGarcia", "Penn", "Shimano", "Daiwa", "Lew’s", "Lowrance", "Garmin", "Humminbird", "MinnKota", "Motorguide", "PowerPole", "Talon", "BlackMarket", "Propel", "Vortex", "SheOutdoor", "Harkila", "Meindl", "Danner", "LaCrosse", "MuckBoot", "Rocky", "IrishSetter", "Merrell", "Columbia", "Thermacell", "YETI", "Blackstone", "CampChef", "Lodge", "BioLite", "Jetboil", "Osprey", "CamelBak", "Petzl", "Gulp", "PowerBait", "Trilene", "Spiderwire", "Stren", "Seguar", "KVD", "BillDance", "JimmyHouston", "RolandMartin", "Carp", "Catfish", "Bass", "Walleye", "Trout", "Crappie", "Salmon", "Muskie", "Pike", "Snook"
+    }
+    local Colors = {
+        Color3.new(1, 0, 0),    -- Red
+        Color3.new(0, 1, 0),    -- Green
+        Color3.new(1, 1, 1),    -- White
+        Color3.new(1, 0.84, 0), -- Gold
+        Color3.new(0, 0.75, 1)  -- Ice Blue
+    }
+#+end_src
