@@ -1,14 +1,14 @@
-local presentBase = Instance.new("Part")
-presentBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Presents")
-presentBase.Anchored = true
-local present = Instance.new ("SpecialMesh")
-present.Parent = presentBase
-present.MeshId = "rbxassetid://13354760399"
-present.TextureId = "rbxassetid://13354760424"
-present.Scale = Vector3.new(0.3, 0.3, 0.3)
+local itemBase = Instance.new("Part")
+itemBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Items")
+itemBase.Anchored = true
+local item = Instance.new ("SpecialMesh")
+item.Parent = itemBase
+item.MeshId = "rbxassetid://16964238833"
+item.TextureId = "rbxassetid://16964238915"
+item.Scale = Vector3.new(1.5, 1.5, 1.5)
 local rotationRate = 3
 local Players = game:GetService("Players")
-local presentFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Presents")
+local itemFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Items")
 
 local function rotate()
     script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
@@ -39,7 +39,7 @@ local function onTyped(otherPart)
    end
 end
 
-if script.Parent.Parent == presentFolder then
+if script.Parent.Parent == itemFolder then
   task.wait(9)
   script.Parent:Destroy()
   --game:GetService("RunService").Heartbeat:Connect(rotate)
