@@ -1,6 +1,6 @@
 local StartingPosition = Vector3.new(0, 5, 0)
 local Players = game:GetService("Players")
-local targetDistance = math.random(50, 60)
+local targetDistance = math.random(70, 90)
 local refreshRate = 0.001
 local pathFindingService = game:GetService("PathfindingService")
 local stopDistance = 3
