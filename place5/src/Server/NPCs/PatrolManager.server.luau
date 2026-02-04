@@ -3,7 +3,7 @@ local patrolScript = script.Parent:FindFirstChild("PatrolScript")
 patrolScript.Parent = patrol
 local patrolFolder =  game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Patrols") 
 local spawnRange = 96
-local patrolCount = 12
+local patrolCount = 9
 
 local function  randomSpawn(index)
     local xpos = math.random (-spawnRange, spawnRange)

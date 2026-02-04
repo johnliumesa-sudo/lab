@@ -5,7 +5,7 @@ clerkScript.Parent = clerk
 dialogManager.Parent = clerk
 local clerkFolder =  game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Clerks") 
 local spawnRange = 96
-local clerkCount = 30
+local clerkCount = 3
 
 local function  randomSpawn(index)
     local xpos = math.random (-spawnRange, spawnRange)

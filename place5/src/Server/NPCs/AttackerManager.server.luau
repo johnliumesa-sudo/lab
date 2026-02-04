@@ -3,7 +3,7 @@ local attackerScript = script.Parent:FindFirstChild("AttackerScript")
 attackerScript.Parent = attacker
 local attackerFolder =  game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Attackers") 
 local spawnRange = 96
-local attackerCount = 3
+local attackerCount = 1
 
 local function  randomSpawn(index)
     local xpos = math.random (-spawnRange, spawnRange)
