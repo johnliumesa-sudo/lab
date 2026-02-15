@@ -4209,7 +4209,6 @@ Captures the TextBox input and fires the event.
 } 
 #+end_src
 
-	
 ** place5
 *** server
 **** collectibles
@@ -5138,4 +5137,317 @@ Handles client-side logic, including listening for dialog selections, notifying 
     }
   }
 } 
+#+end_src
+
+** place6
+*** server
+**** farming
+***** plots
+****** PlotManager
+:properties:
+:header-args:lua: :tangle ./place6/src/server/Farming/PlotManager.server.luau
+:END:
+******* notes
+Generates the initial grid of farmable land plots.
+******* code
+******** variables
+#+begin_src lua
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+
+-- Create folder for plots
+local plotsFolder = Instance.new("Folder")
+plotsFolder.Name = "FarmPlots"
+plotsFolder.Parent = Workspace
+
+-- Define plot template (or load from storage if you prefer prefab)
+local plotTemplate = Instance.new("Part")
+plotTemplate.Name = "Plot"
+plotTemplate.Size = Vector3.new(8, 1, 8)
+plotTemplate.Anchored = true
+plotTemplate.Material = Enum.Material.Grass
+plotTemplate.Color = Color3.fromRGB(75, 150, 75) -- Base Fertile Color
+
+-- Add ClickDetector
+local cd = Instance.new("ClickDetector")
+cd.Parent = plotTemplate
+
+-- Add Configuration values
+local status = Instance.new("StringValue")
+status.Name = "Status"
+status.Value = "Empty" -- Empty, Growing
+status.Parent = plotTemplate
+
+-- Grid Settings
+local gridSize = 4 -- 4x4 grid
+local spacing = 10
+local startPos = Vector3.new(0, 0.5, 0)
+#+end_src
+******** functions
+********* spawnGrid
+#+begin_src lua
+local function spawnGrid()
+for x = 1, gridSize do
+for z = 1, gridSize do
+local newPlot = plotTemplate:Clone()
+newPlot.Position = startPos + Vector3.new((x - 1) * spacing, 0, (z - 1) * spacing)
+newPlot.Parent = plotsFolder
+
+          -- Inject logic script
+          local logicScript = script.Parent:FindFirstChild("PlotScript")
+          if logicScript then
+              local cloneScript = logicScript:Clone()
+              cloneScript.Parent = newPlot
+              cloneScript.Enabled = true
+          end
+      end
+  end
+end
+#+end_src
+******** executions
+#+begin_src lua
+spawnGrid()
+#+end_src
+****** PlotScript
+:properties:
+:header-args:lua: :tangle ./place6/src/server/Farming/PlotScript.server.luau
+:END:
+******* notes
+Handles the lifecycle of a single crop on a plot: Plant -> Grow -> Auto-Sell.
+******* code
+******** variables
+#+begin_src lua
+local plot = script.Parent
+local clickDetector = plot:WaitForChild("ClickDetector")
+local status = plot:WaitForChild("Status")
+
+-- Crop Configuration (As defined in design doc)
+local CropData = {
+["Tomato"] = {
+Cost = 5,
+BaseSellValue = 15,
+BaseDelay = 3,
+Color = Color3.fromRGB(255, 0, 0) -- Red
+},
+["Corn"] = {
+Cost = 50,
+BaseSellValue = 120,
+BaseDelay = 5,
+Color = Color3.fromRGB(255, 255, 0) -- Yellow
+},
+["Blueberry"] = {
+Cost = 150,
+BaseSellValue = 400,
+BaseDelay = 8,
+Color = Color3.fromRGB(0, 0, 255) -- Blue
+}
+}
+
+-- Default selected crop (could be stored in player data later)
+local currentSelectedCrop = "Tomato"
+#+end_src
+******** functions
+********* getLandModifier
+#+begin_src lua
+local function getLandModifier()
+-- In the future, check if this plot is on "Barren" or "Fertile" land
+-- For now, default to 1.0
+return 1.0
+end
+#+end_src
+********* plantCrop
+#+begin_src lua
+local function plantCrop(player)
+if status.Value ~= "Empty" then return end
+
+  local leaderstats = player:FindFirstChild("leaderstats")
+  if not leaderstats then return end
+  
+  local cash = leaderstats:FindFirstChild("Cash")
+  local data = CropData[currentSelectedCrop]
+  
+  if cash and cash.Value >= data.Cost then
+      -- Deduct Cost
+      cash.Value -= data.Cost
+      
+      -- Start Growth
+      status.Value = "Growing"
+      local originalColor = plot.Color
+      
+      -- Visual Indicator of growth (Change color to crop color)
+      plot.Color = data.Color
+      plot.Material = Enum.Material.Plastic -- Look synthetic while growing?
+      
+      -- Calculate time based on land quality
+      local landModifier = getLandModifier()
+      local finalDelay = data.BaseDelay / landModifier
+      
+      -- Wait for growth
+      task.wait(finalDelay)
+      
+      -- Auto-Sell Logic
+      local sellPrice = math.floor(data.BaseSellValue * landModifier)
+      cash.Value += sellPrice
+      
+      -- Reset Plot
+      plot.Color = originalColor
+      plot.Material = Enum.Material.Grass
+      status.Value = "Empty"
+      
+      -- Feedback
+      print(player.Name .. " harvested " .. currentSelectedCrop .. " for $" .. sellPrice)
+  else
+      print("Not enough cash to plant " .. currentSelectedCrop)
+  end
+end
+#+end_src
+******** executions
+#+begin_src lua
+clickDetector.MouseClick:Connect(plantCrop)
+#+end_src
+**** ui
+***** leaderboard
+****** LeaderboardManager
+:properties:
+:header-args:lua: :tangle ./place6/src/server/UI/LeaderboardManager.server.luau
+:END:
+******* notes
+Standard leaderboard to track Cash for the economy.
+******* code
+******** variables
+#+begin_src lua
+local Players = game:GetService("Players")
+#+end_src
+******** functions
+********* onPlayerAdded
+#+begin_src lua
+local function onPlayerAdded(player)
+local leaderstats = Instance.new("Folder")
+leaderstats.Name = "leaderstats"
+leaderstats.Parent = player
+
+  local cash = Instance.new("IntValue")
+  cash.Name = "Cash"
+  cash.Value = 10 -- Starting capital to buy first Tomato
+  cash.Parent = leaderstats
+end
+#+end_src
+******** executions
+#+begin_src lua
+Players.PlayerAdded:Connect(onPlayerAdded)
+#+end_src
+**** upgrades
+***** mystery
+****** MysteryBoxManager
+:properties:
+:header-args:lua: :tangle ./place6/src/server/Upgrades/MysteryBoxManager.server.luau
+:END:
+******* notes
+Implements the "Slot Machine" mechanic for random rewards.
+******* code
+******** variables
+#+begin_src lua
+local boxPart = Instance.new("Part")
+boxPart.Name = "MysteryBox"
+boxPart.Size = Vector3.new(4, 4, 4)
+boxPart.Position = Vector3.new(0, 2, -15) -- Placed away from plots
+boxPart.Color = Color3.fromRGB(148, 0, 211) -- Purple
+boxPart.Material = Enum.Material.Neon
+boxPart.Anchored = true
+boxPart.Parent = game:GetService("Workspace")
+
+local cd = Instance.new("ClickDetector")
+cd.Parent = boxPart
+
+local spinCost = 50
+#+end_src
+******** functions
+********* spinWheel
+#+begin_src lua
+local function spinWheel(player)
+local leaderstats = player:FindFirstChild("leaderstats")
+if not leaderstats then return end
+local cash = leaderstats:FindFirstChild("Cash")
+
+  if cash.Value >= spinCost then
+      cash.Value -= spinCost
+      
+      -- Risk vs Reward Logic
+      local chance = math.random(1, 100)
+      if chance <= 50 then
+          -- 50% chance to lose (get nothing or very little)
+          print("Bad luck!")
+      elseif chance <= 80 then
+          -- 30% chance to break even or small profit
+          cash.Value += math.random(40, 80)
+          print("Small Win!")
+      elseif chance <= 95 then
+          -- 15% chance for big win
+          cash.Value += math.random(100, 200)
+          print("Big Win!")
+      else
+          -- 5% chance for Jackpot
+          cash.Value += 1000
+          print("JACKPOT!")
+      end
+  end
+end
+#+end_src
+******** executions
+#+begin_src lua
+cd.MouseClick:Connect(spinWheel)
+#+end_src
+*** rojo
+**** default.project
+:properties:
+:header-args:json: :tangle ./place6/default.project.json
+:END:
+***** code
+#+begin_src json
+{
+"name": "place6_farm_clicker",
+"tree": {
+"$className": "DataModel",
+"ReplicatedStorage": {
+"$path": "src/Shared"
+},
+"ServerScriptService": {
+"$path": "src/Server"
+},
+"StarterPlayer": {
+"StarterPlayerScripts": {
+"Client": {
+"$path": "src/Client"
+}
+}
+},
+"Workspace": {
+"$path": "src/Workspace",
+"Baseplate": {
+"$className": "Part",
+"$properties": {
+"Anchored": true,
+"Color": [0.38823, 0.37254, 0.38823],
+"Locked": true,
+"Position": [0, -10, 0],
+"Size": [512, 20, 512]
+}
+}
+},
+"Lighting": {
+"$properties": {
+"Ambient": [0, 0, 0],
+"Brightness": 2,
+"GlobalShadows": true,
+"Outlines": false,
+"Technology": "Voxel"
+}
+},
+"SoundService": {
+"$properties": {
+"RespectFilteringEnabled": true
+}
+}
+}
+}
 #+end_src
