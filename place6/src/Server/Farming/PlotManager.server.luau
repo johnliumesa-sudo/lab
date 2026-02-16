@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
+local proximityScript = script.Parent:FindFirstChild("ProximityPlotScript")
 
 -- Create folder for plots
 local plotsFolder = Instance.new("Folder")
@@ -36,25 +37,28 @@ local gridSize = 4 -- 4x4 grid
 local spacing = 10
 local startPos = Vector3.new(0, 0.5, 0)
 
-local function spawnGrid()
-for x = 1, gridSize do
-for z = 1, gridSize do
-local newPlot = plotTemplate:Clone()
-newPlot.Position = startPos + Vector3.new((x - 1) * spacing, 0, (z - 1) * spacing)
-newPlot.Parent = plotsFolder
-plotFloor.Position = startPos + Vector3.new((x - 1) * spacing, 0, (z - 1) * spacing)
-plotFloor.Parent = newPlot
+local function spawnGrid(proximityScript)
+    for x = 1, gridSize do
+	for z = 1, gridSize do
+	    local newPlot = plotTemplate:Clone()
+	    newPlot.Position = startPos + Vector3.new((x - 1) * spacing, 0, (z - 1) * spacing)
+	    newPlot.Parent = plotsFolder
+	    plotFloor.Position = startPos + Vector3.new((x - 1) * spacing, 0, (z - 1) * spacing)
+	    plotFloor.Parent = newPlot
 
 
-          -- Inject logic script
-          local logicScript = script.Parent:FindFirstChild("PlotScript")
-          if logicScript then
-              local cloneScript = logicScript:Clone()
-              cloneScript.Parent = newPlot
-              cloneScript.Enabled = true
-          end
-      end
-  end
+	    -- Inject logic script
+	    local logicScript = script.Parent:FindFirstChild("PlotScript")
+	    if logicScript and proximityScript then
+		local logicScriptClone = logicScript:Clone()
+		local proximScriptClone = proximityScript:Clone()
+		logicScriptClone.Parent = newPlot
+		proximScriptClone.Parent= newPlot
+		logicScriptClone.Enabled = true
+		proximScriptClone.Enabled = true
+	    end
+	end
+    end
 end
 
-spawnGrid()
+spawnGrid(proximityScript)
