@@ -14,6 +14,13 @@ plotTemplate.Anchored = true
 plotTemplate.Material = Enum.Material.Grass
 plotTemplate.Color = Color3.fromRGB(75, 150, 75) -- Base Fertile Color
 
+local plotFloor = Instance.new("Part")
+plotFloor.Name = "Floor"
+plotFloor.Size = Vector3.new(9, 0.5, 9)
+plotFloor.Anchored = true
+plotFloor.Material = Enum.Material.Ground
+plotFloor.Color = Color3.fromRGB(61,40,3)
+
 -- Add ClickDetector
 local cd = Instance.new("ClickDetector")
 cd.Parent = plotTemplate
@@ -35,6 +42,9 @@ for z = 1, gridSize do
 local newPlot = plotTemplate:Clone()
 newPlot.Position = startPos + Vector3.new((x - 1) * spacing, 0, (z - 1) * spacing)
 newPlot.Parent = plotsFolder
+plotFloor.Position = startPos + Vector3.new((x - 1) * spacing, 0, (z - 1) * spacing)
+plotFloor.Parent = newPlot
+
 
           -- Inject logic script
           local logicScript = script.Parent:FindFirstChild("PlotScript")

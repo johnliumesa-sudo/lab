@@ -963,7 +963,70 @@ prompt.Triggered:Connect(toggleDoor)
 	  end
   end
 #+end_src
-* source
+** shopping cart ui
+#+begin_src lua
+  --variables
+  local buttonFrame = script.Parent
+  local calculatorButton = buttonFrame:WaitForChild("CalculatorTextButton")
+  local speedCoilButton = buttonFrame:WaitForChild("SpeedCoilTextButton")
+  local clockButton = buttonFrame:WaitForChild("ClockTextButton")
+  local gunButton = buttonFrame:WaitForChild("GunTextButton")
+  local teleporterButton = buttonFrame:WaitForChild("TeleporterTextButton")
+  local gCoilButton = buttonFrame:WaitForChild("GCoilTextButton")
+  local cloakButton = buttonFrame:WaitForChild("CloakTextButton")
+  local shoppingCartUI = buttonFrame.Parent
+  local enableToolTouchRemoteEvent = game.ReplicatedStorage.enableToolTouch
+  local player = game.Players.LocalPlayer
+  local leaderboard = player and player:FindFirstChild("leaderstats")
+  local coinCount = leaderboard and leaderboard:FindFirstChild("Coin")
+  local coinCountTextLabel = buttonFrame.Parent:WaitForChild("CoinCountTextLabel")
+  local exitShoppingCartButton = buttonFrame.Parent:WaitForChild("ExitShoppingCartButton")
+
+  --functions
+  local function updateBalance()
+  	coinCountTextLabel.Text = "$" .. coinCount.Value
+  end
+
+  local function onButtonClicked(toolName)
+  	local buyPrice = workspace.Store:WaitForChild("Stand_" .. toolName):WaitForChild(toolName):FindFirstChild("Configuration").BuyPrice.Value
+  	if coinCount.Value >= buyPrice then
+  		coinCount.Value = coinCount.Value - buyPrice
+  		--coinCountTextLabel.Text = "$" .. coinCount.Value
+  		updateBalance()
+  		enableToolTouchRemoteEvent:FireServer(toolName)
+  		--shoppingCartUI.Visible = false
+  		local localButton = buttonFrame:WaitForChild(toolName .. "TextButton") 
+  		localButton.Interactable = false
+  		localButton.BackgroundColor3 = Color3.new(0.4, 0.4, 0.4)
+  	end
+  end
+
+  local function onExitShoppingCartButtonClicked()
+  	buttonFrame.Parent.Visible = false
+  end
+
+  --executions
+  cloakButton.Text = "Cloak  - $" .. workspace.Store:WaitForChild("Stand_Cloak"):WaitForChild("Cloak"):FindFirstChild("Configuration").BuyPrice.Value
+  calculatorButton.Text = "Calculator - $" .. workspace.Store:WaitForChild("Stand_Calculator"):WaitForChild("Calculator"):FindFirstChild("Configuration").BuyPrice.Value
+  clockButton.Text = "Clock - $" .. workspace.Store:WaitForChild("Stand_Clock"):WaitForChild("Clock"):FindFirstChild("Configuration").BuyPrice.Value
+  gunButton.Text = "Gun - $" .. workspace.Store:WaitForChild("Stand_Gun"):WaitForChild("Gun"):FindFirstChild("Configuration").BuyPrice.Value
+  teleporterButton.Text = "Teleporter - $" .. workspace.Store:WaitForChild("Stand_Teleporter"):WaitForChild("Teleporter"):FindFirstChild("Configuration").BuyPrice.Value
+  speedCoilButton.Text = "SpeedCoil - $" .. workspace.Store:WaitForChild("Stand_SpeedCoil"):WaitForChild("SpeedCoil"):FindFirstChild("Configuration").BuyPrice.Value
+  gCoilButton.Text = "GCoil - $" .. workspace.Store:WaitForChild("Stand_GCoil"):WaitForChild("GCoil"):FindFirstChild("Configuration").BuyPrice.Value
+
+  calculatorButton.MouseButton1Up:Connect(function() onButtonClicked("Calculator") end)
+  clockButton.MouseButton1Up:Connect(function() onButtonClicked("Clock") end)
+  gCoilButton.MouseButton1Up:Connect(function() onButtonClicked("GCoil") end)
+  gunButton.MouseButton1Up:Connect(function() onButtonClicked("Gun") end)
+  teleporterButton.MouseButton1Up:Connect(function() onButtonClicked("Teleporter") end)
+  speedCoilButton.MouseButton1Up:Connect(function() onButtonClicked("SpeedCoil") end)
+  cloakButton.MouseButton1Up:Connect(function() onButtonClicked("Cloak") end)
+  exitShoppingCartButton.MouseButton1Up:Connect(onExitShoppingCartButtonClicked)
+
+  coinCountTextLabel.Text = coinCount.Value
+  coinCount.Changed:Connect(updateBalance)
+#+end_src
+*  source
 ** place1
 *** server
 **** collectibles
@@ -5152,57 +5215,67 @@ Generates the initial grid of farmable land plots.
 ******* code
 ******** variables
 #+begin_src lua
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Workspace = game:GetService("Workspace")
+  local ReplicatedStorage = game:GetService("ReplicatedStorage")
+  local Workspace = game:GetService("Workspace")
 
--- Create folder for plots
-local plotsFolder = Instance.new("Folder")
-plotsFolder.Name = "FarmPlots"
-plotsFolder.Parent = Workspace
+  -- Create folder for plots
+  local plotsFolder = Instance.new("Folder")
+  plotsFolder.Name = "FarmPlots"
+  plotsFolder.Parent = Workspace
 
--- Define plot template (or load from storage if you prefer prefab)
-local plotTemplate = Instance.new("Part")
-plotTemplate.Name = "Plot"
-plotTemplate.Size = Vector3.new(8, 1, 8)
-plotTemplate.Anchored = true
-plotTemplate.Material = Enum.Material.Grass
-plotTemplate.Color = Color3.fromRGB(75, 150, 75) -- Base Fertile Color
+  -- Define plot template (or load from storage if you prefer prefab)
+  local plotTemplate = Instance.new("Part")
+  plotTemplate.Name = "Plot"
+  plotTemplate.Size = Vector3.new(8, 1, 8)
+  plotTemplate.Anchored = true
+  plotTemplate.Material = Enum.Material.Grass
+  plotTemplate.Color = Color3.fromRGB(75, 150, 75) -- Base Fertile Color
 
--- Add ClickDetector
-local cd = Instance.new("ClickDetector")
-cd.Parent = plotTemplate
+  local plotFloor = Instance.new("Part")
+  plotFloor.Name = "Floor"
+  plotFloor.Size = Vector3.new(9, 0.5, 9)
+  plotFloor.Anchored = true
+  plotFloor.Material = Enum.Material.Ground
+  plotFloor.Color = Color3.fromRGB(61,40,3)
 
--- Add Configuration values
-local status = Instance.new("StringValue")
-status.Name = "Status"
-status.Value = "Empty" -- Empty, Growing
-status.Parent = plotTemplate
+  -- Add ClickDetector
+  local cd = Instance.new("ClickDetector")
+  cd.Parent = plotTemplate
 
--- Grid Settings
-local gridSize = 4 -- 4x4 grid
-local spacing = 10
-local startPos = Vector3.new(0, 0.5, 0)
+  -- Add Configuration values
+  local status = Instance.new("StringValue")
+  status.Name = "Status"
+  status.Value = "Empty" -- Empty, Growing
+  status.Parent = plotTemplate
+
+  -- Grid Settings
+  local gridSize = 4 -- 4x4 grid
+  local spacing = 10
+  local startPos = Vector3.new(0, 0.5, 0)
 #+end_src
 ******** functions
 ********* spawnGrid
 #+begin_src lua
-local function spawnGrid()
-for x = 1, gridSize do
-for z = 1, gridSize do
-local newPlot = plotTemplate:Clone()
-newPlot.Position = startPos + Vector3.new((x - 1) * spacing, 0, (z - 1) * spacing)
-newPlot.Parent = plotsFolder
+  local function spawnGrid()
+  for x = 1, gridSize do
+  for z = 1, gridSize do
+  local newPlot = plotTemplate:Clone()
+  newPlot.Position = startPos + Vector3.new((x - 1) * spacing, 0, (z - 1) * spacing)
+  newPlot.Parent = plotsFolder
+  plotFloor.Position = startPos + Vector3.new((x - 1) * spacing, 0, (z - 1) * spacing)
+  plotFloor.Parent = newPlot
 
-          -- Inject logic script
-          local logicScript = script.Parent:FindFirstChild("PlotScript")
-          if logicScript then
-              local cloneScript = logicScript:Clone()
-              cloneScript.Parent = newPlot
-              cloneScript.Enabled = true
-          end
-      end
+
+            -- Inject logic script
+            local logicScript = script.Parent:FindFirstChild("PlotScript")
+            if logicScript then
+                local cloneScript = logicScript:Clone()
+                cloneScript.Parent = newPlot
+                cloneScript.Enabled = true
+            end
+        end
+    end
   end
-end
 #+end_src
 ******** executions
 #+begin_src lua
@@ -5397,6 +5470,2340 @@ end
 #+begin_src lua
 cd.MouseClick:Connect(spinWheel)
 #+end_src
+*** shared
+**** RemoteEvents
+:properties:
+:header-args:lua: :tangle ./place6/src/shared/Events/RemoteEventManager.server.luau
+:END:
+****** notes
+Modified to use a list of 100  words. Implemented a "glow" effect using TweenService that pulsates each label's transparency and scale.
+****** code
+******* variables
+#+begin_src lua
+  local eventFolder = Instance.new("Folder")
+  eventFolder.Name = "Events"
+  eventFolder.Parent = game:GetService("ReplicatedStorage")
+  local event = Instance.new("RemoteEvent")
+  event.Name = "WordEvent"
+  event.Parent = eventFolder
+#+end_src
+******* functions
+******* executions
+***** ui
+****** leaderboard
+******* LeaderboardManager
+:properties:
+:header-args:lua: :tangle ./place2/src/server/UI/LeaderboardManager.server.luau
+:END:
+******** notes
+Standard leaderboard setup to track coins.
+******** code
+********* variables
+#+begin_src lua
+local players = game:GetService("Players")
+#+end_src
+********* functions
+********** onPlayerSpawn
+#+begin_src lua
+  local function onPlayerSpawn(player)
+      local leaderstats = Instance.new("Folder")
+      leaderstats.Name = "leaderstats"
+      leaderstats.Parent = player
+      local coinCount = Instance.new("IntValue")
+      coinCount.Name = "CoinCount"
+      coinCount.Parent = leaderstats
+      coinCount.Value = 0
+      -- Minimal Scripting: Toggle transparency on spawn
+	player.CharacterAdded:Connect(function(char)
+		for _, part in pairs(char:GetDescendants()) do
+		    if part:IsA("BasePart") or part:IsA("Decal") then
+			part.Transparency = 1
+		    end
+		end
+	end)
+  end
+#+end_src
+********* executions
+#+begin_src lua
+players.PlayerAdded:Connect(onPlayerSpawn)
+#+end_src
+*** client 
+**** player 
+***** UI 
+****** UIManager
+:properties:
+:header-args:lua: :tangle ./place2/src/client/UI.client.luau
+:END:
+******* notes
+Captures the TextBox input and fires the event.
+******* code
+******** variables
+#+begin_src lua
+    local player = game:GetService("Players").LocalPlayer
+    local WordEvent = game:GetService("ReplicatedStorage"):FindFirstChild("Events"):WaitForChild("WordEvent")
+    --player.CameraMode = Enum.CameraMode.LockFirstPerson
+    -- Create basic UI via script to keep file count low
+    local ContextActionService = game:GetService("ContextActionService")
+    local UserInputService = game:GetService("UserInputService")
+    -- Disable Movement Logic
+    local playerScripts = player:WaitForChild("PlayerScripts")
+    local PlayerModule = require(playerScripts:WaitForChild("PlayerModule"))
+    local controls = PlayerModule:GetControls()
+    controls:Disable() -- This locks WASD and Arrow Keys
+    -- Set Camera and Cursor
+    UserInputService.MouseIconEnabled = true
+    UserInputService.MouseBehavior = Enum.MouseBehavior.Default
+    local sg = Instance.new("ScreenGui", player.PlayerGui)
+    local frame = Instance.new("Frame")
+    frame.BackgroundColor3 = Color3.new(0.152941, 0.784313, 0.117647)
+    frame.Size = UDim2.new(0, 500, 0, 50)
+    frame.Position = UDim2.new(0.5, -150, 0.8, 0)
+    frame.Parent = sg
+    local tb = Instance.new("TextBox", sg)
+    tb.Size = UDim2.new(0, 300, 0, 50)
+    tb.Position = UDim2.new(0.5, -150, 0.8, 0)
+    tb.PlaceholderText = "Type here..."
+    tb.ClearTextOnFocus = true
+    tb.Parent = frame
+#+end_src
+******** functions
+#+begin_src lua
+  local function sinkInput()
+      return Enum.ContextActionResult.Sink
+  end
+#+end_src
+******** executions
+#+begin_src lua
+    -- Disable Mouse/Clicking Logic
+    ContextActionService:BindAction(
+        "DisableMouse",
+        sinkInput,
+        false,
+        Enum.UserInputType.MouseButton1,
+        Enum.UserInputType.MouseButton2,
+        Enum.UserInputType.Touch,
+        Enum.UserInputType.MouseWheel,
+        Enum.UserInputType.MouseMovement
+    )
+    -- Input handler
+    tb:CaptureFocus() -- Keep typing for fast gameplay
+    tb.InputEnded:Connect(function(input)
+    	if input.UserInputType == Enum.UserInputType.Keyboard then
+    	    if input.KeyCode == Enum.KeyCode.Return then
+    		WordEvent:FireServer(tb.Text)
+    		tb.Text = "" -- Reset box
+    		tb:CaptureFocus() -- Keep typing for fast gameplay
+    	    else
+    		return
+    	    end
+    	else
+    	    return
+    	end
+    end)
+#+end_src
+*** rojo
+**** default.project
+:properties:
+:header-args:json: :tangle ./default.project.json
+:END:
+***** code
+#+begin_src json
+{
+  "name": "lab",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+        "$path": "src/Shared"
+    },
+    "ServerScriptService": {
+        "$path": "src/Server"
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Client": {
+          "$path": "src/Client"
+        }
+      }
+    },
+    
+    "Workspace": {
+      "$path": "src/Workspace",
+      "Baseplate": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "Color": [0.38823, 0.37254, 0.38823],
+          "Locked": true,
+          "Position": [0, -10, 0],
+          "Size": [512, 20, 512]
+        }
+      }
+    },
+    "Lighting": {
+      "$properties": {
+        "Ambient": [
+          0,
+          0,
+          0
+        ],
+        "Brightness": 2,
+        "GlobalShadows": true,
+        "Outlines": false,
+        "Technology": "Voxel"
+      }
+    },
+    
+    "SoundService": {
+      "$properties": {
+        "RespectFilteringEnabled": true
+      }
+    }
+  }
+} 
+#+end_src
+
+** place3
+*** server
+**** collectibles
+***** item
+****** ItemManager
+:properties:
+:header-args:lua: :tangle ./place3/src/server/Collectables/ItemManager.server.luau
+:END:
+******* notes
+Modified to use a list of 100  words. Implemented a "glow" effect using TweenService that pulsates each label's transparency and scale.
+******* code
+******** variables
+#+begin_src lua
+    local TweenService = game:GetService("TweenService")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local Workspace = game:GetService("Workspace")
+    local item = ReplicatedStorage:WaitForChild("Collectables"):WaitForChild("Items"):WaitForChild("Part")
+    local itemsFolder = Workspace:WaitForChild("Collectables"):WaitForChild("Items")
+    local spawnRange = 48
+    local itemCount = 10 -- Updated to match the word list size
+    local Words = {"Bait", "Spinner", "Jig", "Crankbait", "Softplastic", "Flyrod", "Stringer", "Scale", "Forceps", "FilletKnife", "Anchor", "Paddle", "Oar", "LifeVest", "Propeller", "TrollingMotor", "DepthFinder", "Sonar", "DockLine", "Fender", "BilgePump", "FuelTank", "DryBag", "Trailer", "Winch", "Cleat", "Compass", "NavigationLight", "Bimini", "Outboard", "Tent", "SleepingBag", "Stove", "Lantern", "Cooler", "Backpack", "Canteen", "Flashlight", "Headlamp", "Hammock", "Tarp", "CampChair", "Axe", "Multitool", "Matchbox", "FirstAidKit", "WaterFilter", "Compass", "SleepingPad", "Cookset", "Boots", "RainJacket", "Vest", "Hat", "Gloves", "Thermal", "Poncho", "HikingShoes", "Parka", "Sunglasses", "CargoPants", "DrySuit", "ChestWaders", "Beanie", "SunShirt", "Gaiters", "WoolSocks", "Belt", "HydrationPack", "Crampons", "Binoculars", "GPS", "Radio", "Batteries", "Rope", "Carabiner", "TrekkingPole", "Map", "Whistle", "Flare", "BugSpray", "Sunscreen", "DryBox", "Pellets", "Charcoal", "Grill", "Kayak", "Canoe", "Paddleboard", "Sled"}
+    local Colors = {
+        Color3.new(1, 0, 0),    -- Red
+        Color3.new(0, 1, 0),    -- Green
+        Color3.new(1, 1, 1),    -- White
+        Color3.new(1, 0.84, 0), -- Gold
+        Color3.new(0, 0.75, 1)  -- Ice Blue
+    }
+#+end_src
+******** functions
+********* onWordTyped
+#+begin_src lua
+  local WordEvent = game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("WordEvent")
+  local function onWordTyped(player, typedWord)
+     -- Loop through all spawned items in the Workspace
+     for _, item in pairs(itemsFolder:GetChildren()) do
+        -- Compare typed text to the name assigned during createLabel
+        if item.Name:lower() == typedWord:lower() then
+  	 -- Award points (using logic from your ItemScript)
+  	 local leaderstats = player:FindFirstChild("leaderstats")
+  	 if leaderstats then
+  	    leaderstats.CoinCount.Value += 50
+  	 end
+  	 -- Visual feedback or simple destruction
+  	 item:Destroy()
+  	 print("Match found! Item " .. typedWord .. " collected by " .. player.Name)
+  	 break -- Only destroy one match per type
+        end
+     end
+  end
+#+end_src
+********* createLabel
+#+begin_src lua
+  local function createLabel(parentPart)
+     local billboard = Instance.new("BillboardGui")
+     billboard.Name = "Label"
+     billboard.Size = UDim2.new(0, 150, 0, 50)
+     billboard.Adornee = parentPart
+     billboard.AlwaysOnTop = true
+     billboard.ExtentsOffset = Vector3.new(0, 3, 0)
+     billboard.Parent = parentPart
+     local label = Instance.new("TextLabel")
+     label.Size = UDim2.new(1, 0, 1, 0)
+     label.BackgroundTransparency = 1
+     label.Font = Enum.Font.Arimo
+     label.TextSize = 18
+     label.RichText = true
+     -- Set random word and random glowing color
+     local randomWord = Words[math.random(1, #Words)]
+     local chosenColor = Colors[math.random(1, #Colors)]
+     label.TextColor3 = chosenColor
+     label.TextStrokeColor3 = chosenColor -- Matching stroke for the glow effect
+     label.TextStrokeTransparency = 0.5
+     label.Text = randomWord
+     parentPart.Name = label.Text
+     label.Parent = billboard
+     -- Create the Glow Animation
+     local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
+     local goal = {
+        TextStrokeTransparency = 0,
+        TextSize = 24
+     }
+     local tween = TweenService:Create(label, tweenInfo, goal)
+     tween:Play()
+     return billboard
+  end
+#+end_src
+********* randomSpawn
+#+begin_src lua
+  local function randomSpawn()
+     local xpos = math.random (-spawnRange, spawnRange)
+     local zpos = -20
+     local ypos = 40
+     local itemScript = script.Parent:FindFirstChild("ItemScript")
+     local itemClone = item:Clone()
+     local itemScriptClone = itemScript:Clone()
+     itemScriptClone.Parent = itemClone
+     itemClone.Parent = itemsFolder
+     itemClone.Position = Vector3.new(xpos, ypos, zpos)
+     itemClone.Anchored = false
+     createLabel(itemClone)
+  end
+#+end_src
+******** executions
+#+begin_src lua
+  WordEvent.OnServerEvent:Connect(onWordTyped)
+  for i = 1, itemCount do
+     randomSpawn()
+     task.wait(3) -- Small delay to prevent frame drops during mass tweening
+  end
+#+end_src
+****** ItemScript
+:properties:
+:header-args:lua: :tangle ./place3/src/server/Collectables/ItemScript.server.luau
+:END:
+******* notes
+Defines individual coin behavior (rotate, touch, reward).
+******* code
+******** variables
+#+begin_src lua
+  local itemBase = Instance.new("Part")
+  itemBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Items")
+  itemBase.Anchored = true
+  local item = Instance.new ("SpecialMesh")
+  item.Parent = itemBase
+  item.MeshId = "rbxassetid://7036807892"
+  item.TextureId = "rbxassetid://7036809674"
+  item.Scale = Vector3.new(0.3, 0.3, 0.3)
+  local rotationRate = 3
+  local Players = game:GetService("Players")
+  local itemFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Items")												    
+#+end_src
+******** functions
+********* rotate 
+#+begin_src lua
+  local function rotate()
+      script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
+  end
+#+end_src
+********* onTyped
+#+begin_src lua
+  local function onTyped(otherPart)
+     local character = otherPart.Parent
+     local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+     if humanoid then
+  	local player = Players:GetPlayerFromCharacter(character)
+  	if player then
+  	   local leaderstats = player:WaitForChild("leaderstats")
+  	   script.Parent:Destroy()
+  	   if leaderstats.CoinCount.Value < 500 then
+  	      if leaderstats.CoinCount.Value >= 10 then
+  		 leaderstats.CoinCount.Value = leaderstats.CoinCount.Value*2
+  		 humanoid.health += 25
+  	      else
+  		 leaderstats.CoinCount.Value += 50
+  		 humanoid.health += 50	
+  	      end		
+  	   else	
+  	      humanoid.health = humanoid.MaxHealth
+  	   end
+  	end
+     elseif character:IsA("Part") or character:IsA("MeshPart") then
+        script.Parent.Anchored = true
+     end
+  end
+#+end_src
+******** executions
+#+begin_src lua
+  if script.Parent.Parent == itemFolder then
+    task.wait(9)
+    script.Parent:Destroy()
+    --game:GetService("RunService").Heartbeat:Connect(rotate)
+  end
+#+end_src
+**** npcs
+**** obstacles
+**** establishments 
+***** terrain modifier
+****** TerrainModifierScript
+:properties:
+:header-args:lua: :tangle ./place3/src/server/Establishments/TerrainModifierScript.server.luau
+:END:
+******* notes
+Defines internal behavior of toolstands.
+******* code
+******** variables
+#+begin_src lua
+  local baseplate = game:GetService("Workspace"):FindFirstChild("Baseplate")
+  baseplate.Material = Enum.Material.Grass
+  baseplate.Color = Color3.new(0, 0.7, 0)
+  local texture = baseplate:WaitForChild("Texture")
+  texture:Destroy()
+#+end_src
+***** music
+****** MusicScript
+:properties:
+:header-args:lua: :tangle ./place3/src/server/Establishments/MusicScript.server.luau
+:END:
+******* notes
+Defines internal behavior of toolstands.
+******* code
+******** variables
+#+begin_src lua
+  local SoundService = game:GetService("SoundService")
+  local music = Instance.new("Sound")
+  music.Name = "BackgroundMusic"
+  music.SoundId = "rbxassetid://1836688089"
+  music.Volume = 0.5
+  music.Looped = true
+  music.Parent = SoundService
+#+end_src
+******** executions
+#+begin_src lua
+  -- Ensure the sound plays immediately upon server start
+  if not music.IsPlaying then
+     music:Play()
+     task.wait(2)
+  end
+#+end_src
+***** background
+****** BackgroundScript
+:properties:
+:header-args:lua: :tangle ./place3/src/server/Establishments/BackgroundScript.server.luau
+:END:
+******* notes
+Defines internal behavior of toolstands.
+******* code
+******** variables
+#+begin_src lua
+  local frontWall = Instance.new("Part")
+  frontWall.Name = "frontWall"
+  frontWall.Size = Vector3.new(88,88,2)
+  frontWall.Position = Vector3.new(0,-36,40)
+  local wallFolder = Instance.new("Folder")
+  wallFolder.Parent = game:GetService("Workspace")
+  wallFolder.Name = "Walls"
+  frontWall.Parent = wallFolder
+  local wallpaper = Instance.new("Decal")
+  wallpaper.Texture = "http://www.roblox.com/asset/?id=5993087930"
+  wallpaper.Parent = frontWall
+  wallpaper.Face = Enum.NormalId.Front
+#+end_src
+******** executions
+#+begin_src lua
+#+end_src
+**** tools
+**** events
+***** RemoteEvents
+:properties:
+:header-args:lua: :tangle ./place3/src/server/Events/RemoteEventManager.server.luau
+:END:
+******* notes
+Modified to use a list of 100  words. Implemented a "glow" effect using TweenService that pulsates each label's transparency and scale.
+******* code
+******** variables
+#+begin_src lua
+  local eventFolder = Instance.new("Folder")
+  eventFolder.Name = "Events"
+  eventFolder.Parent = game:GetService("ReplicatedStorage")
+  local event = Instance.new("RemoteEvent")
+  event.Name = "WordEvent"
+  event.Parent = eventFolder
+#+end_src
+******** functions
+******** executions
+**** ui
+***** leaderboard
+****** LeaderboardManager
+:properties:
+:header-args:lua: :tangle ./place3/src/server/UI/LeaderboardManager.server.luau
+:END:
+******* notes
+Standard leaderboard setup to track coins.
+******* code
+******** variables
+#+begin_src lua
+local players = game:GetService("Players")
+#+end_src
+******** functions
+********* onPlayerSpawn
+#+begin_src lua
+  local function onPlayerSpawn(player)
+      local leaderstats = Instance.new("Folder")
+      leaderstats.Name = "leaderstats"
+      leaderstats.Parent = player
+      local coinCount = Instance.new("IntValue")
+      coinCount.Name = "CoinCount"
+      coinCount.Parent = leaderstats
+      coinCount.Value = 0
+      -- Minimal Scripting: Toggle transparency on spawn
+	player.CharacterAdded:Connect(function(char)
+		for _, part in pairs(char:GetDescendants()) do
+		    if part:IsA("BasePart") or part:IsA("Decal") then
+			part.Transparency = 1
+		    end
+		end
+	end)
+  end
+#+end_src
+******** executions
+#+begin_src lua
+players.PlayerAdded:Connect(onPlayerSpawn)
+#+end_src
+*** client 
+**** player 
+***** UI 
+****** UIManager
+:properties:
+:header-args:lua: :tangle ./place3/src/client/UI.client.luau
+:END:
+******* notes
+Captures the TextBox input and fires the event.
+******* code
+******** variables
+#+begin_src lua
+    local player = game:GetService("Players").LocalPlayer
+    local WordEvent = game:GetService("ReplicatedStorage"):FindFirstChild("Events"):WaitForChild("WordEvent")
+    --player.CameraMode = Enum.CameraMode.LockFirstPerson
+    -- Create basic UI via script to keep file count low
+    local ContextActionService = game:GetService("ContextActionService")
+    local UserInputService = game:GetService("UserInputService")
+    -- Disable Movement Logic
+    local playerScripts = player:WaitForChild("PlayerScripts")
+    local PlayerModule = require(playerScripts:WaitForChild("PlayerModule"))
+    local controls = PlayerModule:GetControls()
+    controls:Disable() -- This locks WASD and Arrow Keys
+    -- Set Camera and Cursor
+    UserInputService.MouseIconEnabled = true
+    UserInputService.MouseBehavior = Enum.MouseBehavior.Default
+    local sg = Instance.new("ScreenGui", player.PlayerGui)
+    local frame = Instance.new("Frame")
+    frame.BackgroundColor3 = Color3.new(0.152941, 0.784313, 0.117647)
+    frame.Size = UDim2.new(0, 500, 0, 50)
+    frame.Position = UDim2.new(0.5, -150, 0.8, 0)
+    frame.Parent = sg
+    local tb = Instance.new("TextBox", sg)
+    tb.Size = UDim2.new(0, 300, 0, 50)
+    tb.Position = UDim2.new(0.5, -150, 0.8, 0)
+    tb.PlaceholderText = "Type here..."
+    tb.ClearTextOnFocus = true
+    tb.Parent = frame
+#+end_src
+******** functions
+#+begin_src lua
+  local function sinkInput()
+      return Enum.ContextActionResult.Sink
+  end
+#+end_src
+******** executions
+#+begin_src lua
+    -- Disable Mouse/Clicking Logic
+    ContextActionService:BindAction(
+        "DisableMouse",
+        sinkInput,
+        false,
+        Enum.UserInputType.MouseButton1,
+        Enum.UserInputType.MouseButton2,
+        Enum.UserInputType.Touch,
+        Enum.UserInputType.MouseWheel,
+        Enum.UserInputType.MouseMovement
+    )
+    -- Input handler
+    tb:CaptureFocus() -- Keep typing for fast gameplay
+    tb.InputEnded:Connect(function(input)
+    	if input.UserInputType == Enum.UserInputType.Keyboard then
+    	    if input.KeyCode == Enum.KeyCode.Return then
+    		WordEvent:FireServer(tb.Text)
+    		tb.Text = "" -- Reset box
+    		tb:CaptureFocus() -- Keep typing for fast gameplay
+    	    else
+    		return
+    	    end
+    	else
+    	    return
+    	end
+    end)
+#+end_src
+*** rojo
+**** default.project
+:properties:
+:header-args:json: :tangle ./default.project.json
+:END:
+***** code
+#+begin_src json
+{
+  "name": "lab",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+        "$path": "src/Shared"
+    },
+    "ServerScriptService": {
+        "$path": "src/Server"
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Client": {
+          "$path": "src/Client"
+        }
+      }
+    },
+    
+    "Workspace": {
+      "$path": "src/Workspace",
+      "Baseplate": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "Color": [0.38823, 0.37254, 0.38823],
+          "Locked": true,
+          "Position": [0, -10, 0],
+          "Size": [512, 20, 512]
+        }
+      }
+    },
+    "Lighting": {
+      "$properties": {
+        "Ambient": [
+          0,
+          0,
+          0
+        ],
+        "Brightness": 2,
+        "GlobalShadows": true,
+        "Outlines": false,
+        "Technology": "Voxel"
+      }
+    },
+    
+    "SoundService": {
+      "$properties": {
+        "RespectFilteringEnabled": true
+      }
+    }
+  }
+} 
+#+end_src
+
+** place4
+*** server
+**** collectibles
+***** item
+****** ItemManager
+:properties:
+:header-args:lua: :tangle ./place4/src/server/Collectables/ItemManager.server.luau
+:END:
+******* notes
+Modified to use a list of 100  words. Implemented a "glow" effect using TweenService that pulsates each label's transparency and scale.
+******* code
+******** variables
+#+begin_src lua
+      local TweenService = game:GetService("TweenService")
+      local ReplicatedStorage = game:GetService("ReplicatedStorage")
+      local Workspace = game:GetService("Workspace")
+      local item = ReplicatedStorage:WaitForChild("Collectables"):WaitForChild("Items"):WaitForChild("Part")
+      local itemsFolder = Workspace:WaitForChild("Collectables"):WaitForChild("Items")
+      local spawnRange = 48
+      local itemCount = 10 -- Updated to match the word list size
+      local Words = {"Aspirin", "Ibuprofen", "Naproxen", "Acetaminophen", "Morphine", "Codeine", "Fentanyl", "Tramadol", "Capsaicin", "Lidocaine", "Loratadine", "Cetirizine", "Diphenhydramine", "Fexofenadine", "Pseudoephedrine", "Guaifenesin", "Dextromethorphan", "Oxymetazoline", "Fluticasone", "Benzonatate", "Omeprazole", "Ranitidine", "Famotidine", "Antacid", "Simethicone", "Loperamide", "Bisacodyl", "Psyllium", "PeptoBismol", "Magnesium", "Amlodipine", "Lisinopril", "Metoprolol", "Atorvastatin", "Warfarin", "Clopidogrel", "Losartan", "Furosemide", "Digoxin", "Nitroglycerin", "Amoxicillin", "Azithromycin", "Cephalexin", "Ciprofloxacin", "Doxycycline", "Penicillin", "Nystatin", "Acyclovir", "Oseltamivir", "Amphotericin", "Insulin", "Metformin", "Glipizide", "Levothyroxine", "Prednisone", "Hydrocortisone", "Dexamethasone", "Estradiol", "Progesterone", "Testosterone", "Sertraline", "Fluoxetine", "Escitalopram", "Alprazolam", "Diazepam", "Lorazepam", "Quetiapine", "Lithium", "Bupropion", "Amitriptyline", "Bandage", "Antiseptic", "Thermometer", "Syringe", "Inhaler", "Nebulizer", "Ointment", "Alcohol", "Peroxide", "Iodine", "Multivitamin", "Calcium", "Probiotic", "Melatonin", "OmegaThree", "VitaminC", "VitaminD", "Biotin", "Zinc", "FolicAcid", "Prescription", "Generic", "Capsule", "Tablet", "Elixir", "Tincture", "Lotion", "Compress", "Glucose", "Saline"}
+      local Colors = {
+          Color3.new(1, 0, 0),    -- Red
+          Color3.new(0, 1, 0),    -- Green
+          Color3.new(1, 1, 1),    -- White
+          Color3.new(1, 0.84, 0), -- Gold
+          Color3.new(0, 0.75, 1)  -- Ice Blue
+      }
+#+end_src
+******** functions
+********* onWordTyped
+#+begin_src lua
+  local WordEvent = game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("WordEvent")
+  local function onWordTyped(player, typedWord)
+     -- Loop through all spawned items in the Workspace
+     for _, item in pairs(itemsFolder:GetChildren()) do
+        -- Compare typed text to the name assigned during createLabel
+        if item.Name:lower() == typedWord:lower() then
+  	 -- Award points (using logic from your ItemScript)
+  	 local leaderstats = player:FindFirstChild("leaderstats")
+  	 if leaderstats then
+  	    leaderstats.CoinCount.Value += 50
+  	 end
+  	 -- Visual feedback or simple destruction
+  	 item:Destroy()
+  	 print("Match found! Item " .. typedWord .. " collected by " .. player.Name)
+  	 break -- Only destroy one match per type
+        end
+     end
+  end
+#+end_src
+********* createLabel
+#+begin_src lua
+  local function createLabel(parentPart)
+     local billboard = Instance.new("BillboardGui")
+     billboard.Name = "Label"
+     billboard.Size = UDim2.new(0, 150, 0, 50)
+     billboard.Adornee = parentPart
+     billboard.AlwaysOnTop = true
+     billboard.ExtentsOffset = Vector3.new(0, 3, 0)
+     billboard.Parent = parentPart
+     local label = Instance.new("TextLabel")
+     label.Size = UDim2.new(1, 0, 1, 0)
+     label.BackgroundTransparency = 1
+     label.Font = Enum.Font.Arimo
+     label.TextSize = 18
+     label.RichText = true
+     -- Set random word and random glowing color
+     local randomWord = Words[math.random(1, #Words)]
+     local chosenColor = Colors[math.random(1, #Colors)]
+     label.TextColor3 = chosenColor
+     label.TextStrokeColor3 = chosenColor -- Matching stroke for the glow effect
+     label.TextStrokeTransparency = 0.5
+     label.Text = randomWord
+     parentPart.Name = label.Text
+     label.Parent = billboard
+     -- Create the Glow Animation
+     local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
+     local goal = {
+        TextStrokeTransparency = 0,
+        TextSize = 24
+     }
+     local tween = TweenService:Create(label, tweenInfo, goal)
+     tween:Play()
+     return billboard
+  end
+#+end_src
+********* randomSpawn
+#+begin_src lua
+  local function randomSpawn()
+     local xpos = math.random (-spawnRange, spawnRange)
+     local zpos = -20
+     local ypos = 40
+     local itemScript = script.Parent:FindFirstChild("ItemScript")
+     local itemClone = item:Clone()
+     local itemScriptClone = itemScript:Clone()
+     itemScriptClone.Parent = itemClone
+     itemClone.Parent = itemsFolder
+     itemClone.Position = Vector3.new(xpos, ypos, zpos)
+     itemClone.Anchored = false
+     createLabel(itemClone)
+  end
+#+end_src
+******** executions
+#+begin_src lua
+  WordEvent.OnServerEvent:Connect(onWordTyped)
+  for i = 1, itemCount do
+     randomSpawn()
+     task.wait(3) -- Small delay to prevent frame drops during mass tweening
+  end
+#+end_src
+****** ItemScript
+:properties:
+:header-args:lua: :tangle ./place4/src/server/Collectables/ItemScript.server.luau
+:END:
+******* notes
+Defines individual coin behavior (rotate, touch, reward).
+******* code
+******** variables
+#+begin_src lua
+  local itemBase = Instance.new("Part")
+  itemBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Items")
+  itemBase.Anchored = true
+  local item = Instance.new ("SpecialMesh")
+  item.Parent = itemBase
+  item.MeshId = "rbxassetid://16964238833"
+  item.TextureId = "rbxassetid://16964238915"
+  item.Scale = Vector3.new(1.5, 1.5, 1.5)
+  local rotationRate = 3
+  local Players = game:GetService("Players")
+  local itemFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Items")												    
+#+end_src
+******** functions
+********* rotate 
+#+begin_src lua
+  local function rotate()
+      script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
+  end
+#+end_src
+********* onTyped
+#+begin_src lua
+  local function onTyped(otherPart)
+     local character = otherPart.Parent
+     local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+     if humanoid then
+  	local player = Players:GetPlayerFromCharacter(character)
+  	if player then
+  	   local leaderstats = player:WaitForChild("leaderstats")
+  	   script.Parent:Destroy()
+  	   if leaderstats.CoinCount.Value < 500 then
+  	      if leaderstats.CoinCount.Value >= 10 then
+  		 leaderstats.CoinCount.Value = leaderstats.CoinCount.Value*2
+  		 humanoid.health += 25
+  	      else
+  		 leaderstats.CoinCount.Value += 50
+  		 humanoid.health += 50	
+  	      end		
+  	   else	
+  	      humanoid.health = humanoid.MaxHealth
+  	   end
+  	end
+     elseif character:IsA("Part") or character:IsA("MeshPart") then
+        script.Parent.Anchored = true
+     end
+  end
+#+end_src
+******** executions
+#+begin_src lua
+  if script.Parent.Parent == itemFolder then
+    task.wait(9)
+    script.Parent:Destroy()
+    --game:GetService("RunService").Heartbeat:Connect(rotate)
+  end
+#+end_src
+**** npcs
+**** obstacles
+**** establishments 
+***** terrain modifier
+****** TerrainModifierScript
+:properties:
+:header-args:lua: :tangle ./place4/src/server/Establishments/TerrainModifierScript.server.luau
+:END:
+******* notes
+Defines internal behavior of toolstands.
+******* code
+******** variables
+#+begin_src lua
+    local baseplate = game:GetService("Workspace"):FindFirstChild("Baseplate")
+    baseplate.Material = Enum.Material.Limestone
+    baseplate.Color = Color3.new(0.670588, 0.745098, 0.670588)
+    local texture = baseplate:WaitForChild("Texture")
+    texture:Destroy()
+#+end_src
+***** music
+****** MusicScript
+:properties:
+:header-args:lua: :tangle ./place4/src/server/Establishments/MusicScript.server.luau
+:END:
+******* notes
+Defines internal behavior of toolstands.
+******* code
+******** variables
+#+begin_src lua
+  local SoundService = game:GetService("SoundService")
+  local music = Instance.new("Sound")
+  music.Name = "BackgroundMusic"
+  music.SoundId = "rbxassetid://90221594357314"
+  music.Volume = 0.5
+  music.Looped = true
+  music.Parent = SoundService
+#+end_src
+******** executions
+#+begin_src lua
+  -- Ensure the sound plays immediately upon server start
+  if not music.IsPlaying then
+     music:Play()
+     task.wait(2)
+  end
+#+end_src
+***** background
+****** BackgroundScript
+:properties:
+:header-args:lua: :tangle ./place4/src/server/Establishments/BackgroundScript.server.luau
+:END:
+******* notes
+Defines internal behavior of toolstands.
+******* code
+******** variables
+#+begin_src lua
+  local frontWall = Instance.new("Part")
+  frontWall.Name = "frontWall"
+  frontWall.Size = Vector3.new(88,88,2)
+  frontWall.Position = Vector3.new(0,-36,40)
+  local wallFolder = Instance.new("Folder")
+  wallFolder.Parent = game:GetService("Workspace")
+  wallFolder.Name = "Walls"
+  frontWall.Parent = wallFolder
+  local wallpaper = Instance.new("Decal")
+  wallpaper.Texture = "http://www.roblox.com/asset/?id=5993087930"
+  wallpaper.Parent = frontWall
+  wallpaper.Face = Enum.NormalId.Front
+#+end_src
+******** executions
+#+begin_src lua
+#+end_src
+**** tools
+**** events
+***** RemoteEvents
+:properties:
+:header-args:lua: :tangle ./place4/src/server/Events/RemoteEventManager.server.luau
+:END:
+******* notes
+Modified to use a list of 100  words. Implemented a "glow" effect using TweenService that pulsates each label's transparency and scale.
+******* code
+******** variables
+#+begin_src lua
+  local eventFolder = Instance.new("Folder")
+  eventFolder.Name = "Events"
+  eventFolder.Parent = game:GetService("ReplicatedStorage")
+  local event = Instance.new("RemoteEvent")
+  event.Name = "WordEvent"
+  event.Parent = eventFolder
+#+end_src
+******** functions
+******** executions
+**** ui
+***** leaderboard
+****** LeaderboardManager
+:properties:
+:header-args:lua: :tangle ./place4/src/server/UI/LeaderboardManager.server.luau
+:END:
+******* notes
+Standard leaderboard setup to track coins.
+******* code
+******** variables
+#+begin_src lua
+local players = game:GetService("Players")
+#+end_src
+******** functions
+********* onPlayerSpawn
+#+begin_src lua
+  local function onPlayerSpawn(player)
+      local leaderstats = Instance.new("Folder")
+      leaderstats.Name = "leaderstats"
+      leaderstats.Parent = player
+      local coinCount = Instance.new("IntValue")
+      coinCount.Name = "CoinCount"
+      coinCount.Parent = leaderstats
+      coinCount.Value = 0
+      -- Minimal Scripting: Toggle transparency on spawn
+	player.CharacterAdded:Connect(function(char)
+		for _, part in pairs(char:GetDescendants()) do
+		    if part:IsA("BasePart") or part:IsA("Decal") then
+			part.Transparency = 1
+		    end
+		end
+	end)
+  end
+#+end_src
+******** executions
+#+begin_src lua
+players.PlayerAdded:Connect(onPlayerSpawn)
+#+end_src
+*** client 
+**** player 
+***** UI 
+****** UIManager
+:properties:
+:header-args:lua: :tangle ./place4/src/client/UI.client.luau
+:END:
+******* notes
+Captures the TextBox input and fires the event.
+******* code
+******** variables
+#+begin_src lua
+    local player = game:GetService("Players").LocalPlayer
+    local WordEvent = game:GetService("ReplicatedStorage"):FindFirstChild("Events"):WaitForChild("WordEvent")
+    --player.CameraMode = Enum.CameraMode.LockFirstPerson
+    -- Create basic UI via script to keep file count low
+    local ContextActionService = game:GetService("ContextActionService")
+    local UserInputService = game:GetService("UserInputService")
+    -- Disable Movement Logic
+    local playerScripts = player:WaitForChild("PlayerScripts")
+    local PlayerModule = require(playerScripts:WaitForChild("PlayerModule"))
+    local controls = PlayerModule:GetControls()
+    controls:Disable() -- This locks WASD and Arrow Keys
+    -- Set Camera and Cursor
+    UserInputService.MouseIconEnabled = true
+    UserInputService.MouseBehavior = Enum.MouseBehavior.Default
+    local sg = Instance.new("ScreenGui", player.PlayerGui)
+    local frame = Instance.new("Frame")
+    frame.BackgroundColor3 = Color3.new(0.152941, 0.784313, 0.117647)
+    frame.Size = UDim2.new(0, 500, 0, 50)
+    frame.Position = UDim2.new(0.5, -150, 0.8, 0)
+    frame.Parent = sg
+    local tb = Instance.new("TextBox", sg)
+    tb.Size = UDim2.new(0, 300, 0, 50)
+    tb.Position = UDim2.new(0.5, -150, 0.8, 0)
+    tb.PlaceholderText = "Type here..."
+    tb.ClearTextOnFocus = true
+    tb.Parent = frame
+#+end_src
+******** functions
+#+begin_src lua
+  local function sinkInput()
+      return Enum.ContextActionResult.Sink
+  end
+#+end_src
+******** executions
+#+begin_src lua
+    -- Disable Mouse/Clicking Logic
+    ContextActionService:BindAction(
+        "DisableMouse",
+        sinkInput,
+        false,
+        Enum.UserInputType.MouseButton1,
+        Enum.UserInputType.MouseButton2,
+        Enum.UserInputType.Touch,
+        Enum.UserInputType.MouseWheel,
+        Enum.UserInputType.MouseMovement
+    )
+    -- Input handler
+    tb:CaptureFocus() -- Keep typing for fast gameplay
+    tb.InputEnded:Connect(function(input)
+    	if input.UserInputType == Enum.UserInputType.Keyboard then
+    	    if input.KeyCode == Enum.KeyCode.Return then
+    		WordEvent:FireServer(tb.Text)
+    		tb.Text = "" -- Reset box
+    		tb:CaptureFocus() -- Keep typing for fast gameplay
+    	    else
+    		return
+    	    end
+    	else
+    	    return
+    	end
+    end)
+#+end_src
+*** rojo
+**** default.project
+:properties:
+:header-args:json: :tangle ./default.project.json
+:END:
+***** code
+#+begin_src json
+{
+  "name": "lab",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+        "$path": "src/Shared"
+    },
+    "ServerScriptService": {
+        "$path": "src/Server"
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Client": {
+          "$path": "src/Client"
+        }
+      }
+    },
+    
+    "Workspace": {
+      "$path": "src/Workspace",
+      "Baseplate": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "Color": [0.38823, 0.37254, 0.38823],
+          "Locked": true,
+          "Position": [0, -10, 0],
+          "Size": [512, 20, 512]
+        }
+      }
+    },
+    "Lighting": {
+      "$properties": {
+        "Ambient": [
+          0,
+          0,
+          0
+        ],
+        "Brightness": 2,
+        "GlobalShadows": true,
+        "Outlines": false,
+        "Technology": "Voxel"
+      }
+    },
+    
+    "SoundService": {
+      "$properties": {
+        "RespectFilteringEnabled": true
+      }
+    }
+  }
+} 
+#+end_src
+
+** place5
+*** server
+**** collectibles
+***** coins
+****** CoinManager
+:properties:
+:header-args:lua: :tangle ./place5/src/server/Collectables/CoinManager.server.luau
+:END:
+******* notes
+Spawns the coins into the world.
+******* code
+******** variables
+#+begin_src lua
+  local coin = game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Coins"):WaitForChild("Part")
+  local coinScript = script.Parent:FindFirstChild("CoinScript")
+  coinScript.Parent = coin
+  local coinsFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Coins")
+  local spawnRange = 48
+  local coinCount = 21
+#+end_src
+******** functions
+********* randomSpawn
+#+begin_src lua
+  local function randomSpawn()
+    local xpos = math.random (-spawnRange, spawnRange)
+    local zpos = math.random (-spawnRange, spawnRange)
+    local ypos = math.random (5, 30)
+    local coinClone = coin:Clone()
+    coinClone.Parent = coinsFolder
+    coinClone.Position = Vector3.new(xpos,ypos,zpos)
+    local coinScriptClone = coinClone:WaitForChild("CoinScript")
+    coinScriptClone.Parent = coinClone
+    return
+  end
+#+end_src
+********* movements
+#+begin_src lua
+  local function movements(collectablesClone)
+    local spinRate = math.rad
+    while true do
+  	-- Movement logic placeholder
+    end
+  end
+#+end_src
+******** executions
+#+begin_src lua
+  for i = 1, coinCount do
+      randomSpawn()
+  end
+#+end_src
+****** CoinScript
+:properties:
+:header-args:lua: :tangle ./place5/src/server/Collectables/CoinScript.server.luau
+:END:
+******* notes
+Defines individual coin behavior (rotate, touch, reward).
+******* code
+******** variables
+#+begin_src lua
+  local coinBase = Instance.new("Part")
+  coinBase.Parent =  game:GetService("ReplicatedStorage"):FindFirstChild("Collectables"):FindFirstChild("Coins")
+  coinBase.Anchored = true
+  local coin = Instance.new ("SpecialMesh")
+  coin.Parent = coinBase
+  coin.MeshId = "rbxassetid://71877336332186"
+  coin.TextureId = "rbxassetid://9460443119"
+  local rotationRate = 3
+  local Players = game:GetService("Players")
+  local coinFolder = game:GetService("Workspace"):FindFirstChild("Collectables"):FindFirstChild("Coins")
+#+end_src
+******** functions
+********* rotate 
+#+begin_src lua
+  local function rotate()
+      script.Parent.CFrame *= CFrame.Angles(0, rotationRate, 0)  
+  end
+#+end_src
+********* onTouched
+#+begin_src lua
+  local function onTouched(otherPart)
+      local character = otherPart.Parent
+      local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+      if humanoid then
+	local player = Players:GetPlayerFromCharacter(character)
+	if player then
+	  local leaderstats = player:WaitForChild("leaderstats")
+	  script.Parent:Destroy()
+	  leaderstats.CoinCount.Value += 10
+	end
+      end
+  end
+#+end_src
+******** executions
+#+begin_src lua
+  if script.Parent.Parent == coinFolder then
+    script.Parent.Touched:Connect(onTouched)
+    game:GetService("RunService").Heartbeat:Connect(rotate)
+  end
+#+end_src
+**** npcs
+***** patrols
+****** PatrolManager
+:properties:
+:header-args:lua: :tangle ./place5/src/server/NPCs/PatrolManager.server.luau
+:END:
+******* notes
+Spawns the Patrol NPCs.
+******* code
+******** variables
+#+begin_src lua
+  local patrol = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Patrols"):WaitForChild("Model")
+  local patrolScript = script.Parent:FindFirstChild("PatrolScript")
+  patrolScript.Parent = patrol
+  local patrolFolder =  game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Patrols") 
+  local spawnRange = 96
+  local patrolCount = 9
+#+end_src
+******** functions
+********* randomSpawn
+#+begin_src lua
+  local function  randomSpawn(index)
+      local xpos = math.random (-spawnRange, spawnRange)
+      local zpos = math.random (-spawnRange, spawnRange)
+      local ypos = 4
+      local patrolClone = patrol:Clone()
+      patrolClone.Parent = patrolFolder
+      patrolClone.Name = ("patrolClone_" .. tostring(index))
+      patrolClone.PrimaryPart = patrolClone:FindFirstChild("HumanoidRootPart")
+      patrolClone:PivotTo(CFrame.new(xpos,ypos,zpos))
+      return  
+  end
+#+end_src
+******** executions
+#+begin_src lua
+  for i = 1, patrolCount do
+      randomSpawn(i)
+  end
+#+end_src
+****** PatrolScript
+:PROPERTIES:
+:header-args:lua: :tangle ./place5/src/server/NPCs/PatrolScript.server.luau
+:END:
+******* notes
+FIXED LOGIC: This script builds the NPC body on the existing model (script.Parent) instead of creating a new ghost model in storage. This ensures hrp.Touched actually works in the Workspace.
+******* code
+******** variables
+#+begin_src lua
+  local StartingPosition = Vector3.new(0, 5, 0)
+  local Players = game:GetService("Players")
+#+end_src
+******** functions
+********* setupPatrolBody
+#+begin_src lua
+  local function createPatrol()
+      local patrol = Instance.new("Model")
+      patrol.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Patrols")
+      local hrp = Instance.new("Part")
+      hrp.Name = "HumanoidRootPart"
+      hrp.Size = Vector3.new(2, 2, 1)
+      hrp.Transparency = 1
+      hrp. CFrame = CFrame.new(StartingPosition)
+      hrp.Anchored = false
+      hrp.Parent = patrol
+      hrp.CanCollide = true
+      local humanoid = Instance.new("Humanoid")
+      humanoid.Parent = patrol
+      humanoid.WalkSpeed = 16
+      humanoid.JumpPower = 50
+      humanoid.Health = 100
+      patrol.PrimaryPart = hrp
+      local torso = Instance.new("Part")
+      torso.Name = "Torso"
+      torso.Size = Vector3.new(2, 2, 1)
+      torso.Color = Color3.new(1, 1, 0) -- yellow color for visibility(warning)
+      torso.Parent = patrol
+      local head = Instance.new("Part")
+      head.Name = "Head"
+      head.Size = Vector3.new(1, 1, 1)
+      head.Color = Color3.new(1, 0.8, 0.6) -- Skin color
+      head.Parent = patrol
+      local headMesh = Instance.new("SpecialMesh")
+      headMesh.MeshType = Enum.MeshType.Head
+      headMesh.Parent = head
+      local weld_hrp_torso = Instance.new("WeldConstraint")
+      weld_hrp_torso.Part0 = hrp
+      weld_hrp_torso.Part1 = torso
+      weld_hrp_torso.Parent = hrp
+      torso.CFrame = hrp.CFrame * CFrame.new(0, 1.5, 0)
+      head.CFrame = torso.CFrame * CFrame.new(0, 2, 0)
+      local weld_head_tosro = Instance.new("WeldConstraint")
+      weld_head_tosro.Part0 = head
+      weld_head_tosro.Part1 = torso
+      weld_head_tosro.Parent = torso
+      return patrol, hrp, humanoid,torso
+  end
+#+end_src
+********* onTouched
+#+begin_src lua
+  local function onTouched(otherPart)
+      local character = otherPart.Parent
+      if character and character:IsA("Model") then
+	  local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+	  if humanoid then
+	      local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
+	      if player then
+		  local leaderstats = player:WaitForChild("leaderstats")
+		  local coinCount = leaderstats:WaitForChild("CoinCount")
+		  leaderstats.CoinCount.Value -= 3
+		  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
+		  script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
+		  if coinCount.Value < 0 then
+		      humanoid.BreakJointsOnDeath = false
+		      humanoid.Health = humanoid.Health - 20
+		      coinCount.Value = 0
+		  end
+		  task.wait(5)
+		  script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
+		  script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
+	      end
+	  end
+      end
+  end
+#+end_src
+********* movement
+#+begin_src lua
+  local function movement()
+     local humanoid = script.Parent:FindFirstChild("Humanoid")
+     local hrp = script.Parent:FindFirstChild("HumanoidRootPart") 
+     StartingPosition = hrp.Position    
+     while true do
+	 local randomX = math.random(-50, 50)
+	 local randomZ = math.random(-50, 50)
+	 local targetPosition = StartingPosition + Vector3.new(randomX, 0, randomZ)
+	 humanoid:MoveTo(targetPosition)
+	 humanoid.MoveToFinished:Wait()
+	 task.wait(0.1)
+     end
+  end
+#+end_src
+******** executions
+#+begin_src lua
+  local patrol, hrp, humanoid,torso = createPatrol()
+  if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Patrols") then
+      script.Parent:FindFirstChild("HumanoidRootPart").Touched:Connect(onTouched)
+      task.spawn(movement)
+  end
+#+end_src
+***** clerks
+****** ClerkManager
+:properties:
+:header-args:lua: :tangle ./place5/src/server/NPCs/ClerkManager.server.luau
+:END:
+******* notes
+Spawns the Clerk NPCs.
+******* code
+******** variables
+#+begin_src lua
+  local clerk = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Clerks"):WaitForChild("Model")
+  local clerkScript = script.Parent:FindFirstChild("ClerkScript")
+  local dialogManager = script.Parent.Parent:FindFirstChild("UI"):FindFirstChild("DialogManager")
+  clerkScript.Parent = clerk
+  dialogManager.Parent = clerk
+  local clerkFolder =  game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Clerks") 
+  local spawnRange = 96
+  local clerkCount = 3
+#+end_src
+******** functions
+********* randomSpawn
+#+begin_src lua
+  local function  randomSpawn(index)
+      local xpos = math.random (-spawnRange, spawnRange)
+      local zpos = math.random (-spawnRange, spawnRange)
+      local ypos = 4
+      local clerkClone = clerk:Clone()
+      clerkClone.Parent = clerkFolder
+      clerkClone.Name = ("clerkClone_" .. tostring(index))
+      clerkClone.PrimaryPart = clerkClone:FindFirstChild("HumanoidRootPart")
+      clerkClone:PivotTo(CFrame.new(xpos,ypos,zpos))
+      return  
+  end
+#+end_src
+******** executions
+#+begin_src lua
+  for i = 1, clerkCount do
+      randomSpawn(i)
+  end
+#+end_src
+****** ClerkScript
+:PROPERTIES:
+:header-args:lua: :tangle ./place5/src/server/NPCs/ClerkScript.server.luau
+:END:
+******* notes
+Creates the logic for the store clerk which handles conversations.
+******* code
+******** variables
+#+begin_src lua
+  local StartingPosition = Vector3.new(0, 5, 0)
+  local Players = game:GetService("Players")  
+#+end_src
+******** functions
+********* setupPatrolBody
+#+begin_src lua
+  local function createclerk()
+      local clerk = Instance.new("Model")
+      clerk.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Clerks")
+      local hrp = Instance.new("Part")
+      hrp.Name = "HumanoidRootPart"
+      hrp.Size = Vector3.new(2, 2, 1)
+      hrp.Transparency = 1
+      hrp. CFrame = CFrame.new(StartingPosition)
+      hrp.Anchored = false
+      hrp.Parent = clerk
+      hrp.CanCollide = true
+      local humanoid = Instance.new("Humanoid")
+      humanoid.Parent = clerk
+      humanoid.WalkSpeed = 16
+      humanoid.JumpPower = 50
+      humanoid.Health = 100
+      clerk.PrimaryPart = hrp
+      local torso = Instance.new("Part")
+      torso.Name = "Torso"
+      torso.Size = Vector3.new(2, 2, 1)
+      torso.Color = Color3.new(0.243137, 0.509803, 0.858823) -- Red color for visibility
+      torso.Parent = clerk
+      local head = Instance.new("Part")
+      head.Name = "Head"
+      head.Size = Vector3.new(1, 1, 1)
+      head.Color = Color3.new(1, 0.8, 0.6) -- Skin color
+      head.Parent = clerk
+      local headMesh = Instance.new("SpecialMesh")
+      headMesh.MeshType = Enum.MeshType.Head
+      headMesh.Parent = head
+      local weld_hrp_torso = Instance.new("WeldConstraint")
+      weld_hrp_torso.Part0 = hrp
+      weld_hrp_torso.Part1 = torso
+      weld_hrp_torso.Parent = hrp
+      torso.CFrame = hrp.CFrame * CFrame.new(0, 1.5, 0)
+      head.CFrame = torso.CFrame * CFrame.new(0, 2, 0)
+      local weld_head_tosro = Instance.new("WeldConstraint")
+      weld_head_tosro.Part0 = head
+      weld_head_tosro.Part1 = torso
+      weld_head_tosro.Parent = torso
+      return clerk, hrp, humanoid,torso
+  end
+#+end_src
+******** executions
+#+begin_src lua
+  local clerk, hrp, humanoid,torso = createclerk()
+  if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Clerks") then
+  end
+#+end_src
+***** attackers
+****** AttackerManager
+:properties:
+:header-args:lua: :tangle ./place5/src/server/NPCs/AttackerManager.server.luau
+:END:
+******* notes
+Spawns the attacker NPCs.
+******* code
+******** variables
+#+begin_src lua
+  local attacker = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Attackers"):WaitForChild("Model")
+  local attackerScript = script.Parent:FindFirstChild("AttackerScript")
+  attackerScript.Parent = attacker
+  local attackerFolder =  game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Attackers") 
+  local spawnRange = 96
+  local attackerCount = 1
+#+end_src
+******** functions
+********* randomSpawn
+#+begin_src lua
+  local function  randomSpawn(index)
+      local xpos = math.random (-spawnRange, spawnRange)
+      local zpos = math.random (-spawnRange, spawnRange)
+      local ypos = 4
+      local attackerClone = attacker:Clone()
+      attackerClone.Parent = attackerFolder
+      attackerClone.Name = ("attackerClone_" .. tostring(index))
+      attackerClone.PrimaryPart = attackerClone:FindFirstChild("HumanoidRootPart")
+      attackerClone:PivotTo(CFrame.new(xpos,ypos,zpos))
+      return  
+  end
+#+end_src
+******** executions
+#+begin_src lua
+  for i = 1, attackerCount do
+      randomSpawn(i)
+  end
+#+end_src
+****** AttackerScript
+:PROPERTIES:
+:header-args:lua: :tangle ./place5/src/server/NPCs/AttackerScript.server.luau
+:END:
+******* notes
+Defines attacker behavior, creation, and logic.
+******* code
+******** variables
+#+begin_src lua
+  local StartingPosition = Vector3.new(0, 5, 0)
+  local Players = game:GetService("Players")
+  local targetDistance = math.random(70, 90)
+  local refreshRate = 0.001
+  local pathFindingService = game:GetService("PathfindingService")
+  local stopDistance = 3
+  local debris = game:GetService("Debris")
+#+end_src
+******** functions
+********* handleObstacle
+#+begin_src lua
+  local function handleObstacle(rigRootPart, targetPosition)
+     local rigHumanoid = rigRootPart.Parent:FindFirstChild("Humanoid")
+     rigHumanoid.Jump = true
+     local startPosition = rigRootPart.Position
+     local alternativeAngles = {
+	CFrame.Angles(0, math.rad(90), 0),
+	CFrame.Angles(0, math.rad(-90), 0),
+	CFrame.Angles(0, math.rad(135), 0),
+	CFrame.Angles(0, math.rad(180), 0)
+     }
+     for _, angle in ipairs(alternativeAngles) do
+	--local baseDirection = (targetPosition - rigRootPart.Position).Unit
+	local newDirection = (angle * CFrame.new((targetPosition - rigRootPart.Position).Unit)).Position.Unit
+	local newTargetPosition = rigRootPart.Position + newDirection * 15
+	rigHumanoid:MoveTo(newTargetPosition)
+	rigHumanoid.MoveToFinished:Wait()
+	if (rigRootPart.Position - startPosition).Magnitude > 0.5 then
+	   break
+	end
+     end
+  end
+#+end_src
+********* checkForObstacles
+#+begin_src lua
+  local function checkForObstacles(targetPosition,rigRootPart)
+    local origin = rigRootPart.Position
+    local rayParams = RaycastParams.new()
+    rayParams.FilterDescendantsInstances = {rigRootPart.Parent} -- Ignore self
+    rayParams.FilterType = Enum.RaycastFilterType.Exclude
+    local direction = (targetPosition - rigRootPart.Position).Unit * 3
+    local rayResult = workspace:Raycast(origin, direction, rayParams)
+    if rayResult and rayResult.Instance then
+	if rayResult.Instance.CanCollide then
+	    handleObstacle(rigRootPart, targetPosition)
+	end
+    end
+  end
+#+end_src
+********* checkDistance
+#+begin_src lua
+  local function checkDistance(playerRootPart, rigRootPart)
+      return (playerRootPart.Position - rigRootPart.Position).Magnitude
+  end
+#+end_src
+********* visualizePath
+#+begin_src lua
+  local function visualizePath(waypoint)
+      local part = Instance.new("Part")
+      part.Position = waypoint.Position
+      part.Size = Vector3.new(0.5, 0.5, 0.5)
+      part.Color = Color3.new(0, 0, 0)
+      part.Anchored = true
+      part.CanCollide = false
+      part.Parent = workspace
+      debris:AddItem(part, 0.1)
+  end
+#+end_src
+********* moveToPlayer
+#+begin_src lua
+  local function moveToPlayer(playerRootPart, rigRootPart)
+     local rigHumanoid = rigRootPart.Parent:FindFirstChild("Humanoid")
+     local path = pathFindingService:CreatePath({
+	   AgentRadius = 0.1,
+	   AgentHeight = 0.1,
+	   AgentCanJump = true,
+	   AgentCanClimb = true,
+	   AgentJumpHeight = 7.2,
+	   AgentMaxSlope = 89,
+	   WaypointSpacing = 0.1,
+	   Costs = { plastic = 3 }
+     })
+     local success, errorMessage = pcall(function()
+	   path:ComputeAsync(rigRootPart.Position, playerRootPart.Position)
+     end)     
+     if success and path.Status == Enum.PathStatus.Success then
+	for _, waypoint in pairs(path:GetWaypoints()) do
+	   visualizePath(waypoint)
+	   local distance = checkDistance(playerRootPart, rigRootPart)
+	   local targetPosition = (distance <= stopDistance)
+	      and playerRootPart.Position + (rigRootPart.Position - playerRootPart.Position).Unit * stopDistance
+	      or waypoint.Position
+	   rigHumanoid:MoveTo(targetPosition)
+	    checkForObstacles(targetPosition, rigRootPart)
+	    rigRootPart.CFrame = CFrame.lookAt(rigRootPart.Position, playerRootPart.Position)
+	end
+     else
+	warn("-ErRoR 403: Pathfinding failed -")
+     end
+  end
+#+end_src
+********* createAttacker
+#+begin_src lua
+  local function createAttacker()
+      local attacker = Instance.new("Model")
+      attacker.Parent = game:GetService("ReplicatedStorage"):FindFirstChild("NPCs"):FindFirstChild("Attackers")
+      local hrp = Instance.new("Part")
+      hrp.Name = "HumanoidRootPart"
+      hrp.Size = Vector3.new(2, 2, 1)
+      hrp.Transparency = 1
+      hrp. CFrame = CFrame.new(StartingPosition)
+      hrp.Anchored = false
+      hrp.Parent = attacker
+      hrp.CanCollide = true
+      local humanoid = Instance.new("Humanoid")
+      humanoid.Parent = attacker
+      humanoid.WalkSpeed = 16
+      humanoid.JumpPower = 50
+      humanoid.Health = 100
+      attacker.PrimaryPart = hrp
+      local torso = Instance.new("Part")
+      torso.Name = "Torso"
+      torso.Size = Vector3.new(2, 2, 1)
+      torso.Color = Color3.new(1, 0, 0) -- Red color for visibility(Kill)
+      torso.Parent = attacker
+      local head = Instance.new("Part")
+      head.Name = "Head"
+      head.Size = Vector3.new(1, 1, 1)
+      head.Color = Color3.new(1, 0.8, 0.6) -- Skin color
+      head.Parent = attacker
+      local headMesh = Instance.new("SpecialMesh")
+      headMesh.MeshType = Enum.MeshType.Head
+      headMesh.Parent = head
+      local weld_hrp_torso = Instance.new("WeldConstraint")
+      weld_hrp_torso.Part0 = hrp
+      weld_hrp_torso.Part1 = torso
+      weld_hrp_torso.Parent = hrp
+      torso.CFrame = hrp.CFrame * CFrame.new(0, 1.5, 0)
+      head.CFrame = torso.CFrame * CFrame.new(0, 2, 0)
+      local weld_head_tosro = Instance.new("WeldConstraint")
+      weld_head_tosro.Part0 = head
+      weld_head_tosro.Part1 = torso
+      weld_head_tosro.Parent = torso
+      return attacker, hrp, humanoid,torso
+  end
+#+end_src
+********* onTouched
+#+begin_src lua
+  local function onTouched(otherPart)
+    local character = otherPart.Parent
+    if character and character:IsA("Model") then
+	local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+	if humanoid then
+	    local player = Players:GetPlayerFromCharacter(character)  -- Character's parent is the Player
+	    if player then
+		script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = false
+		script.Parent:FindFirstChild("Torso").Color = Color3.new(0.152941, 0.784313, 0.117647) 
+		humanoid.BreakJointsOnDeath = false
+		humanoid.Health = 0
+		task.wait(5)
+		script.Parent:FindFirstChild("Torso").Color = Color3.new(1, 0, 0)
+		script.Parent:FindFirstChild("HumanoidRootPart").CanTouch = true 
+	    end
+	end
+    end
+  end
+#+end_src
+********* movement
+#+begin_src lua
+  local function movement()
+     local humanoid = script.Parent:FindFirstChild("Humanoid")
+     local hrp = script.Parent:FindFirstChild("HumanoidRootPart") 
+     StartingPosition = hrp.Position    
+     while true do
+	 local randomX = math.random(-50, 50)
+	 local randomZ = math.random(-50, 50)
+	 local targetPosition = StartingPosition + Vector3.new(randomX, 0, randomZ)
+	 humanoid:MoveTo(targetPosition)
+	 humanoid.MoveToFinished:Wait()
+	 task.wait(0.1)
+     end
+  end
+#+end_src
+********* getClosestPlayer
+#+begin_src lua
+  local function getClosestPlayer(rigRootPart)
+      local closestPlayer = nil
+      local closestDistance = math.huge
+      for _, player in ipairs(Players:GetPlayers()) do
+  		local character = player.Character
+  		if character and character:FindFirstChild("HumanoidRootPart") then
+  			local distance = (character.HumanoidRootPart.Position - rigRootPart.Position).Magnitude
+  			if distance < closestDistance then
+  			closestDistance = distance
+  			closestPlayer = player
+  			print("Found a player at distance:", closestDistance)
+  			end
+  		end
+      end
+      return closestPlayer, closestDistance
+  end
+#+end_src
+******** executions
+#+begin_src lua
+  createAttacker()
+  if script.Parent.Parent == game.Workspace:FindFirstChild("NPCs"):FindFirstChild("Attackers") then
+     script.Parent:FindFirstChild("HumanoidRootPart").Touched:Connect(onTouched)     
+     local rigRootPart = script.Parent:FindFirstChild("HumanoidRootPart")
+     -- task.spawn(movement)
+     while true do
+	local closestPlayer, closestDistance = getClosestPlayer(rigRootPart)
+	if closestPlayer and closestPlayer.Character then
+	   local playerRootPart = closestPlayer.Character:WaitForChild("HumanoidRootPart")
+	   if closestDistance <= targetDistance then
+	      moveToPlayer(playerRootPart, rigRootPart)
+	   end
+	end
+	task.wait(refreshRate)
+     end
+  end
+#+end_src
+**** obstacles
+**** establishments 
+***** tool shop 
+****** ToolShopManager
+:properties:
+:header-args:lua: :tangle ./place5/src/server/Establishments/ToolShopManager.server.luau
+:END:
+******* notes
+virtual space for clerks to interact with players
+******* code
+******** variables
+********* remote events
+#+begin_src lua
+  local replicatedStorage = game:GetService("ReplicatedStorage")
+  local dialogChoiceEvent = Instance.new("RemoteEvent")
+  dialogChoiceEvent.Name = "DialogChoiceEvent"
+  dialogChoiceEvent.Parent = replicatedStorage
+  local tradingEvent = Instance.new("RemoteEvent")
+  tradingEvent.Name = "TradingEvent"
+  tradingEvent.Parent = replicatedStorage
+  local displayItemsEvent = Instance.new("RemoteEvent")
+  displayItemsEvent.Name = "DisplayItemsEvent"
+  displayItemsEvent.Parent = replicatedStorage
+  local feedbackMessageEvent = Instance.new("RemoteEvent")
+  feedbackMessageEvent.Name = "FeedbackMessageEvent"
+  feedbackMessageEvent.Parent = replicatedStorage
+  local PlayerFinderEvent = Instance.new("RemoteEvent")
+  PlayerFinderEvent.Name = "PlayerFinderEvent"
+  PlayerFinderEvent.Parent = replicatedStorage 
+  local WireTransferEvent = Instance.new("RemoteEvent")
+  WireTransferEvent.Name = "WireTransferEvent"
+  WireTransferEvent.Parent = replicatedStorage
+  local MoneyReciverEvent = Instance.new("RemoteEvent")
+  MoneyReciverEvent.Name = "MoneyReciverEvent"
+  MoneyReciverEvent.Parent = replicatedStorage
+#+end_src
+********* store manager variables 
+#+begin_src lua
+  -- local npc = workspace.Store:WaitForChild("NPC")
+  -- local dialog = npc:WaitForChild("Head"):WaitForChild("Dialog")
+  local depreciationRate = 0.5
+#+end_src
+******** functions
+********* onDialog
+#+begin_src lua
+  local function onDialog(player)
+      --   print(player.Name.. "selected: " .. choiceName)
+      --   local items = {}
+      --   local itemsData = {}
+      --   if choiceName == "Buy" then
+	  --       items = itemsFolder:GetChildren()
+	  --       print(items)
+      --   elseif  choiceName == "Sell"  then
+	  --       items = player.Backpack:GetChildren()
+      --   end
+      --   for _, item in ipairs(items) do
+	  --       local config = item:FindFirstChild("Configuration")
+	  --       if config and config:FindFirstChild("BuyPrice") then
+	  -- 	      local buyPrice = config.BuyPrice.Value
+	  -- 	      local sellPrice = math.round(buyPrice * depreciationRate) 
+	  -- 	  table.insert(itemsData, {Name = item.Name, BuyPrice = buyPrice , SellPrice = sellPrice})
+	  --       end
+      --   end
+      --   print(itemsData)
+      --   print( "test from aaron")
+      --   displayItemsEvent:FireClient(player, itemsData, choiceName)
+	displayItemsEvent:FireClient(player, "Server got your message!")
+  end  
+#+end_src
+********* onTrading
+#+begin_src  lua
+  local function onTrading(player, itemName, choiceName)
+      --   local playerStats = player:WaitForChild("leaderstats")
+      --   if playerStats then
+	  --       local coins = playerStats:FindFirstChild("Coin")
+	  --       local item = itemsFolder:FindFirstChild(itemName)
+	  --       if coins and item then
+	  -- 	      local config = item:FindFirstChild("Configuration")
+	  -- 	      if config and config:FindFirstChild("BuyPrice") then
+	  -- 		      local buyPrice = config.BuyPrice.Value
+	  -- 		      local sellPrice = math.round(buyPrice * depreciationRate)
+	  -- 		      if choiceName == "Buy" then
+	  -- 			      if coins.Value >= buyPrice then
+	  -- 				      coins.Value = coins.Value - buyPrice
+	  -- 				      local itemClone = item:Clone()
+	  -- 				      itemClone.Parent = player.Backpack
+	  -- 				      print(player.name .. " purchased " .. itemName " for " .. buyPrice)
+	  -- 			      end
+	  -- 		      end
+	  -- 	      end
+	  --       else
+	  -- 	      warn("coins or items not found!")
+	  --       end
+      --   end
+  end
+#+end_src
+******** execution
+#+begin_src lua
+  dialogChoiceEvent.OnServerEvent:Connect(onDialog)
+--tradingEvent.onServerEvent:Connect(onTrading)
+#+end_src
+***** terrain modifier
+****** TerrainModifierScript
+:properties:
+:header-args:lua: :tangle ./place5/src/server/Establishments/TerrainModifierScript.server.luau
+:END:
+******* notes
+Defines internal behavior of toolstands.
+******* code
+******** variables
+#+begin_src lua
+  local baseplate = game:GetService("Workspace"):FindFirstChild("Baseplate")
+  baseplate.Material = Enum.Material.Grass
+  baseplate.Color = Color3.new(0, 0.7, 0)
+  local texture = baseplate:WaitForChild("Texture")
+  texture:Destroy()
+#+end_src
+******** functions 
+******** executions 
+**** tools
+**** ui
+***** dialog
+****** DialogManager
+:properties:
+:header-args:lua: :tangle ./place5/src/server/UI/DialogManager.server.luau
+:END:
+******* notes
+creates dialog
+******* code
+******** variables
+#+begin_src lua
+  if script.Parent.Parent == game:GetService("Workspace"):FindFirstChild("NPCs") :FindFirstChild("Clerks") then 
+      local npc = script.Parent 
+      local dialog = Instance.new("Dialog")
+      dialog.BehaviorType = Enum.DialogBehaviorType.MultiplePlayers
+      dialog.InitialPrompt = "Welcome to Aaron's Tool and Gadgets! I am Mac. "
+      dialog.Parent = npc.Head
+      local buyChoice = Instance.new("DialogChoice")
+      buyChoice.UserDialog = "I want to buy a tool"
+      buyChoice.ResponseDialog = "Here are the items available:"
+      buyChoice.Name = "Buy"
+      buyChoice.Parent = dialog 
+      local sellChoice = Instance.new("DialogChoice")
+      sellChoice.UserDialog = "I want to sell some items."
+      sellChoice.ResponseDialog = "Ok, which items do you want to sell? "
+      sellChoice.Name = "Sell"
+      sellChoice.Parent = dialog
+  end
+#+end_src
+******** functions
+******** executions
+***** leaderboard
+****** LeaderboardManager
+:properties:
+:header-args:lua: :tangle ./place5/src/server/UI/LeaderboardManager.server.luau
+:END:
+******* notes
+Standard leaderboard setup to track coins.
+******* code
+******** variables
+#+begin_src lua
+local players = game:GetService("Players")
+#+end_src
+******** functions
+********* onPlayerSpawn
+#+begin_src lua
+local function onPlayerSpawn(player)
+local leaderstats = Instance.new("Folder")
+leaderstats.Name = "leaderstats"
+leaderstats.Parent = player
+local coinCount = Instance.new("IntValue")
+coinCount.Name = "CoinCount"
+coinCount.Parent = leaderstats
+coinCount.Value = 0
+end
+#+end_src
+******** executions
+#+begin_src lua
+players.PlayerAdded:Connect(onPlayerSpawn)
+#+end_src
+*** client 
+**** player 
+***** PlayerScript
+:PROPERTIES:
+:header-args:lua: :tangle ./place5/src/client/PlayerScript.client.luau
+:END:
+****** notes
+Handles client-side logic, including listening for dialog selections, notifying the server, and processing the server's response.
+****** code
+******* variables
+#+begin_src lua
+  local Players = game:GetService("Players")
+  local ReplicatedStorage = game:GetService("ReplicatedStorage")
+  local Workspace = game:GetService("Workspace")
+  local player = Players.LocalPlayer
+  -- Wait for the events to be created by the server script (ToolShopManager)
+  local dialogChoiceEvent = ReplicatedStorage:WaitForChild("DialogChoiceEvent")
+  local displayItemsEvent = ReplicatedStorage:WaitForChild("DisplayItemsEvent")
+#+end_src
+******* functions
+******** onServerResponse
+#+begin_src lua
+  local function onServerResponse(data)
+     -- This triggers when the server fires back via displayItemsEvent
+	print("recieved request from server.")
+     -- You can process the 'data' here (e.g., open a GUI)
+  end
+#+end_src
+******** onDialogChoiceSelected
+#+begin_src lua
+  local function onDialogChoiceSelected(dialog, choice)
+     -- Check if the choice is relevant (Buy/Sell)
+	if choice.Name == "Buy" or choice.Name == "Sell" then
+	   -- Fire the server so it knows what we picked
+	      dialogChoiceEvent:FireServer(choice.Name)
+	end
+  end
+#+end_src
+******** setupDialogListeners
+#+begin_src lua
+  local function setupDialogListeners()
+    -- Look for existing NPCs with Dialogs
+	for _, npc in pairs(Workspace:WaitForChild("NPCs"):WaitForChild("Clerks"):GetChildren()) do
+	    if npc.Name ~= "Script" then
+		local head = npc:WaitForChild("Head")
+		local dialog = head:FindFirstChild("Dialog")
+		if dialog then
+		    dialog.DialogChoiceSelected:Connect(function(player, choice)
+		    onDialogChoiceSelected(dialog, choice)
+		    end)
+		end
+	    end
+	end
+    -- Handle new NPCs added later (if any)
+	Workspace.NPCs.Clerks.ChildAdded:Connect(function(npc)
+	    local head = npc:WaitForChild("Head")
+	    local dialog = head:WaitForChild("Dialog")
+	    dialog.DialogChoiceSelected:Connect(function(player, choice)
+	    onDialogChoiceSelected(dialog, choice)
+	    end)
+	end)
+  end
+#+end_src
+******* executions
+#+begin_src lua
+  -- Connect the listener for the server response
+     displayItemsEvent.OnClientEvent:Connect(onServerResponse)
+  -- Initialize listeners for Dialog interactions
+     setupDialogListeners()
+#+end_src
+*** rojo
+**** default.project
+:properties:
+:header-args:json: :tangle ./default.project.json
+:END:
+***** code
+#+begin_src json
+{
+  "name": "lab",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+        "$path": "src/Shared"
+    },
+    "ServerScriptService": {
+        "$path": "src/Server"
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Client": {
+          "$path": "src/Client"
+        }
+      }
+    },
+    
+    "Workspace": {
+      "$path": "src/Workspace",
+      "Baseplate": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "Color": [0.38823, 0.37254, 0.38823],
+          "Locked": true,
+          "Position": [0, -10, 0],
+          "Size": [512, 20, 512]
+        }
+      }
+    },
+    "Lighting": {
+      "$properties": {
+        "Ambient": [
+          0,
+          0,
+          0
+        ],
+        "Brightness": 2,
+        "GlobalShadows": true,
+        "Outlines": false,
+        "Technology": "Voxel"
+      }
+    },
+    
+    "SoundService": {
+      "$properties": {
+        "RespectFilteringEnabled": true
+      }
+    }
+  }
+} 
+#+end_src
+
+** place6
+*** server
+**** farming
+***** plots
+****** PlotManager
+:properties:
+:header-args:lua: :tangle ./place6/src/server/Farming/PlotManager.server.luau
+:END:
+******* notes
+Generates the initial grid of farmable land plots.
+******* code
+******** variables
+#+begin_src lua
+  local ReplicatedStorage = game:GetService("ReplicatedStorage")
+  local Workspace = game:GetService("Workspace")
+
+  -- Create folder for plots
+  local plotsFolder = Instance.new("Folder")
+  plotsFolder.Name = "FarmPlots"
+  plotsFolder.Parent = Workspace
+
+  -- Define plot template (or load from storage if you prefer prefab)
+  local plotTemplate = Instance.new("Part")
+  plotTemplate.Name = "Plot"
+  plotTemplate.Size = Vector3.new(8, 1, 8)
+  plotTemplate.Anchored = true
+  plotTemplate.Material = Enum.Material.Grass
+  plotTemplate.Color = Color3.fromRGB(75, 150, 75) -- Base Fertile Color
+
+  local plotFloor = Instance.new("Part")
+  plotFloor.Name = "Floor"
+  plotFloor.Size = Vector3.new(9, 0.5, 9)
+  plotFloor.Anchored = true
+  plotFloor.Material = Enum.Material.Ground
+  plotFloor.Color = Color3.fromRGB(61,40,3)
+
+  -- Add ClickDetector
+  local cd = Instance.new("ClickDetector")
+  cd.Parent = plotTemplate
+
+  -- Add Configuration values
+  local status = Instance.new("StringValue")
+  status.Name = "Status"
+  status.Value = "Empty" -- Empty, Growing
+  status.Parent = plotTemplate
+
+  -- Grid Settings
+  local gridSize = 4 -- 4x4 grid
+  local spacing = 10
+  local startPos = Vector3.new(0, 0.5, 0)
+#+end_src
+******** functions
+********* spawnGrid
+#+begin_src lua
+  local function spawnGrid()
+  for x = 1, gridSize do
+  for z = 1, gridSize do
+  local newPlot = plotTemplate:Clone()
+  newPlot.Position = startPos + Vector3.new((x - 1) * spacing, 0, (z - 1) * spacing)
+  newPlot.Parent = plotsFolder
+  plotFloor.Position = startPos + Vector3.new((x - 1) * spacing, 0, (z - 1) * spacing)
+  plotFloor.Parent = newPlot
+
+
+            -- Inject logic script
+            local logicScript = script.Parent:FindFirstChild("PlotScript")
+            if logicScript then
+                local cloneScript = logicScript:Clone()
+                cloneScript.Parent = newPlot
+                cloneScript.Enabled = true
+            end
+        end
+    end
+  end
+#+end_src
+******** executions
+#+begin_src lua
+spawnGrid()
+#+end_src
+****** PlotScript
+:properties:
+:header-args:lua: :tangle ./place6/src/server/Farming/PlotScript.server.luau
+:END:
+******* notes
+Handles the lifecycle of a single crop on a plot: Plant -> Grow -> Auto-Sell.
+******* code
+******** variables
+#+begin_src lua
+local plot = script.Parent
+local clickDetector = plot:WaitForChild("ClickDetector")
+local status = plot:WaitForChild("Status")
+
+-- Crop Configuration (As defined in design doc)
+local CropData = {
+["Tomato"] = {
+Cost = 5,
+BaseSellValue = 15,
+BaseDelay = 3,
+Color = Color3.fromRGB(255, 0, 0) -- Red
+},
+["Corn"] = {
+Cost = 50,
+BaseSellValue = 120,
+BaseDelay = 5,
+Color = Color3.fromRGB(255, 255, 0) -- Yellow
+},
+["Blueberry"] = {
+Cost = 150,
+BaseSellValue = 400,
+BaseDelay = 8,
+Color = Color3.fromRGB(0, 0, 255) -- Blue
+}
+}
+
+-- Default selected crop (could be stored in player data later)
+local currentSelectedCrop = "Tomato"
+#+end_src
+******** functions
+********* getLandModifier
+#+begin_src lua
+local function getLandModifier()
+-- In the future, check if this plot is on "Barren" or "Fertile" land
+-- For now, default to 1.0
+return 1.0
+end
+#+end_src
+********* plantCrop
+#+begin_src lua
+local function plantCrop(player)
+if status.Value ~= "Empty" then return end
+
+  local leaderstats = player:FindFirstChild("leaderstats")
+  if not leaderstats then return end
+  
+  local cash = leaderstats:FindFirstChild("Cash")
+  local data = CropData[currentSelectedCrop]
+  
+  if cash and cash.Value >= data.Cost then
+      -- Deduct Cost
+      cash.Value -= data.Cost
+      
+      -- Start Growth
+      status.Value = "Growing"
+      local originalColor = plot.Color
+      
+      -- Visual Indicator of growth (Change color to crop color)
+      plot.Color = data.Color
+      plot.Material = Enum.Material.Plastic -- Look synthetic while growing?
+      
+      -- Calculate time based on land quality
+      local landModifier = getLandModifier()
+      local finalDelay = data.BaseDelay / landModifier
+      
+      -- Wait for growth
+      task.wait(finalDelay)
+      
+      -- Auto-Sell Logic
+      local sellPrice = math.floor(data.BaseSellValue * landModifier)
+      cash.Value += sellPrice
+      
+      -- Reset Plot
+      plot.Color = originalColor
+      plot.Material = Enum.Material.Grass
+      status.Value = "Empty"
+      
+      -- Feedback
+      print(player.Name .. " harvested " .. currentSelectedCrop .. " for $" .. sellPrice)
+  else
+      print("Not enough cash to plant " .. currentSelectedCrop)
+  end
+end
+#+end_src
+******** executions
+#+begin_src lua
+clickDetector.MouseClick:Connect(plantCrop)
+#+end_src
+**** ui
+***** leaderboard
+****** LeaderboardManager
+:properties:
+:header-args:lua: :tangle ./place6/src/server/UI/LeaderboardManager.server.luau
+:END:
+******* notes
+Standard leaderboard to track Cash for the economy.
+******* code
+******** variables
+#+begin_src lua
+local Players = game:GetService("Players")
+#+end_src
+******** functions
+********* onPlayerAdded
+#+begin_src lua
+local function onPlayerAdded(player)
+local leaderstats = Instance.new("Folder")
+leaderstats.Name = "leaderstats"
+leaderstats.Parent = player
+
+  local cash = Instance.new("IntValue")
+  cash.Name = "Cash"
+  cash.Value = 10 -- Starting capital to buy first Tomato
+  cash.Parent = leaderstats
+end
+#+end_src
+******** executions
+#+begin_src lua
+Players.PlayerAdded:Connect(onPlayerAdded)
+#+end_src
+**** upgrades
+***** mystery
+****** MysteryBoxManager
+:properties:
+:header-args:lua: :tangle ./place6/src/server/Upgrades/MysteryBoxManager.server.luau
+:END:
+******* notes
+Implements the "Slot Machine" mechanic for random rewards.
+******* code
+******** variables
+#+begin_src lua
+local boxPart = Instance.new("Part")
+boxPart.Name = "MysteryBox"
+boxPart.Size = Vector3.new(4, 4, 4)
+boxPart.Position = Vector3.new(0, 2, -15) -- Placed away from plots
+boxPart.Color = Color3.fromRGB(148, 0, 211) -- Purple
+boxPart.Material = Enum.Material.Neon
+boxPart.Anchored = true
+boxPart.Parent = game:GetService("Workspace")
+
+local cd = Instance.new("ClickDetector")
+cd.Parent = boxPart
+
+local spinCost = 50
+#+end_src
+******** functions
+********* spinWheel
+#+begin_src lua
+local function spinWheel(player)
+local leaderstats = player:FindFirstChild("leaderstats")
+if not leaderstats then return end
+local cash = leaderstats:FindFirstChild("Cash")
+
+  if cash.Value >= spinCost then
+      cash.Value -= spinCost
+      
+      -- Risk vs Reward Logic
+      local chance = math.random(1, 100)
+      if chance <= 50 then
+          -- 50% chance to lose (get nothing or very little)
+          print("Bad luck!")
+      elseif chance <= 80 then
+          -- 30% chance to break even or small profit
+          cash.Value += math.random(40, 80)
+          print("Small Win!")
+      elseif chance <= 95 then
+          -- 15% chance for big win
+          cash.Value += math.random(100, 200)
+          print("Big Win!")
+      else
+          -- 5% chance for Jackpot
+          cash.Value += 1000
+          print("JACKPOT!")
+      end
+  end
+end
+#+end_src
+******** executions
+#+begin_src lua
+cd.MouseClick:Connect(spinWheel)
+#+end_src
+*** shared
+*** client
+**** ui
+***** BottomBar
+****** BottomBarScript
+:properties:
+:header-args:lua: :tangle ./place6/src/client/UI/BottomBarScript.client.luau
+:END:
+******* notes
+Creates a ScreenGui with a container at the bottom of the screen holding three buttons: A, B, and C.
+******* code
+******** variables
+#+begin_src lua
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+#+end_src
+******** createGui
+#+begin_src lua
+local function createGui()
+-- 1. Create the ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "BottomButtonsUI"
+screenGui.Parent = playerGui
+screenGui.ResetOnSpawn = false
+
+-- 2. Create a Container Frame (Centered at the bottom)
+local container = Instance.new("Frame")
+container.Name = "Container"
+container.Size = UDim2.new(1, 0, 0.15, 0) -- Takes up bottom 15% of screen
+container.Position = UDim2.new(0, 0, 0.85, 0)
+container.BackgroundTransparency = 1 -- Invisible container
+container.Parent = screenGui
+
+-- 3. Add Layout (Horizontal List)
+local layout = Instance.new("UIListLayout")
+layout.Parent = container
+layout.FillDirection = Enum.FillDirection.Horizontal
+layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+layout.VerticalAlignment = Enum.VerticalAlignment.Center
+layout.Padding = UDim.new(0, 20) -- Space between buttons
+
+-- 4. Create Buttons A, B, and C
+local buttonLabels = {"Tomato", "Corn", "Blueberry"}
+
+for _, label in ipairs(buttonLabels) do
+local btn = Instance.new("TextButton")
+btn.Name = "Button" .. label
+btn.Parent = container
+btn.Size = UDim2.new(0, 100, 0, 60)
+btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+btn.Text = label
+btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+btn.TextSize = 30
+btn.Font = Enum.Font.GothamBold
+
+  -- Add rounded corners for aesthetics
+  local corners = Instance.new("UICorner")
+  corners.CornerRadius = UDim.new(0, 8)
+  corners.Parent = btn
+end
+end
+#+end_src
+******** executions
+#+begin_src lua
+createGui()
+calculatorButton.MouseButton1Up:Connect(function() onButtonClicked("Calculator") end)
+#+end_src
 *** rojo
 **** default.project
 :properties:
@@ -5451,3 +7858,126 @@ cd.MouseClick:Connect(spinWheel)
 }
 }
 #+end_src
+
+*** client
+**** ui
+***** BottomBar
+****** BottomBarScript
+:properties:
+:header-args:lua: :tangle ./place6/src/client/UI/BottomBarScript.client.luau
+:END:
+******* notes
+Creates a ScreenGui with a container at the bottom of the screen holding three buttons: A, B, and C.
+******* code
+******** variables
+#+begin_src lua
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+#+end_src
+******** createGui
+#+begin_src lua
+local function createGui()
+-- 1. Create the ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "BottomButtonsUI"
+screenGui.Parent = playerGui
+screenGui.ResetOnSpawn = false
+
+-- 2. Create a Container Frame (Centered at the bottom)
+local container = Instance.new("Frame")
+container.Name = "Container"
+container.Size = UDim2.new(1, 0, 0.15, 0) -- Takes up bottom 15% of screen
+container.Position = UDim2.new(0, 0, 0.85, 0)
+container.BackgroundTransparency = 1 -- Invisible container
+container.Parent = screenGui
+
+-- 3. Add Layout (Horizontal List)
+local layout = Instance.new("UIListLayout")
+layout.Parent = container
+layout.FillDirection = Enum.FillDirection.Horizontal
+layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+layout.VerticalAlignment = Enum.VerticalAlignment.Center
+layout.Padding = UDim.new(0, 20) -- Space between buttons
+
+-- 4. Create Buttons A, B, and C
+local buttonLabels = {"Tomato", "Corn", "Blueberry"}
+
+for _, label in ipairs(buttonLabels) do
+local btn = Instance.new("TextButton")
+btn.Name = "Button" .. label
+btn.Parent = container
+btn.Size = UDim2.new(0, 100, 0, 60)
+btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+btn.Text = label
+btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+btn.TextSize = 30
+btn.Font = Enum.Font.GothamBold
+
+  -- Add rounded corners for aesthetics
+  local corners = Instance.new("UICorner")
+  corners.CornerRadius = UDim.new(0, 8)
+  corners.Parent = btn
+end
+end
+#+end_src
+******** executions
+#+begin_src lua
+createGui()
+calculatorButton.MouseButton1Up:Connect(function() onButtonClicked("Calculator") end)
+#+end_src
+*** rojo
+**** default.project
+:properties:
+:header-args:json: :tangle ./place6/default.project.json
+:END:
+***** code
+#+begin_src json
+{
+"name": "place6_farm_clicker",
+"tree": {
+"$className": "DataModel",
+"ReplicatedStorage": {
+"$path": "src/Shared"
+},
+"ServerScriptService": {
+"$path": "src/Server"
+},
+"StarterPlayer": {
+"StarterPlayerScripts": {
+"Client": {
+"$path": "src/Client"
+}
+}
+},
+"Workspace": {
+"$path": "src/Workspace",
+"Baseplate": {
+"$className": "Part",
+"$properties": {
+"Anchored": true,
+"Color": [0.38823, 0.37254, 0.38823],
+"Locked": true,
+"Position": [0, -10, 0],
+"Size": [512, 20, 512]
+}
+}
+},
+"Lighting": {
+"$properties": {
+"Ambient": [0, 0, 0],
+"Brightness": 2,
+"GlobalShadows": true,
+"Outlines": false,
+"Technology": "Voxel"
+}
+},
+"SoundService": {
+"$properties": {
+"RespectFilteringEnabled": true
+}
+}
+}
+}
+#+end_src
+
