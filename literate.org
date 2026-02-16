@@ -963,7 +963,70 @@ prompt.Triggered:Connect(toggleDoor)
 	  end
   end
 #+end_src
-* source
+** shopping cart ui
+#+begin_src lua
+  --variables
+  local buttonFrame = script.Parent
+  local calculatorButton = buttonFrame:WaitForChild("CalculatorTextButton")
+  local speedCoilButton = buttonFrame:WaitForChild("SpeedCoilTextButton")
+  local clockButton = buttonFrame:WaitForChild("ClockTextButton")
+  local gunButton = buttonFrame:WaitForChild("GunTextButton")
+  local teleporterButton = buttonFrame:WaitForChild("TeleporterTextButton")
+  local gCoilButton = buttonFrame:WaitForChild("GCoilTextButton")
+  local cloakButton = buttonFrame:WaitForChild("CloakTextButton")
+  local shoppingCartUI = buttonFrame.Parent
+  local enableToolTouchRemoteEvent = game.ReplicatedStorage.enableToolTouch
+  local player = game.Players.LocalPlayer
+  local leaderboard = player and player:FindFirstChild("leaderstats")
+  local coinCount = leaderboard and leaderboard:FindFirstChild("Coin")
+  local coinCountTextLabel = buttonFrame.Parent:WaitForChild("CoinCountTextLabel")
+  local exitShoppingCartButton = buttonFrame.Parent:WaitForChild("ExitShoppingCartButton")
+
+  --functions
+  local function updateBalance()
+  	coinCountTextLabel.Text = "$" .. coinCount.Value
+  end
+
+  local function onButtonClicked(toolName)
+  	local buyPrice = workspace.Store:WaitForChild("Stand_" .. toolName):WaitForChild(toolName):FindFirstChild("Configuration").BuyPrice.Value
+  	if coinCount.Value >= buyPrice then
+  		coinCount.Value = coinCount.Value - buyPrice
+  		--coinCountTextLabel.Text = "$" .. coinCount.Value
+  		updateBalance()
+  		enableToolTouchRemoteEvent:FireServer(toolName)
+  		--shoppingCartUI.Visible = false
+  		local localButton = buttonFrame:WaitForChild(toolName .. "TextButton") 
+  		localButton.Interactable = false
+  		localButton.BackgroundColor3 = Color3.new(0.4, 0.4, 0.4)
+  	end
+  end
+
+  local function onExitShoppingCartButtonClicked()
+  	buttonFrame.Parent.Visible = false
+  end
+
+  --executions
+  cloakButton.Text = "Cloak  - $" .. workspace.Store:WaitForChild("Stand_Cloak"):WaitForChild("Cloak"):FindFirstChild("Configuration").BuyPrice.Value
+  calculatorButton.Text = "Calculator - $" .. workspace.Store:WaitForChild("Stand_Calculator"):WaitForChild("Calculator"):FindFirstChild("Configuration").BuyPrice.Value
+  clockButton.Text = "Clock - $" .. workspace.Store:WaitForChild("Stand_Clock"):WaitForChild("Clock"):FindFirstChild("Configuration").BuyPrice.Value
+  gunButton.Text = "Gun - $" .. workspace.Store:WaitForChild("Stand_Gun"):WaitForChild("Gun"):FindFirstChild("Configuration").BuyPrice.Value
+  teleporterButton.Text = "Teleporter - $" .. workspace.Store:WaitForChild("Stand_Teleporter"):WaitForChild("Teleporter"):FindFirstChild("Configuration").BuyPrice.Value
+  speedCoilButton.Text = "SpeedCoil - $" .. workspace.Store:WaitForChild("Stand_SpeedCoil"):WaitForChild("SpeedCoil"):FindFirstChild("Configuration").BuyPrice.Value
+  gCoilButton.Text = "GCoil - $" .. workspace.Store:WaitForChild("Stand_GCoil"):WaitForChild("GCoil"):FindFirstChild("Configuration").BuyPrice.Value
+
+  calculatorButton.MouseButton1Up:Connect(function() onButtonClicked("Calculator") end)
+  clockButton.MouseButton1Up:Connect(function() onButtonClicked("Clock") end)
+  gCoilButton.MouseButton1Up:Connect(function() onButtonClicked("GCoil") end)
+  gunButton.MouseButton1Up:Connect(function() onButtonClicked("Gun") end)
+  teleporterButton.MouseButton1Up:Connect(function() onButtonClicked("Teleporter") end)
+  speedCoilButton.MouseButton1Up:Connect(function() onButtonClicked("SpeedCoil") end)
+  cloakButton.MouseButton1Up:Connect(function() onButtonClicked("Cloak") end)
+  exitShoppingCartButton.MouseButton1Up:Connect(onExitShoppingCartButtonClicked)
+
+  coinCountTextLabel.Text = coinCount.Value
+  coinCount.Changed:Connect(updateBalance)
+#+end_src
+*  source
 ** place1
 *** server
 **** collectibles
@@ -4209,7 +4272,6 @@ Captures the TextBox input and fires the event.
 } 
 #+end_src
 
-	
 ** place5
 *** server
 **** collectibles
@@ -5139,3 +5201,449 @@ Handles client-side logic, including listening for dialog selections, notifying 
   }
 } 
 #+end_src
+
+** place6
+*** server
+**** farming
+***** plots
+****** PlotManager
+:properties:
+:header-args:lua: :tangle ./place6/src/server/Farming/PlotManager.server.luau
+:END:
+******* notes
+Generates a 30x30 grid (900 plots). The getBiomeData function now checks if the coordinates are near the edge of the grid to create a Mountain ring, while maintaining the parabolic valley shape in the center.
+******* code
+******** variables
+#+begin_src lua
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+
+-- Create folder for plots
+local plotsFolder = Instance.new("Folder")
+plotsFolder.Name = "FarmPlots"
+plotsFolder.Parent = Workspace
+
+-- Define plot template
+local plotTemplate = Instance.new("Part")
+plotTemplate.Name = "Plot"
+plotTemplate.Size = Vector3.new(8, 1, 8)
+plotTemplate.Anchored = true
+plotTemplate.Material = Enum.Material.Ground -- Dirt by default
+plotTemplate.Color = Color3.fromRGB(109, 87, 60) -- Dirt Brown
+
+-- Floor represents the terrain under the plot
+local plotFloor = Instance.new("Part")
+plotFloor.Name = "Floor"
+plotFloor.Size = Vector3.new(10, 30, 10) -- Very deep base to fill mountain gaps
+plotFloor.Anchored = true
+plotFloor.Material = Enum.Material.Grass
+plotFloor.Color = Color3.fromRGB(75, 150, 75)
+
+-- Add Configuration values
+local status = Instance.new("StringValue")
+status.Name = "Status"
+status.Value = "Empty"
+status.Parent = plotTemplate
+
+-- Grid Settings
+local gridSize = 30 -- 30x30 = 900 plots
+local spacing = 10
+
+-- Center the map
+local totalWidth = gridSize * spacing
+local startPos = Vector3.new(-totalWidth/2, 0, -totalWidth/2)
+#+end_src
+******** functions
+********* getBiomeData
+#+begin_src lua
+local function getBiomeData(x, z)
+-- 1. Mountain Ring Logic (Edges)
+-- If we are within the first 4 or last 4 rows/cols, we are in the mountains
+if x <= 4 or x >= gridSize - 3 or z <= 4 or z >= gridSize - 3 then
+local height = 40 + math.random(0, 5) -- High elevation
+local material = Enum.Material.Rock
+local color = Color3.fromRGB(99, 95, 98) -- Stone Grey
+return height, material, color
+end
+
+-- 2. Valley Logic (Center)
+-- Calculate distance from the center X line
+local centerX = gridSize / 2
+local distFromCenter = math.abs(x - centerX)
+
+-- Parabolic height for valley shape (Gentle slope in the middle)
+local height = (distFromCenter / centerX) ^ 2 * 15
+
+-- Biome Logic
+local material = Enum.Material.Grass
+local color = Color3.fromRGB(75, 150, 75) -- Green
+
+-- Desert Logic (Further from center, but before mountains)
+if distFromCenter > 8 then
+    material = Enum.Material.Sand
+    color = Color3.fromRGB(236, 219, 137) -- Sand Yellow
+elseif distFromCenter > 6 then
+    -- Transition
+    material = Enum.Material.LeafyGrass
+    color = Color3.fromRGB(120, 160, 80)
+end
+
+return height, material, color
+end
+#+end_src
+********* spawnGrid
+#+begin_src lua
+local function spawnGrid()
+for x = 1, gridSize do
+for z = 1, gridSize do
+local height, biomeMat, biomeColor = getBiomeData(x, z)
+
+        local finalPos = startPos + Vector3.new((x - 1) * spacing, height, (z - 1) * spacing)
+
+        -- Create Plot (The farmable surface)
+        local newPlot = plotTemplate:Clone()
+        newPlot.Position = finalPos
+        newPlot.Parent = plotsFolder
+
+        -- Create Floor (The terrain underneath)
+        -- Shifted down so the top aligns with the plot, but extends downwards to form the hill
+        local newFloor = plotFloor:Clone()
+        newFloor.Position = finalPos - Vector3.new(0, 15, 0) -- Shift down half height (30/2)
+        newFloor.Material = biomeMat
+        newFloor.Color = biomeColor
+        newFloor.Parent = newPlot
+
+        -- Inject logic script
+        local logicScript = script.Parent:FindFirstChild("ProximityPlotScript")
+        if logicScript then
+            local cloneScript = logicScript:Clone()
+            cloneScript.Parent = newPlot
+            cloneScript.Enabled = true
+        end
+    end
+end
+end
+#+end_src
+******** executions
+#+begin_src lua
+spawnGrid()
+#+end_src
+****** ProximityPlotScript
+:properties:
+:header-args:lua: :tangle ./place6/src/server/Farming/ProximityPlotScript.server.luau
+:END:
+******* notes
+This script sets the BillboardGui.MaxDistance to 150. Since each plot is 10 studs apart, 150 studs represents a radius of 15 plots. The UI will automatically appear when the player enters this radius and disappear when they leave.
+******* code
+******** variables
+#+begin_src lua
+-- Guard Clause
+if not script.Parent:IsA("Part") then
+warn("ProximityPlotScript must be placed inside a Part!")
+return
+end
+
+local plot = script.Parent
+local status = plot:WaitForChild("Status")
+
+-- Create ProximityPrompt
+local prompt = Instance.new("ProximityPrompt")
+prompt.HoldDuration = 0.5
+prompt.KeyboardKeyCode = Enum.KeyCode.E
+prompt.MaxActivationDistance = 12
+prompt.RequiresLineOfSight = false
+prompt.Parent = plot
+
+-- Create BillboardGui
+local billboard = Instance.new("BillboardGui")
+billboard.Name = "InfoUI"
+billboard.Size = UDim2.new(0, 200, 0, 100)
+billboard.StudsOffset = Vector3.new(0, 4, 0)
+billboard.AlwaysOnTop = true
+
+-- VISIBILITY LOGIC:
+-- 15 plots radius * 10 spacing = 150 studs.
+billboard.MaxDistance = 15
+
+billboard.Parent = plot
+
+local nameLabel = Instance.new("TextLabel")
+nameLabel.Name = "NameLabel"
+nameLabel.Size = UDim2.new(1, 0, 0.6, 0)
+nameLabel.BackgroundTransparency = 1
+nameLabel.TextColor3 = Color3.new(1, 1, 1)
+nameLabel.TextStrokeTransparency = 0
+nameLabel.TextSize = 24
+nameLabel.Font = Enum.Font.GothamBold
+nameLabel.Text = "Crop"
+nameLabel.Parent = billboard
+
+local priceLabel = Instance.new("TextLabel")
+priceLabel.Name = "PriceLabel"
+priceLabel.Size = UDim2.new(1, 0, 0.4, 0)
+priceLabel.Position = UDim2.new(0, 0, 0.6, 0)
+priceLabel.BackgroundTransparency = 1
+priceLabel.TextColor3 = Color3.fromRGB(85, 255, 127)
+priceLabel.TextStrokeTransparency = 0
+priceLabel.TextSize = 18
+priceLabel.Font = Enum.Font.Gotham
+priceLabel.Text = "$0"
+priceLabel.Parent = billboard
+
+-- Expanded Configuration
+local CropData = {
+["Tomato"] = { Cost = 5, BaseSellValue = 15, BaseDelay = 3, Color = Color3.fromRGB(255, 80, 80), Icon = "🍅" },
+["Corn"] = { Cost = 50, BaseSellValue = 120, BaseDelay = 5, Color = Color3.fromRGB(255, 255, 100), Icon = "🌽" },
+["Carrot"] = { Cost = 100, BaseSellValue = 250, BaseDelay = 6, Color = Color3.fromRGB(255, 170, 0), Icon = "🥕" },
+["Blueberry"] = { Cost = 150, BaseSellValue = 400, BaseDelay = 8, Color = Color3.fromRGB(80, 80, 255), Icon = "🫐" },
+["Wheat"] = { Cost = 300, BaseSellValue = 750, BaseDelay = 10, Color = Color3.fromRGB(245, 222, 179), Icon = "🌾" },
+["Pumpkin"] = { Cost = 500, BaseSellValue = 1300, BaseDelay = 15, Color = Color3.fromRGB(255, 117, 24), Icon = "🎃" },
+["Potato"] = { Cost = 1000, BaseSellValue = 2800, BaseDelay = 20, Color = Color3.fromRGB(139, 69, 19), Icon = "🥔" },
+["Watermelon"] = { Cost = 2500, BaseSellValue = 7000, BaseDelay = 30, Color = Color3.fromRGB(60, 179, 113), Icon = "🍉" }
+}
+#+end_src
+******** functions
+********* getRandomCrop
+#+begin_src lua
+local function getRandomCrop()
+local keys = {}
+for key, _ in pairs(CropData) do
+table.insert(keys, key)
+end
+return keys[math.random(1, #keys)]
+end
+#+end_src
+********* updatePromptState
+#+begin_src lua
+local function updatePromptState(fixedCrop)
+if status.Value == "Empty" then
+local data = CropData[fixedCrop]
+
+    -- Update UI
+    nameLabel.Text = data.Icon .. " " .. fixedCrop
+    priceLabel.Text = "$" .. data.Cost
+    billboard.Enabled = true
+
+    -- Update Prompt
+    prompt.ActionText = "Plant"
+    prompt.ObjectText = fixedCrop
+    prompt.Enabled = true
+else
+    -- Hide UI and Prompt while growing
+    billboard.Enabled = false 
+    prompt.Enabled = false
+end
+end
+#+end_src
+********* onTriggered
+#+begin_src lua
+local function onTriggered(player, fixedCrop)
+if status.Value ~= "Empty" then return end
+
+local leaderstats = player:FindFirstChild("leaderstats")
+if not leaderstats then return end
+
+local cash = leaderstats:FindFirstChild("Cash")
+local data = CropData[fixedCrop]
+
+if cash and cash.Value >= data.Cost then
+    -- Transaction
+    cash.Value -= data.Cost
+
+    -- Visual Feedback
+    status.Value = "Growing"
+    plot.Color = data.Color
+    plot.Material = Enum.Material.Plastic
+
+    updatePromptState(fixedCrop)
+
+    -- Growth Phase
+    task.wait(data.BaseDelay)
+
+    -- Harvest/Sell Phase
+    cash.Value += data.BaseSellValue
+    print(player.Name .. " harvested " .. data.Icon .. " for $" .. data.BaseSellValue)
+
+    -- Reset Plot to Dirt (Ground)
+    plot.Color = Color3.fromRGB(109, 87, 60) -- Dirt Brown
+    plot.Material = Enum.Material.Ground   -- Dirt Material
+    status.Value = "Empty"
+
+    updatePromptState(fixedCrop)
+else
+    warn(player.Name .. " cannot afford " .. fixedCrop)
+end
+end
+#+end_src
+******** executions
+#+begin_src lua
+-- 1. Assign the crop type ONCE
+local assignedCrop = getRandomCrop()
+
+-- 2. Initialize
+updatePromptState(assignedCrop)
+
+-- 3. Connections
+status.Changed:Connect(function()
+updatePromptState(assignedCrop)
+end)
+
+prompt.Triggered:Connect(function(player)
+onTriggered(player, assignedCrop)
+end)
+#+end_src
+**** ui
+***** leaderboard
+****** LeaderboardManager
+:properties:
+:header-args:lua: :tangle ./place6/src/server/UI/LeaderboardManager.server.luau
+:END:
+******* notes
+Standard leaderboard to track Cash for the economy.
+******* code
+******** variables
+#+begin_src lua
+local Players = game:GetService("Players")
+#+end_src
+******** functions
+********* onPlayerAdded
+#+begin_src lua
+local function onPlayerAdded(player)
+local leaderstats = Instance.new("Folder")
+leaderstats.Name = "leaderstats"
+leaderstats.Parent = player
+
+  local cash = Instance.new("IntValue")
+  cash.Name = "Cash"
+  cash.Value = 10 -- Starting capital to buy first Tomato
+  cash.Parent = leaderstats
+end
+#+end_src
+******** executions
+#+begin_src lua
+Players.PlayerAdded:Connect(onPlayerAdded)
+#+end_src
+**** upgrades
+***** mystery
+****** MysteryBoxManager
+:properties:
+:header-args:lua: :tangle ./place6/src/server/Upgrades/MysteryBoxManager.server.luau
+:END:
+******* notes
+Implements the "Slot Machine" mechanic for random rewards.
+******* code
+******** variables
+#+begin_src lua
+local boxPart = Instance.new("Part")
+boxPart.Name = "MysteryBox"
+boxPart.Size = Vector3.new(4, 4, 4)
+boxPart.Position = Vector3.new(0, 2, -15) -- Placed away from plots
+boxPart.Color = Color3.fromRGB(148, 0, 211) -- Purple
+boxPart.Material = Enum.Material.Neon
+boxPart.Anchored = true
+boxPart.Parent = game:GetService("Workspace")
+
+local cd = Instance.new("ClickDetector")
+cd.Parent = boxPart
+
+local spinCost = 50
+#+end_src
+******** functions
+********* spinWheel
+#+begin_src lua
+local function spinWheel(player)
+local leaderstats = player:FindFirstChild("leaderstats")
+if not leaderstats then return end
+local cash = leaderstats:FindFirstChild("Cash")
+
+  if cash.Value >= spinCost then
+      cash.Value -= spinCost
+      
+      -- Risk vs Reward Logic
+      local chance = math.random(1, 100)
+      if chance <= 50 then
+          -- 50% chance to lose (get nothing or very little)
+          print("Bad luck!")
+      elseif chance <= 80 then
+          -- 30% chance to break even or small profit
+          cash.Value += math.random(40, 80)
+          print("Small Win!")
+      elseif chance <= 95 then
+          -- 15% chance for big win
+          cash.Value += math.random(100, 200)
+          print("Big Win!")
+      else
+          -- 5% chance for Jackpot
+          cash.Value += 1000
+          print("JACKPOT!")
+      end
+  end
+end
+#+end_src
+******** executions
+#+begin_src lua
+cd.MouseClick:Connect(spinWheel)
+#+end_src
+*** shared
+*** client 
+*** rojo
+**** default.project
+:properties:
+:header-args:json: :tangle ./default.project.json
+:END:
+***** code
+#+begin_src json
+{
+  "name": "lab",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+        "$path": "src/Shared"
+    },
+    "ServerScriptService": {
+        "$path": "src/Server"
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Client": {
+          "$path": "src/Client"
+        }
+      }
+    },
+    
+    "Workspace": {
+      "$path": "src/Workspace",
+      "Baseplate": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "Color": [0.38823, 0.37254, 0.38823],
+          "Locked": true,
+          "Position": [0, -10, 0],
+          "Size": [512, 20, 512]
+        }
+      }
+    },
+    "Lighting": {
+      "$properties": {
+        "Ambient": [
+          0,
+          0,
+          0
+        ],
+        "Brightness": 2,
+        "GlobalShadows": true,
+        "Outlines": false,
+        "Technology": "Voxel"
+      }
+    },
+    
+    "SoundService": {
+      "$properties": {
+        "RespectFilteringEnabled": true
+      }
+    }
+  }
+} 
+#+end_src
+
