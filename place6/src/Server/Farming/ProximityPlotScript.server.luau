@@ -21,11 +21,7 @@ billboard.Name = "InfoUI"
 billboard.Size = UDim2.new(0, 200, 0, 100)
 billboard.StudsOffset = Vector3.new(0, 4, 0)
 billboard.AlwaysOnTop = true
-
--- VISIBILITY LOGIC:
--- 15 plots radius * 10 spacing = 150 studs.
 billboard.MaxDistance = 15
-
 billboard.Parent = plot
 
 local nameLabel = Instance.new("TextLabel")
@@ -51,17 +47,31 @@ priceLabel.Font = Enum.Font.Gotham
 priceLabel.Text = "$0"
 priceLabel.Parent = billboard
 
--- Expanded Configuration
+-- Expanded Configuration with MeshIds (Replace 0 with actual asset IDs)
 local CropData = {
-["Tomato"] = { Cost = 5, BaseSellValue = 15, BaseDelay = 3, Color = Color3.fromRGB(255, 80, 80), Icon = "🍅" },
-["Corn"] = { Cost = 50, BaseSellValue = 120, BaseDelay = 5, Color = Color3.fromRGB(255, 255, 100), Icon = "🌽" },
-["Carrot"] = { Cost = 100, BaseSellValue = 250, BaseDelay = 6, Color = Color3.fromRGB(255, 170, 0), Icon = "🥕" },
-["Blueberry"] = { Cost = 150, BaseSellValue = 400, BaseDelay = 8, Color = Color3.fromRGB(80, 80, 255), Icon = "🫐" },
-["Wheat"] = { Cost = 300, BaseSellValue = 750, BaseDelay = 10, Color = Color3.fromRGB(245, 222, 179), Icon = "🌾" },
-["Pumpkin"] = { Cost = 500, BaseSellValue = 1300, BaseDelay = 15, Color = Color3.fromRGB(255, 117, 24), Icon = "🎃" },
-["Potato"] = { Cost = 1000, BaseSellValue = 2800, BaseDelay = 20, Color = Color3.fromRGB(139, 69, 19), Icon = "🥔" },
-["Watermelon"] = { Cost = 2500, BaseSellValue = 7000, BaseDelay = 30, Color = Color3.fromRGB(60, 179, 113), Icon = "🍉" }
+["Tomato"] = { Cost = 5, BaseSellValue = 15, BaseDelay = 3, Color = Color3.fromRGB(255, 80, 80), Icon = "🍅", MeshId = "rbxassetid://1180778084" },
+["Corn"] = { Cost = 50, BaseSellValue = 120, BaseDelay = 5, Color = Color3.fromRGB(255, 255, 100), Icon = "🌽", MeshId = "rbxassetid://4690085178" },
+["Carrot"] = { Cost = 100, BaseSellValue = 250, BaseDelay = 6, Color = Color3.fromRGB(255, 170, 0), Icon = "🥕", MeshId = "rbxassetid://13581709876" },
+["Blueberry"] = { Cost = 150, BaseSellValue = 400, BaseDelay = 8, Color = Color3.fromRGB(80, 80, 255), Icon = "🫐", MeshId = "rbxassetid://18243359587" },
+["Wheat"] = { Cost = 300, BaseSellValue = 750, BaseDelay = 10, Color = Color3.fromRGB(245, 222, 179), Icon = "🌾", MeshId = "rbxassetid://7063928864" },
+["Pumpkin"] = { Cost = 500, BaseSellValue = 1300, BaseDelay = 15, Color = Color3.fromRGB(255, 117, 24), Icon = "🎃", MeshId = "rbxassetid://1050943947" },
+["Potato"] = { Cost = 1000, BaseSellValue = 2800, BaseDelay = 20, Color = Color3.fromRGB(139, 69, 19), Icon = "🥔", MeshId = "rbxassetid://477543051" },
+["Watermelon"] = { Cost = 2500, BaseSellValue = 7000, BaseDelay = 30, Color = Color3.fromRGB(60, 179, 113), Icon = "🍉", MeshId = "rbxassetid://677827629" }
 }
+
+-- Mesh Visual Part setup
+local visualPart = Instance.new("Part")
+visualPart.Name = "CropVisual"
+visualPart.Size = Vector3.new(1, 1, 1)
+visualPart.CanCollide = false
+visualPart.Anchored = true
+visualPart.Transparency = 1 -- Hidden by default
+visualPart.Position = plot.Position + Vector3.new(0, 1.5, 0)
+visualPart.Parent = plot
+
+local specialMesh = Instance.new("SpecialMesh")
+specialMesh.MeshType = Enum.MeshType.FileMesh
+specialMesh.Parent = visualPart
 
 local function getRandomCrop()
 local keys = {}
@@ -84,10 +94,16 @@ local data = CropData[fixedCrop]
     prompt.ActionText = "Plant"
     prompt.ObjectText = fixedCrop
     prompt.Enabled = true
+    
+    -- Reset Visuals
+    visualPart.Transparency = 1
 else
     -- Hide UI and Prompt while growing
     billboard.Enabled = false 
     prompt.Enabled = false
+    
+    -- Show Visual
+    visualPart.Transparency = 0
 end
 end
 
@@ -106,9 +122,11 @@ if cash and cash.Value >= data.Cost then
 
     -- Visual Feedback
     status.Value = "Growing"
-    plot.Color = data.Color
-    plot.Material = Enum.Material.Plastic
-
+    
+    -- Update Mesh Data
+    specialMesh.MeshId = data.MeshId
+    visualPart.Color = data.Color -- Optional tinting
+    
     updatePromptState(fixedCrop)
 
     -- Growth Phase
@@ -118,9 +136,7 @@ if cash and cash.Value >= data.Cost then
     cash.Value += data.BaseSellValue
     print(player.Name .. " harvested " .. data.Icon .. " for $" .. data.BaseSellValue)
 
-    -- Reset Plot to Dirt (Ground)
-    plot.Color = Color3.fromRGB(109, 87, 60) -- Dirt Brown
-    plot.Material = Enum.Material.Ground   -- Dirt Material
+    -- Reset Plot State
     status.Value = "Empty"
 
     updatePromptState(fixedCrop)
