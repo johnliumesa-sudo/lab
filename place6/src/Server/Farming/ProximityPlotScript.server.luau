@@ -1,13 +1,12 @@
--- Guard Clause
 if not script.Parent:IsA("Part") then
 warn("ProximityPlotScript must be placed inside a Part!")
 return
 end
 
+local TweenService = game:GetService("TweenService")
 local plot = script.Parent
 local status = plot:WaitForChild("Status")
 
--- Create ProximityPrompt
 local prompt = Instance.new("ProximityPrompt")
 prompt.HoldDuration = 0.5
 prompt.KeyboardKeyCode = Enum.KeyCode.E
@@ -15,7 +14,6 @@ prompt.MaxActivationDistance = 12
 prompt.RequiresLineOfSight = false
 prompt.Parent = plot
 
--- Create BillboardGui
 local billboard = Instance.new("BillboardGui")
 billboard.Name = "InfoUI"
 billboard.Size = UDim2.new(0, 200, 0, 100)
@@ -47,7 +45,6 @@ priceLabel.Font = Enum.Font.Gotham
 priceLabel.Text = "$0"
 priceLabel.Parent = billboard
 
--- Expanded Configuration with MeshIds (Replace 0 with actual asset IDs)
 local CropData = {
 ["Tomato"] = { Cost = 5, BaseSellValue = 15, BaseDelay = 3, Color = Color3.fromRGB(255, 80, 80), Icon = "🍅", MeshId = "rbxassetid://1180778084" },
 ["Corn"] = { Cost = 50, BaseSellValue = 120, BaseDelay = 5, Color = Color3.fromRGB(255, 255, 100), Icon = "🌽", MeshId = "rbxassetid://4690085178" },
@@ -59,13 +56,12 @@ local CropData = {
 ["Watermelon"] = { Cost = 2500, BaseSellValue = 7000, BaseDelay = 30, Color = Color3.fromRGB(60, 179, 113), Icon = "🍉", MeshId = "rbxassetid://677827629" }
 }
 
--- Mesh Visual Part setup
 local visualPart = Instance.new("Part")
 visualPart.Name = "CropVisual"
 visualPart.Size = Vector3.new(1, 1, 1)
 visualPart.CanCollide = false
 visualPart.Anchored = true
-visualPart.Transparency = 1 -- Hidden by default
+visualPart.Transparency = 1
 visualPart.Position = plot.Position + Vector3.new(0, 1.5, 0)
 visualPart.Parent = plot
 
@@ -84,26 +80,17 @@ end
 local function updatePromptState(fixedCrop)
 if status.Value == "Empty" then
 local data = CropData[fixedCrop]
-
-    -- Update UI
-    nameLabel.Text = data.Icon .. " " .. fixedCrop
-    priceLabel.Text = "$" .. data.Cost
-    billboard.Enabled = true
-
-    -- Update Prompt
-    prompt.ActionText = "Plant"
-    prompt.ObjectText = fixedCrop
-    prompt.Enabled = true
-    
-    -- Reset Visuals
-    visualPart.Transparency = 1
+nameLabel.Text = data.Icon .. " " .. fixedCrop
+priceLabel.Text = "$" .. data.Cost
+billboard.Enabled = true
+prompt.ActionText = "Plant"
+prompt.ObjectText = fixedCrop
+prompt.Enabled = true
+visualPart.Transparency = 1
 else
-    -- Hide UI and Prompt while growing
-    billboard.Enabled = false 
-    prompt.Enabled = false
-    
-    -- Show Visual
-    visualPart.Transparency = 0
+billboard.Enabled = false
+prompt.Enabled = false
+visualPart.Transparency = 0
 end
 end
 
@@ -111,47 +98,73 @@ local function onTriggered(player, fixedCrop)
 if status.Value ~= "Empty" then return end
 
 local leaderstats = player:FindFirstChild("leaderstats")
-if not leaderstats then return end
+local stats = player:FindFirstChild("Stats")
+if not leaderstats or not stats then return end
 
 local cash = leaderstats:FindFirstChild("Cash")
+local speedMod = stats:FindFirstChild("SpeedMod").Value
+local valueMod = stats:FindFirstChild("ValueMod").Value
 local data = CropData[fixedCrop]
+local cropAmount = math.random(1, 3)
+
+
 
 if cash and cash.Value >= data.Cost then
-    -- Transaction
     cash.Value -= data.Cost
-
-    -- Visual Feedback
     status.Value = "Growing"
-    
-    -- Update Mesh Data
     specialMesh.MeshId = data.MeshId
-    visualPart.Color = data.Color -- Optional tinting
     
+    local targetScale = Vector3.new(1, 1, 1)
+    if data.MeshId == "rbxassetid://13581709876" then
+        targetScale = Vector3.new(0.05,0.05,0.05)
+    end
+    
+    if cropAmount >= 2 then
+        for i = 0, cropAmount do 
+            local extraCrops = visualPart:Clone()
+            extraCrops.Parent = visualPart.Parent
+            extraCrops.Name = "ExtraCrops"
+            extraCrops.Size = visualPart.Size
+            extraCrops.Transparency = 1
+            extraCrops.Position = visualPart.Position + Vector3.new(math.random(-9, 9), 2, math.random(-9, 9))
+        end
+    end
+    
+    -- Start small and grow
+    specialMesh.Scale = Vector3.new(0.01, 0.01, 0.01)
+    visualPart.Color = data.Color
     updatePromptState(fixedCrop)
 
-    -- Growth Phase
-    task.wait(data.BaseDelay)
+    -- Tween Animation
+    local actualDelay = data.BaseDelay * speedMod
+    local tweenInfo = TweenInfo.new(actualDelay, Enum.EasingStyle.Linear)
+    local growthTween = TweenService:Create(specialMesh, tweenInfo, {Scale = targetScale})
+    growthTween:Play()
 
-    -- Harvest/Sell Phase
-    cash.Value += data.BaseSellValue
-    print(player.Name .. " harvested " .. data.Icon .. " for $" .. data.BaseSellValue)
+    task.wait(actualDelay)
 
-    -- Reset Plot State
+    if plot:WaitForChild("ExtraCrops") then
+        plot:WaitForChild("ExtraCrops"):Destroy()
+    end
+
+    local finalValue = math.floor(data.BaseSellValue * valueMod * cropAmount)
+    cash.Value += finalValue
+    print(player.Name .. " harvested " .. data.Icon .. " for $" .. finalValue)
+
+    
+    if plot:WaitForChild("ExtraCrops") then
+        plot:WaitForChild("ExtraCrops"):Destroy()
+    end
     status.Value = "Empty"
-
     updatePromptState(fixedCrop)
 else
     warn(player.Name .. " cannot afford " .. fixedCrop)
 end
 end
 
--- 1. Assign the crop type ONCE
 local assignedCrop = getRandomCrop()
-
--- 2. Initialize
 updatePromptState(assignedCrop)
 
--- 3. Connections
 status.Changed:Connect(function()
 updatePromptState(assignedCrop)
 end)
