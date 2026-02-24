@@ -5470,71 +5470,54 @@ end
 ********* onTriggered
 #+begin_src lua
   local function onTriggered(player, fixedCrop)
-  if status.Value ~= "Empty" then return end
+      if status.Value ~= "Empty" then return end
+      local cropAmount = math.random(1, 3)
+      if cropAmount >= 1 then
+  	for i=1, cropAmount do
+  	    local leaderstats = player:FindFirstChild("leaderstats")
+  	    local stats = player:FindFirstChild("Stats")
+  	    if not leaderstats or not stats then return end
 
-  local leaderstats = player:FindFirstChild("leaderstats")
-  local stats = player:FindFirstChild("Stats")
-  if not leaderstats or not stats then return end
+  	    local cash = leaderstats:FindFirstChild("Cash")
+  	    local speedMod = stats:FindFirstChild("SpeedMod").Value
+  	    local valueMod = stats:FindFirstChild("ValueMod").Value
+  	    local data = CropData[fixedCrop]
 
-  local cash = leaderstats:FindFirstChild("Cash")
-  local speedMod = stats:FindFirstChild("SpeedMod").Value
-  local valueMod = stats:FindFirstChild("ValueMod").Value
-  local data = CropData[fixedCrop]
-  local cropAmount = math.random(1, 3)
+  	    if cash and cash.Value >= data.Cost then
+  		cash.Value -= data.Cost
+  		status.Value = "Growing"
+  		specialMesh.MeshId = data.MeshId
 
+  		local targetScale = Vector3.new(1, 1, 1)
+  		if data.MeshId == "rbxassetid://13581709876" then
+  		    targetScale = Vector3.new(0.05,0.05,0.05)
+  		end
 
+  		-- Start small and grow
+  		specialMesh.Scale = Vector3.new(0.01, 0.01, 0.01)
+  		visualPart.Color = data.Color
+  		updatePromptState(fixedCrop)
 
-  if cash and cash.Value >= data.Cost then
-      cash.Value -= data.Cost
-      status.Value = "Growing"
-      specialMesh.MeshId = data.MeshId
-      
-      local targetScale = Vector3.new(1, 1, 1)
-      if data.MeshId == "rbxassetid://13581709876" then
-          targetScale = Vector3.new(0.05,0.05,0.05)
+  		-- Tween Animation
+  		local actualDelay = data.BaseDelay * speedMod
+  		local tweenInfo = TweenInfo.new(actualDelay, Enum.EasingStyle.Linear)
+  		local growthTween = TweenService:Create(specialMesh, tweenInfo, {Scale = targetScale})
+  		growthTween:Play()
+
+  		task.wait(actualDelay)
+  		visualPart.Transparency = 1
+
+  		local finalValue = math.floor(data.BaseSellValue * valueMod * cropAmount)
+  		cash.Value += finalValue
+  		print(player.Name .. " harvested " .. data.Icon .. " for $" .. finalValue)
+
+  		status.Value = "Empty"
+  		updatePromptState(fixedCrop)
+  	    else
+  		warn(player.Name .. " cannot afford " .. fixedCrop)
+  	    end
+  	end
       end
-      
-      if cropAmount >= 2 then
-          for i = 0, cropAmount do 
-              local extraCrops = visualPart:Clone()
-              extraCrops.Parent = visualPart.Parent
-              extraCrops.Name = "ExtraCrops"
-              extraCrops.Size = visualPart.Size
-              extraCrops.Transparency = 1
-              extraCrops.Position = visualPart.Position + Vector3.new(math.random(-9, 9), 2, math.random(-9, 9))
-          end
-      end
-      
-      -- Start small and grow
-      specialMesh.Scale = Vector3.new(0.01, 0.01, 0.01)
-      visualPart.Color = data.Color
-      updatePromptState(fixedCrop)
-
-      -- Tween Animation
-      local actualDelay = data.BaseDelay * speedMod
-      local tweenInfo = TweenInfo.new(actualDelay, Enum.EasingStyle.Linear)
-      local growthTween = TweenService:Create(specialMesh, tweenInfo, {Scale = targetScale})
-      growthTween:Play()
-
-      task.wait(actualDelay)
-
-      if plot:WaitForChild("ExtraCrops") then
-          plot:WaitForChild("ExtraCrops"):Destroy()
-      end
-
-      local finalValue = math.floor(data.BaseSellValue * valueMod * cropAmount)
-      cash.Value += finalValue
-      print(player.Name .. " harvested " .. data.Icon .. " for $" .. finalValue)
-
-      
-      if plot:WaitForChild("ExtraCrops") then
-          plot:WaitForChild("ExtraCrops"):Destroy()
-      end
-      status.Value = "Empty"
-      updatePromptState(fixedCrop)
-  else
-      warn(player.Name .. " cannot afford " .. fixedCrop)
-  end
   end
 #+end_src
 ******** executions
